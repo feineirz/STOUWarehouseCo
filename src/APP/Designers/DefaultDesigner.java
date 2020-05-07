@@ -53,6 +53,7 @@ public class DefaultDesigner extends JFrame {
 	
 	public DefaultDesigner() {
 		super("STOU Warehouse Co.");
+		this.setIconImage(new ImageIcon("assets/appicon.png").getImage());
 		
 		/********** Main Frame **********/
 		this.setBounds(

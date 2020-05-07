@@ -2,17 +2,17 @@ package APP.Controllers;
 
 import javax.swing.JFrame;
 
-import APP.Designers.DefaultDesigner;
+import APP.Designers.AboutDesigner;
 
 public class View {
 	
 	// Preload Assets
 	static 
-	JFrame defaultDesiner = new DefaultDesigner();
+	JFrame defaultFrame = new AboutDesigner();
 	
 	public static void main(String[] arg) {
 		
-		defaultDesiner.setVisible(true);
+		defaultFrame.setVisible(true);
 		
 	}
 	
