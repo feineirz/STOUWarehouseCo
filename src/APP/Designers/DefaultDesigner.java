@@ -226,7 +226,8 @@ public class DefaultDesigner extends JFrame {
 				if(Global.currentUser != null) {
 					lblUsername.setText(Global.currentUser.username());
 					lblEmail.setText(Global.currentUser.username());
-				}				
+				}
+				reAdjustPanel();
 			}
 		});
 		
@@ -243,6 +244,8 @@ public class DefaultDesigner extends JFrame {
 	
 	public void reAdjustPanel() {
 		if(this.getWidth() < 600) this.setSize(600,this.getHeight());
+		if(this.getHeight() < 300) this.setSize(this.getWidth(), 300);
+		
 		this.setLocation((screen.width - this.getWidth()) / 2, (screen.height - this.getHeight()) / 2);
 		pnlHeader.setSize(this.getWidth() - upiWidth, pnlHeader.getHeight());
 		pnlUserInfo.setLocation(pnlHeader.getWidth(), 0);
