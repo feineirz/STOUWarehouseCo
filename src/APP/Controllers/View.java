@@ -14,6 +14,8 @@ public class View {
 		
 		defaultFrame.setVisible(true);
 		
+		
+		
 	}
 	
 }

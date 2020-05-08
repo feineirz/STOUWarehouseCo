@@ -227,7 +227,7 @@ public class DefaultDesigner extends JFrame {
 					lblUsername.setText(Global.currentUser.username());
 					lblEmail.setText(Global.currentUser.username());
 				}
-				reAdjustPanel();
+				
 			}
 		});
 		
