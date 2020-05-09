@@ -12,9 +12,11 @@ import java.util.ArrayList;
 
 public class Users {
 	
+	/************************** Class Header ***************************/
 	private int user_id;
 	private String username, password, phone, email;
-	private String relName = "users";
+	public final String relName = "users";
+	public final String columnNames = "user_id, username, password, phone, email";
 	
 	/************************** Class Structure ***************************/
 	public static class UserInfo {
@@ -24,6 +26,37 @@ public class Users {
 	
 	/************************** Constructor ***************************/
 	public Users() {}
+	public Users(int user_id) {
+		
+		Connection conn = new DBConnector().getDBConnection();
+		try {
+			String qry = "SELECT *"
+					+ " FROM " + relName
+					+ " WHERE user_id=?";
+			PreparedStatement stmt = conn.prepareStatement(qry);
+			stmt.setInt(1, user_id );
+			
+			ResultSet rs = stmt.executeQuery();
+			while(rs.next()) {
+				this.user_id = rs.getInt("user_id");
+				this.username = rs.getString("username");
+				this.password = rs.getString("password");
+				this.phone = rs.getString("phone");
+				this.email = rs.getString("email");
+			}
+			
+			conn.close();
+			
+		} catch (SQLException e) {
+			try {
+				conn.close();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			e.printStackTrace();
+		}
+		
+	}
 	public Users(String username) {
 		
 		Connection conn = new DBConnector().getDBConnection();
@@ -70,7 +103,7 @@ public class Users {
 	}
 	
 	public boolean setPassword(String password) {
-		return Users.update(user_id, username, password, phone, email);		
+		return Users.updateUserInfo(user_id, username, password, phone, email);		
 	}
 	
 	public String getPhone() {
@@ -201,7 +234,7 @@ public class Users {
 	}
 	
 	// Update //
-	public static boolean update(int user_id, String username, String password, String phone, String email) {
+	public static boolean updateUserInfo(int user_id, String username, String password, String phone, String email) {
 		
 		return Users.updateWithNoMD5(user_id, username, getMD5(password), phone, email);
 		
@@ -212,7 +245,7 @@ public class Users {
 		
 		Connection conn = new DBConnector().getDBConnection();
 		try {
-			String qry = "DELETE FROMM users"
+			String qry = "DELETE FROM users"
 					+ " WHERE user_id=?";
 			PreparedStatement stmt = conn.prepareStatement(qry);
 			stmt.setInt(1, user_id);
