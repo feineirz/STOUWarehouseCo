@@ -16,6 +16,12 @@ public class Users {
 	private String username, password, phone, email;
 	private String relName = "users";
 	
+	/************************** Class Structure ***************************/
+	public static class UserInfo {
+		int user_id;
+		String username, password, phone, email;		
+	}
+	
 	/************************** Constructor ***************************/
 	public Users() {}
 	public Users(String username) {
@@ -122,16 +128,29 @@ public class Users {
 	// Add //
 	public static boolean addNewUser(String username, String password, String phone, String email) {
 		
+		UserInfo userInfo = new UserInfo();
+		userInfo.user_id = 0;
+		userInfo.username = username;
+		userInfo.password = password;
+		userInfo.phone = phone;
+		userInfo.email = email;
+		
+		return addNewUser(userInfo);
+		
+	}
+	
+	public static boolean addNewUser(UserInfo userInfo) {
+		
 		Connection conn = new DBConnector().getDBConnection();
 		try {
 			String qry = "INSERT INTO users"
 					+ " (username,password,phone,email)"
 					+ " VALUES(?,?,?,?)";
 			PreparedStatement stmt = conn.prepareStatement(qry);
-			stmt.setString(1, username);
-			stmt.setString(2, getMD5(password));
-			stmt.setString(3, phone);
-			stmt.setString(4, email);
+			stmt.setString(1, userInfo.username);
+			stmt.setString(2, getMD5(userInfo.password));
+			stmt.setString(3, userInfo.phone);
+			stmt.setString(4, userInfo.email);
 			
 			stmt.execute();			
 			conn.close();
@@ -148,6 +167,7 @@ public class Users {
 		}
 		
 	}
+	
 	
 	// Update //
 	public static boolean updateWithNoMD5(int user_id, String username, String password, String phone, String email) {
