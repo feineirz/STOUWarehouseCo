@@ -18,7 +18,8 @@ public class CustomerMgr {
 		//defaultFrame.setVisible(true);
 		cust.setVisible(true);
 		
-		c.openConnection();
+		//c.openConnection();
+		
 		//System.out.println(conn);
 	}
 }
