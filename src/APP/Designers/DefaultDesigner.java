@@ -224,8 +224,8 @@ public class DefaultDesigner extends JFrame {
 		this.addWindowListener(new WindowAdapter() {
 			public void windowActivated(WindowEvent e) {
 				if(Global.currentUser != null) {
-					lblUsername.setText(Global.currentUser.username());
-					lblEmail.setText(Global.currentUser.username());
+					lblUsername.setText(Global.currentUser.getUsername());
+					lblEmail.setText(Global.currentUser.getUsername());
 				}
 				
 			}
