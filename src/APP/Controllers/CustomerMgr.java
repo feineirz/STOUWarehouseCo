@@ -11,7 +11,7 @@ public class CustomerMgr {
 	// Preload Assets
 	//static Connection conn= DBConnector.getDBConnection();
 	//static Customers c=new Customers();
-	static JFrame defaultFrame = new AboutDesigner();
+	//static JFrame defaultFrame = new AboutDesigner();
 	static JFrame cust = new CustomerMgrDesigner();
 	public static void main(String[] arg) {
 		
