@@ -1,6 +1,7 @@
 package DBCLS;
 
 import java.math.BigInteger;
+import java.nio.Buffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
@@ -9,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Users {
 	
@@ -297,6 +299,30 @@ public class Users {
 	}
 	
 	/************************** Custom Method ***************************/
+	public String genString(int length) {
+		
+		if(length <= 0) return "";
+		if(length > Integer.MAX_VALUE) length = Integer.MAX_VALUE;
+		
+		String src ="abcdfeghijklmnopqrstuvwxyz";
+		src += src.toUpperCase();
+		src += "0123456789";
+		src += "!@#*(){}[]<>?,.+-*";
+		char[] arrsrc = src.toCharArray();
+		
+		String buff ="";
+		Random rndRandom = new Random();
+		
+		for(int i = 0; i < length; i++) {
+			int pos =  rndRandom.nextInt(src.length()  -1);
+			buff += arrsrc[pos];
+		}
+		
+		return buff;		
+		
+	}
+	
+	
 	public static String getMD5(String content){
 		
 		if(content == "") return "";
