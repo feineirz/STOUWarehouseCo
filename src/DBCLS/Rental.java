@@ -29,6 +29,8 @@ public class Rental {
 	
 	/************************** Constructor ***************************/
 	public Rental() {}
+	
+	// Create a Rental object from the given inv_no.
 	public Rental(int inv_no) {
 		
 		Connection conn = new DBConnector().getDBConnection();
@@ -135,7 +137,9 @@ public class Rental {
 	}
 	
 	/************************** Required Method ***************************/
+	
 	// List //
+	// List all rentals in the database as a Rental objects.
 	public static ArrayList<Rental> listAllRental(String condition, String order) {
 		
 		ArrayList<Rental> buff = new ArrayList<Rental>();
@@ -171,6 +175,7 @@ public class Rental {
 	}
 	
 	// Add //
+	// Add rental to the database by giving a raw information.
 	public static boolean addNewRental(int cust_id, String loc_id, Date inv_date, Date start_date, Date expire_date, float amount, int user_id, String remark) {
 		
 		RentalInfo rentalInfo = new RentalInfo();
@@ -188,6 +193,7 @@ public class Rental {
 		
 	}
 	
+	// Add rental to the database by giving a structured information.
 	public static boolean addNewRental(RentalInfo rentalInfo) {
 		
 		Connection conn = new DBConnector().getDBConnection();
@@ -223,7 +229,26 @@ public class Rental {
 	
 	
 	// Update //
+	// Update rental information to a database.
 	public static boolean updateRentalInfo(int inv_no, int cust_id, String loc_id, Date inv_date, Date start_date, Date expire_date, float amount, int user_id, String remark) {
+		
+		RentalInfo rentalInfo = new RentalInfo();
+		rentalInfo.inv_no = inv_no;
+		rentalInfo.cust_id = cust_id;
+		rentalInfo.loc_id = loc_id;
+		rentalInfo.inv_date = inv_date;
+		rentalInfo.start_date = start_date;
+		rentalInfo.expire_date = expire_date;
+		rentalInfo.amount = amount;
+		rentalInfo.user_id = user_id;
+		rentalInfo.remark = remark;
+		
+		return updateRentalInfo(rentalInfo);
+		
+	}
+	
+	// Update rental information to the database by giving a structured information.
+	public static boolean updateRentalInfo(RentalInfo rentalInfo) {
 		
 		Connection conn = new DBConnector().getDBConnection();
 		try {
@@ -231,16 +256,16 @@ public class Rental {
 					+ " SET cust_id=?, loc_id=?, inv_date=?, start_date=?, expire_date=?, amount=?, user_id=?, remark=?"
 					+ " WHERE inv_no = ?";
 			PreparedStatement stmt = conn.prepareStatement(qry);
-			stmt.setInt(1, cust_id);
-			stmt.setString(2, loc_id);
-			stmt.setDate(3, inv_date);
-			stmt.setDate(4, start_date);
-			stmt.setDate(5, expire_date);
-			stmt.setFloat(6, amount);
-			stmt.setInt(7, user_id);
-			stmt.setString(8, remark);
+			stmt.setInt(1, rentalInfo.cust_id);
+			stmt.setString(2, rentalInfo.loc_id);
+			stmt.setDate(3, rentalInfo.inv_date);
+			stmt.setDate(4, rentalInfo.start_date);
+			stmt.setDate(5, rentalInfo.expire_date);
+			stmt.setFloat(6, rentalInfo.amount);
+			stmt.setInt(7, rentalInfo.user_id);
+			stmt.setString(8, rentalInfo.remark);
 			
-			stmt.setInt(9, inv_no);
+			stmt.setInt(9, rentalInfo.inv_no);
 			
 			stmt.execute();			
 			conn.close();
@@ -259,9 +284,10 @@ public class Rental {
 	}
 	
 	// Delete //
-	// NOT USE
+	// Rental information is required for tracking and cannot be delete.
 	
 	// IsExist //
+	// Check if record(s) from the given condition is exist in a database.
 	public static boolean isExist(String condition) {
 		
 		Connection conn = new DBConnector().getDBConnection();

@@ -19,6 +19,8 @@ public class Customers {
 	
 	/************************** Constructor ***************************/
 	public Customers() {}
+	
+	// Create a Customers object from the given cust_id.
 	public Customers(int cust_id) {
 		
 		Connection conn = new DBConnector().getDBConnection();
@@ -98,7 +100,9 @@ public class Customers {
 	}
 	
 	/************************** Required Method ***************************/
+	
 	// List //
+	// List all customers in the database as a Customers objects.
 	public static ArrayList<Customers> listAllCustomers(String condition, String order) {
 		
 		ArrayList<Customers> buff = new ArrayList<Customers>();
@@ -134,19 +138,21 @@ public class Customers {
 	}
 	
 	// Add //
+	// Add customer to the database by giving a raw information.
 	public static boolean addNewCustomer(String cust_name, String address, String phone, String fax, String email) {
 		
-		CustomerInfo custtomerInfo = new CustomerInfo();
-		custtomerInfo.cust_name = cust_name;
-		custtomerInfo.address = address;
-		custtomerInfo.phone = phone;
-		custtomerInfo.fax = fax;
-		custtomerInfo.email = email;
+		CustomerInfo customerInfo = new CustomerInfo();
+		customerInfo.cust_name = cust_name;
+		customerInfo.address = address;
+		customerInfo.phone = phone;
+		customerInfo.fax = fax;
+		customerInfo.email = email;
 		
-		return addNewCustomer(custtomerInfo);
+		return addNewCustomer(customerInfo);
 		
 	}
 	
+	// Add customer to the database by giving a structured information.
 	public static boolean addNewCustomer(CustomerInfo customerInfo) {
 		
 		Connection conn = new DBConnector().getDBConnection();
@@ -175,11 +181,25 @@ public class Customers {
 			return false;
 		}
 		
-	}
-	
+	}	
 	
 	// Update //
+	// Update customer information to a database.
 	public static boolean updateCustomerInfo(int cust_id, String cust_name, String address, String phone, String fax, String email) {
+		
+		CustomerInfo customerInfo = new CustomerInfo();
+		customerInfo.cust_name = cust_name;
+		customerInfo.address = address;
+		customerInfo.phone = phone;
+		customerInfo.fax = fax;
+		customerInfo.email = email;
+		
+		return updateCustomerInfo(customerInfo);
+		
+	}
+	
+	// Update customer information to the database by giving a structured information.
+	public static boolean updateCustomerInfo(CustomerInfo customerInfo) {
 		
 		Connection conn = new DBConnector().getDBConnection();
 		try {
@@ -187,12 +207,12 @@ public class Customers {
 					+ " SET cust_name=?, address = ?, phone = ?, fax=?, email = ?"
 					+ " WHERE cust_id = ?";
 			PreparedStatement stmt = conn.prepareStatement(qry);
-			stmt.setString(1, cust_name);
-			stmt.setString(2, address);
-			stmt.setString(3, phone);
-			stmt.setString(4, fax);
-			stmt.setString(5, email);
-			stmt.setInt(6, cust_id);
+			stmt.setString(1, customerInfo.cust_name);
+			stmt.setString(2, customerInfo.address);
+			stmt.setString(3, customerInfo.phone);
+			stmt.setString(4, customerInfo.fax);
+			stmt.setString(5, customerInfo.email);
+			stmt.setInt(6, customerInfo.cust_id);
 			
 			stmt.execute();			
 			conn.close();
@@ -211,6 +231,7 @@ public class Customers {
 	}
 	
 	// Delete //
+	// Delete customer from a database.
 	public static boolean deleteCustomer(int cust_id) {
 		
 		Connection conn = new DBConnector().getDBConnection();
@@ -237,6 +258,7 @@ public class Customers {
 	}
 	
 	// IsExist //
+	// Check if record(s) from the given condition is exist in a database.
 	public static boolean isExist(String condition) {
 		
 		Connection conn = new DBConnector().getDBConnection();
