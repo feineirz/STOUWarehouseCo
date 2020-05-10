@@ -1,7 +1,6 @@
 package DBCLS;
 
 import java.math.BigInteger;
-import java.nio.Buffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
@@ -28,6 +27,8 @@ public class Users {
 	
 	/************************** Constructor ***************************/
 	public Users() {}
+	
+	// Create a Users object by the given user_id.
 	public Users(int user_id) {
 		
 		Connection conn = new DBConnector().getDBConnection();
@@ -59,6 +60,8 @@ public class Users {
 		}
 		
 	}
+	
+	// Create a Users object by the given username.
 	public Users(String username) {
 		
 		Connection conn = new DBConnector().getDBConnection();
@@ -126,6 +129,7 @@ public class Users {
 	
 	/************************** Required Method ***************************/
 	// List //
+	// List all users in the database as a Users object.
 	public static ArrayList<Users> listAllUsers(String condition, String order) {
 		
 		ArrayList<Users> buff = new ArrayList<Users>();
@@ -161,6 +165,7 @@ public class Users {
 	}
 	
 	// Add //
+	// Add the user to the database by giving a raw information.
 	public static boolean addNewUser(String username, String password, String phone, String email) {
 		
 		UserInfo userInfo = new UserInfo();
@@ -174,6 +179,7 @@ public class Users {
 		
 	}
 	
+	// Add the user to the database by giving a structured information.
 	public static boolean addNewUser(UserInfo userInfo) {
 		
 		Connection conn = new DBConnector().getDBConnection();
@@ -205,6 +211,7 @@ public class Users {
 	
 	
 	// Update //
+	// Update the user information to the database.
 	public static boolean updateWithNoMD5(int user_id, String username, String password, String phone, String email) {
 		
 		Connection conn = new DBConnector().getDBConnection();
@@ -243,6 +250,7 @@ public class Users {
 	}
 	
 	// Delete //
+	// Delete the user from database.
 	public static boolean deleteUser(int user_id) {
 		
 		Connection conn = new DBConnector().getDBConnection();
@@ -269,6 +277,7 @@ public class Users {
 	}
 	
 	// IsExist //
+	// Check if the given username is exist in database.
 	public static boolean isExist(String username) {
 		
 		Connection conn = new DBConnector().getDBConnection();
@@ -299,6 +308,8 @@ public class Users {
 	}
 	
 	/************************** Custom Method ***************************/
+	
+	// Generate String for use as a password or a temporary name. //
 	public String genString(int length) {
 		
 		if(length <= 0) return "";
@@ -307,7 +318,7 @@ public class Users {
 		String src ="abcdfeghijklmnopqrstuvwxyz";
 		src += src.toUpperCase();
 		src += "0123456789";
-		src += "!@#*(){}[]<>?,.+-*";
+		src += "!@#$%^&()_+{}[],.";
 		char[] arrsrc = src.toCharArray();
 		
 		String buff ="";
@@ -322,7 +333,7 @@ public class Users {
 		
 	}
 	
-	
+	// Generate MD5 Hash for encrypt a password. //
 	public static String getMD5(String content){
 		
 		if(content == "") return "";
@@ -343,6 +354,7 @@ public class Users {
 	 	} 
 	}
 	
+	// Process login by the given username and password. Return a Users object if successful or null if failed. //
 	public static Users performLogIn(String username, String password) {
 		
 		Connection conn = new DBConnector().getDBConnection();
