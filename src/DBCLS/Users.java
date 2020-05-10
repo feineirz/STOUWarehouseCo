@@ -297,10 +297,6 @@ public class Users {
 	}
 	
 	/************************** Custom Method ***************************/
-	public String genString(int length) {
-		return "";
-	}
-	
 	public static String getMD5(String content){
 		
 		if(content == "") return "";
