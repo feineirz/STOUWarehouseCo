@@ -66,7 +66,7 @@ public class DefaultDesigner extends JFrame {
 		this.setBackground(Color.BLUE);
 		this.setPreferredSize(frameSize);
 		this.setResizable(false);
-		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(HIDE_ON_CLOSE);
 		
 		/********** Container **********/
 		Container container = this.getContentPane();
