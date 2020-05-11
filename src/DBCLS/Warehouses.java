@@ -23,6 +23,8 @@ public class Warehouses {
 	
 	/************************** Constructor ***************************/
 	public Warehouses() {}
+	
+	// Create a Warehouse object from the given loc_id.
 	public Warehouses(String loc_id) {
 		
 		Connection conn = new DBConnector().getDBConnection();
@@ -90,7 +92,9 @@ public class Warehouses {
 	}
 	
 	/************************** Required Method ***************************/
+	
 	// List //
+	// List all warehouse slot in the database as a Warehouses objects.
 	public static ArrayList<Warehouses> listAllWarehouseLocation(String condition, String order) {
 		
 		ArrayList<Warehouses> buff = new ArrayList<Warehouses>();
@@ -126,7 +130,7 @@ public class Warehouses {
 	}
 	
 	// Add //
-	// NOT USE
+	// Warehouse slots is a fixed size and manually created from a SQL initial query.
 	
 	// Update //
 	public static boolean updateWarehouseInfo(String loc_id, WHStatus whStatus, String remark) {
@@ -176,9 +180,10 @@ public class Warehouses {
 	}
 	
 	// Delete //
-	// NOT USE
+	// Warehouse slots is a fixed size and cannot be delete.
 	
 	// IsExist //
+	// Check if record(s) from the given condition is exist in a database.
 	public static boolean isExist(String condition) {
 		
 		Connection conn = new DBConnector().getDBConnection();
