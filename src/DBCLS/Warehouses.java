@@ -94,7 +94,7 @@ public class Warehouses {
 	/************************** Required Method ***************************/
 	
 	// List //
-	// List all warehouse slot in the database as a Warehouses objects.
+	// List all warehouse slots in the database as a Warehouses objects.
 	public static ArrayList<Warehouses> listAllWarehouseLocation(String condition, String order) {
 		
 		ArrayList<Warehouses> buff = new ArrayList<Warehouses>();
