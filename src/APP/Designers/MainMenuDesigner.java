@@ -16,7 +16,7 @@ public class MainMenuDesigner extends DefaultDesigner {
 	
 	public MainMenuDesigner() {
 		
-		this.setSize(W,H);
+		this.setSize(frameWidth,frameHeight);
 		this.reAdjustPanel();
 		pnlContent.setLayout(new FlowLayout());
 		

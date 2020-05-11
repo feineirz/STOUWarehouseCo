@@ -1,541 +1,407 @@
 package DBCLS;
 
-import java.io.*;
-import java.sql.*;
-import java.util.*;
-import java.util.Date;
-import java.lang.*;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Random;
 
-public class Users {	
-
-	//==================== Header ====================
-
-	private Connection conn;
-	public boolean holdConnection = false;
-
-	public boolean openConnection() {
+public class Users {
+	
+	/************************** Class Header ***************************/
+	private int user_id;
+	private String username, password, phone, email;
+	public final String relName = "users";
+	public final String columnNames = "user_id, username, password, phone, email";
+	
+	/************************** Class Structure ***************************/
+	public static class UserInfo {
+		int user_id;
+		String username, password, phone, email;		
+	}
+	
+	/************************** Constructor ***************************/
+	public Users() {}
+	
+	// Create a Users object from the given user_id.
+	public Users(int user_id) {
+		
+		Connection conn = new DBConnector().getDBConnection();
 		try {
-			if(host != null || InitConnectionConfiguration()) {
-				Class.forName("com.mysql.jdbc.Driver");
-				conn = DriverManager.getConnection("jdbc:mysql://"+host+":"+port+"/"+database, user, password);
-				return true;
-				
-			}else{
-				return false;
-				
+			String qry = "SELECT *"
+					+ " FROM " + relName
+					+ " WHERE user_id=?";
+			PreparedStatement stmt = conn.prepareStatement(qry);
+			stmt.setInt(1, user_id );
+			
+			ResultSet rs = stmt.executeQuery();
+			while(rs.next()) {
+				this.user_id = rs.getInt("user_id");
+				this.username = rs.getString("username");
+				this.password = rs.getString("password");
+				this.phone = rs.getString("phone");
+				this.email = rs.getString("email");
 			}
 			
-		}catch(Exception e) {
-			return false;
-			
-		}
-	}
-	
-	public boolean isConnectionValid() {
-		try {
-			return conn.isValid(0);
+			conn.close();
 			
 		} catch (SQLException e) {
-			return false;
-			
+			try {
+				conn.close();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			e.printStackTrace();
 		}
+		
 	}
 	
-	public boolean isConnectionClose() {
+	// Create a Users object from the given username.
+	public Users(String username) {
+		
+		Connection conn = new DBConnector().getDBConnection();
 		try {
-			return conn.isClosed();
+			String qry = "SELECT *"
+					+ " FROM " + relName
+					+ " WHERE username=?";
+			PreparedStatement stmt = conn.prepareStatement(qry);
+			stmt.setString(1, username );
 			
-		}catch(SQLException e) {
-			return false;
+			ResultSet rs = stmt.executeQuery();
+			while(rs.next()) {
+				this.user_id = rs.getInt("user_id");
+				this.username = rs.getString("username");
+				this.password = rs.getString("password");
+				this.phone = rs.getString("phone");
+				this.email = rs.getString("email");
+			}
 			
+			conn.close();
+			
+		} catch (SQLException e) {
+			try {
+				conn.close();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			e.printStackTrace();
 		}
+		
 	}
 	
-	public boolean closeConnection() {
+	/************************** Properties ***************************/
+	public int getUserID() {
+		return this.user_id;
+	}
+	
+	public String getUsername() {
+		return username;
+	}
+	
+	public String getPasswordMD5() {
+		return password;
+	}
+	
+	public boolean setPassword(String password) {
+		return Users.updateUserInfo(user_id, username, password, phone, email);		
+	}
+	
+	public String getPhone() {
+		return phone;
+	}
+	
+	public boolean setPhone(String phone) {
+		return Users.updateUserInfoNonMD5(user_id, username, password, phone, email);
+	}
+	
+	public String getEmail() {
+		return email;
+	}
+	
+	public boolean setEmail(String email) {
+		return Users.updateUserInfoNonMD5(user_id, username, password, phone, email);
+	}
+	
+	/************************** Required Method ***************************/
+	// List //
+	// List all users in the database as a Users object.
+	public static ArrayList<Users> listAllUsers(String condition, String order) {
+		
+		ArrayList<Users> buff = new ArrayList<Users>();
+		
+		if(condition != "") condition = " WHERE " + condition;
+		if(order != "") order = " ORDER BY " + order;
+		
+		Connection conn = new DBConnector().getDBConnection();
 		try {
+			String qry = "SELECT *"
+					+ " FROM users"
+					+ condition
+					+ order;
+			Statement stmt = conn.createStatement();			
+			ResultSet rs = stmt.executeQuery(qry);
+			while(rs.next()) {
+				buff.add(new Users(rs.getString("username")));
+			}
+			
+			conn.close();
+			
+		} catch (SQLException e) {
+			try {
+				conn.close();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			e.printStackTrace();
+		}
+		
+		return buff;
+		
+	}
+	
+	// Add //
+	// Add the user to the database by giving a raw information.
+	public static boolean addNewUser(String username, String password, String phone, String email) {
+		
+		UserInfo userInfo = new UserInfo();
+		userInfo.user_id = 0;
+		userInfo.username = username;
+		userInfo.password = password;
+		userInfo.phone = phone;
+		userInfo.email = email;
+		
+		return addNewUser(userInfo);
+		
+	}
+	
+	// Add the user to the database by giving a structured information.
+	public static boolean addNewUser(UserInfo userInfo) {
+		
+		Connection conn = new DBConnector().getDBConnection();
+		try {
+			String qry = "INSERT INTO users"
+					+ " (username,password,phone,email)"
+					+ " VALUES(?,?,?,?)";
+			PreparedStatement stmt = conn.prepareStatement(qry);
+			stmt.setString(1, userInfo.username);
+			stmt.setString(2, getMD5(userInfo.password));
+			stmt.setString(3, userInfo.phone);
+			stmt.setString(4, userInfo.email);
+			
+			stmt.execute();			
 			conn.close();
 			return true;
 			
-		}catch(Exception e) {
+		} catch (SQLException e) {
+			try {
+				conn.close();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			e.printStackTrace();
 			return false;
-			
-		}		
-	}	
-
-	//@Connection info.
-	private Properties props = new Properties();
-	private String host;
-	private String port;
-	private String database;
-	private String user;
-	private String password;
-	
-	//InternalVariable
-	private Integer _user_id;
-	private String _username;
-	private String _password;
-	private String _email;
-	private String _phone;
-	private byte _is_admin;
-	
-	public final String relName = "users";
-	public final String columns = "user_id, username, password, email, phone, is_admin";
-	public final String columnsArr[] = {"user_id", "username", "password", "email", "phone", "is_admin"};
-
-	//Initialize
-	private boolean InitConnectionConfiguration() {
+		}
 		
-		String dbconf = "dbconf.conf";
-		try (InputStream inputStream = new FileInputStream(dbconf)) {
-			 
-			// Loading the properties.
-			props.load(inputStream);
- 
-			// Getting properties 
-			host = props.getProperty("host");
-			port = props.getProperty("port");
-			database = props.getProperty("database");
-			user = props.getProperty("user");
-			password = props.getProperty("password");
-			/*
-			System.out.println("Host = " + host);
-			System.out.println("Port = " + port);
-			System.out.println("Database = " + database);
-			System.out.println("User = " + user);
-			System.out.println("Password = " + password);
-			*/
+	}	
+	
+	// Update //
+	// Update user information to the database but not Encrypt a password by giving a raw information.
+	public static boolean updateUserInfoNonMD5(int user_id, String username, String password, String phone, String email) {
+		
+		UserInfo userInfo = new UserInfo();
+		userInfo.user_id = 0;
+		userInfo.username = username;
+		userInfo.password = password;
+		userInfo.phone = phone;
+		userInfo.email = email;
+		
+		return updateUserInfoNonMD5(userInfo);
+		
+	}
+	
+	// Update user information to the database but not Encrypt a password by giving a structured information.
+	
+	public static boolean updateUserInfoNonMD5(UserInfo userInfo) {
+		
+		Connection conn = new DBConnector().getDBConnection();
+		try {
+			String qry = "UPDATE users"
+					+ " SET username=?, password = ?, phone = ?, email = ?"
+					+ " WHERE user_id = ?";
+			PreparedStatement stmt = conn.prepareStatement(qry);
+			stmt.setString(1, userInfo.username);
+			stmt.setString(2, userInfo.password);
+			stmt.setString(3, userInfo.phone);
+			stmt.setString(4, userInfo.email);
+			stmt.setInt(5, userInfo.user_id);
+			
+			stmt.execute();			
+			conn.close();
 			return true;
 			
-		} catch (IOException ex) {
-			System.out.println("Problem occurs when reading file !");
-			ex.printStackTrace();
+		} catch (SQLException e) {
+			try {
+				conn.close();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			e.printStackTrace();
+			return false;
+		}
+		
+	}
+	
+	// Update //
+	// Update user information to the database with Encrypted password.
+	public static boolean updateUserInfo(int user_id, String username, String password, String phone, String email) {
+		
+		return Users.updateUserInfoNonMD5(user_id, username, getMD5(password), phone, email);
+		
+	}
+	
+	// Delete //
+	// Delete user from a database.
+	public static boolean deleteUser(int user_id) {
+		
+		Connection conn = new DBConnector().getDBConnection();
+		try {
+			String qry = "DELETE FROM users"
+					+ " WHERE user_id=?";
+			PreparedStatement stmt = conn.prepareStatement(qry);
+			stmt.setInt(1, user_id);
+			
+			stmt.execute();			
+			conn.close();
+			return true;
+			
+		} catch (SQLException e) {
+			try {
+				conn.close();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			e.printStackTrace();
+			return false;
+		}
+		
+	}
+	
+	// IsExist //
+	// Check if the given username is exist in a database.
+	public static boolean isExist(String username) {
+		
+		Connection conn = new DBConnector().getDBConnection();
+		try {
+			String qry = "SELECT *" 
+					+ " FROM users"
+					+ " WHERE username = ?";
+			PreparedStatement stmt = conn.prepareStatement(qry);
+			stmt.setString(1, username );			
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
+				conn.close();
+				return true;
+			}			
+			conn.close();
 			return false;
 			
-		}
-	}
-
-	//Constructor
-	public Users() {
-		if(host == null) InitConnectionConfiguration();
-	}
-
-	public Users(Integer user_id) {
-
-		if(host != null || InitConnectionConfiguration()) {
-			try{ 
-				if(conn == null || conn.isClosed()){
-					Class.forName("com.mysql.jdbc.Driver");
-					conn = DriverManager.getConnection("jdbc:mysql://"+host+":"+port+"/"+database, user, password);
-				}
-
-				Statement stmt = conn.createStatement();
-				String SQL = "SELECT * FROM "+relName+" WHERE user_id = '"+user_id+"'";
-				ResultSet rs = stmt.executeQuery(SQL);
-				while(rs.next()) {
-				this._user_id = rs.getInt("user_id");
-				this._username = rs.getString("username");
-				this._password = rs.getString("password");
-				this._email = rs.getString("email");
-				this._phone = rs.getString("phone");
-				this._is_admin = rs.getByte("is_admin");
-				}
-			
-			if(!holdConnection) conn.close();
-			
-			}catch(Exception e){ 
-				System.out.println(e);
-			
-			}					
-		}
-	}
-
-	//ClassInfo DataType
-	public class UsersInfo {
-		Integer user_id;
-		String username;
-		String password;
-		String email;
-		String phone;
-		byte is_admin;
-	}
-
-	//==================== Properties ====================
-	public Integer user_id() {
-		return this._user_id;
-	}
-
-	public Integer user_id(Integer value) {
-
-		int rs = 0;
-		try{
-			if(conn == null || conn.isClosed()){
-				Class.forName("com.mysql.jdbc.Driver");
-				conn = DriverManager.getConnection("jdbc:mysql://"+host+":"+port+"/"+database, user, password);
+		} catch (SQLException e) {
+			try {
+				conn.close();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
 			}
-
-			String SQL = "UPDATE "+relName+" SET user_id = '"+value+"' WHERE user_id = '"+this._user_id+"'";
-			Statement stm = conn.createStatement();
-			rs = stm.executeUpdate(SQL);
-
-			if(!holdConnection) conn.close();
-			
-		}catch(Exception e){ 
-			System.out.println(e);
-
+			e.printStackTrace();
+			return true;
 		}
 		
-		return rs;
-		
 	}
-
-	public String username() {
-		return this._username;
-	}
-
-	public Integer username(String value) {
-
-		int rs = 0;
-		try{
-			if(conn == null || conn.isClosed()){
-				Class.forName("com.mysql.jdbc.Driver");
-				conn = DriverManager.getConnection("jdbc:mysql://"+host+":"+port+"/"+database, user, password);
-			}
-
-			String SQL = "UPDATE "+relName+" SET username = '"+value+"' WHERE user_id = '"+this._user_id+"'";
-			Statement stm = conn.createStatement();
-			rs = stm.executeUpdate(SQL);
-
-			if(!holdConnection) conn.close();
-			
-		}catch(Exception e){ 
-			System.out.println(e);
-
-		}
+	
+	/************************** Custom Method ***************************/
+	
+	// Generate String for use as a password or a temporary name.
+	public String genString(int length) {
 		
-		return rs;
+		if(length <= 0) return "";
+		if(length > Integer.MAX_VALUE) length = Integer.MAX_VALUE;
 		
-	}
-
-	public String password() {
-		return this._password;
-	}
-
-	public Integer password(String value) {
-
-		int rs = 0;
-		try{
-			if(conn == null || conn.isClosed()){
-				Class.forName("com.mysql.jdbc.Driver");
-				conn = DriverManager.getConnection("jdbc:mysql://"+host+":"+port+"/"+database, user, password);
-			}
-
-			String SQL = "UPDATE "+relName+" SET password = '"+value+"' WHERE user_id = '"+this._user_id+"'";
-			Statement stm = conn.createStatement();
-			rs = stm.executeUpdate(SQL);
-
-			if(!holdConnection) conn.close();
-			
-		}catch(Exception e){ 
-			System.out.println(e);
-
-		}
+		String src ="abcdfeghijklmnopqrstuvwxyz";
+		src += src.toUpperCase();
+		src += "0123456789";
+		src += "!@#$%^&()_+{}[],.";
+		char[] arrsrc = src.toCharArray();
 		
-		return rs;
+		String buff ="";
+		Random rndRandom = new Random();
 		
-	}
-
-	public String email() {
-		return this._email;
-	}
-
-	public Integer email(String value) {
-
-		int rs = 0;
-		try{
-			if(conn == null || conn.isClosed()){
-				Class.forName("com.mysql.jdbc.Driver");
-				conn = DriverManager.getConnection("jdbc:mysql://"+host+":"+port+"/"+database, user, password);
-			}
-
-			String SQL = "UPDATE "+relName+" SET email = '"+value+"' WHERE user_id = '"+this._user_id+"'";
-			Statement stm = conn.createStatement();
-			rs = stm.executeUpdate(SQL);
-
-			if(!holdConnection) conn.close();
-			
-		}catch(Exception e){ 
-			System.out.println(e);
-
-		}
-		
-		return rs;
-		
-	}
-
-	public String phone() {
-		return this._phone;
-	}
-
-	public Integer phone(String value) {
-
-		int rs = 0;
-		try{
-			if(conn == null || conn.isClosed()){
-				Class.forName("com.mysql.jdbc.Driver");
-				conn = DriverManager.getConnection("jdbc:mysql://"+host+":"+port+"/"+database, user, password);
-			}
-
-			String SQL = "UPDATE "+relName+" SET phone = '"+value+"' WHERE user_id = '"+this._user_id+"'";
-			Statement stm = conn.createStatement();
-			rs = stm.executeUpdate(SQL);
-
-			if(!holdConnection) conn.close();
-			
-		}catch(Exception e){ 
-			System.out.println(e);
-
-		}
-		
-		return rs;
-		
-	}
-
-	public byte is_admin() {
-		return this._is_admin;
-	}
-
-	public Integer is_admin(byte value) {
-
-		int rs = 0;
-		try{
-			if(conn == null || conn.isClosed()){
-				Class.forName("com.mysql.jdbc.Driver");
-				conn = DriverManager.getConnection("jdbc:mysql://"+host+":"+port+"/"+database, user, password);
-			}
-
-			String SQL = "UPDATE "+relName+" SET is_admin = '"+value+"' WHERE user_id = '"+this._user_id+"'";
-			Statement stm = conn.createStatement();
-			rs = stm.executeUpdate(SQL);
-
-			if(!holdConnection) conn.close();
-			
-		}catch(Exception e){ 
-			System.out.println(e);
-
-		}
-		
-		return rs;
-		
-	}
-
-	//==================== Basic Function ====================
-		
-	//List
-	public Users[] List() {
-		return List("","");
-	}	
-	public Users[] List(String Condition) {
-		return List(Condition,"");
-	}	
-	public Users[] List(String Condition, String SortOrder) {
-		
-		//Init Parameter
-		if(Condition != "") {Condition = " WHERE " +Condition;}
-		if(SortOrder != "") {SortOrder = " ORDER BY " +SortOrder;}
-		
-		Users[] rt = null;
-		String SQL;
-		Integer user_id;
-		int rc, i = 0;
-		try{
-			if(conn == null || conn.isClosed()){
-				Class.forName("com.mysql.jdbc.Driver");
-				conn = DriverManager.getConnection("jdbc:mysql://"+host+":"+port+"/"+database, user, password);
-			}
-
-			Statement stm = conn.createStatement();
-			SQL = "SELECT COUNT(*) FROM " +relName+Condition+SortOrder;
-			ResultSet rs = stm.executeQuery(SQL);
-			rs.next();
-			rc = rs.getInt(1);
-			
-			SQL = "SELECT user_id FROM " +relName+Condition+SortOrder;
-			stm = conn.createStatement();
-			rs = stm.executeQuery(SQL);
-			rt = new Users[rc];
-			while(rs.next()){
-				user_id = rs.getInt("user_id");
-				rt[i] = new Users(user_id);
-				i++;
-			}			
-			
-			if(!holdConnection) conn.close();
-			
-		}catch(Exception e){ 
-			System.out.println(e);
-
-		}
-		
-		return rt;
-
-	}
-
-	//Add
-	public int Add( UsersInfo[] Items) {
-		int rt = 0;
-		try{
-			String SQL;
-			String ItemList = "";
-			if(Items.length > 0) {
-				for(UsersInfo A : Items) {
-					if(ItemList != "") {ItemList += ",";}
-					
-					ItemList += "('";
-					ItemList += A.user_id +"','";
-					ItemList += A.username +"','";
-					ItemList += A.password +"','";
-					ItemList += A.email +"','";
-					ItemList += A.phone +"','";
-					ItemList += A.is_admin;
-					ItemList += "')";
-					
-				}
-				ItemList += ";";
-
-			}
-			
-			if(conn == null || conn.isClosed()){
-				Class.forName("com.mysql.jdbc.Driver");
-				conn = DriverManager.getConnection("jdbc:mysql://"+host+":"+port+"/"+database, user, password);
-			}
-
-			Statement stm = conn.createStatement();
-			SQL = "INSERT INTO " +relName+ "(user_id, username, password, email, phone, is_admin)";
-			SQL += " VALUES"+ItemList;
-			rt = stm.executeUpdate(SQL);
-
-			if(!holdConnection) conn.close();
-			
-		}catch(Exception e){ 
-			System.out.println(e);
-
-		}
-		
-		return rt;
-	}
-
-	//Delete
-	public int Remove() {
-		int rt = 0;
-		try{
-			String SQL;
-			
-			if(conn == null || conn.isClosed()){
-				Class.forName("com.mysql.jdbc.Driver");
-				conn = DriverManager.getConnection("jdbc:mysql://"+host+":"+port+"/"+database, user, password);
-			}
-
-			Statement stm = conn.createStatement();
-			SQL = "DELETE FROM " +relName+ " WHERE user_id = '"+this._user_id+"'";
-			rt = stm.executeUpdate(SQL);
-			
-			if(!holdConnection) conn.close();
-			
-		}catch(Exception e){ 
-			System.out.println(e);
-		}
-		
-		return rt;
-	}
-
-		public int Remove(String Condition) {
-		int rt = 0;
-		try{
-			String SQL;
-			
-			if(conn == null || conn.isClosed()){
-				Class.forName("com.mysql.jdbc.Driver");
-				conn = DriverManager.getConnection("jdbc:mysql://"+host+":"+port+"/"+database, user, password);
-			}
-
-			Statement stm = conn.createStatement();
-			SQL = "DELETE FROM " +relName+ " WHERE " +Condition;
-			rt = stm.executeUpdate(SQL);
-
-			if(!holdConnection) conn.close();
-			
-		}catch(Exception e){ 
-			System.out.println(e);
-			
-		}
-		
-		return rt;
-	}
-
-	public String dblLine(int length) {
-
-		if(length < 1) length = 1;
-		String buff = "";
 		for(int i = 0; i < length; i++) {
-			buff += "=";
+			int pos =  rndRandom.nextInt(src.length()  -1);
+			buff += arrsrc[pos];
 		}
 		
-		return buff;
+		return buff;		
 		
-	}
-
-	public String ReportTable() {
-		return ReportTable("","");
 	}
 	
-	public String ReportTable(String Condition) {
-		return ReportTable(Condition,"");
+	// Generate MD5 Hash for encrypt a password.
+	public static String getMD5(String content){
+		
+		if(content == "") return "";
+		
+  	try { 
+      MessageDigest md = MessageDigest.getInstance("MD5"); 
+      byte[] messageDigest = md.digest(content.getBytes()); 
+      BigInteger no = new BigInteger(1, messageDigest); 
+      String hashtext = no.toString(16); 
+      while (hashtext.length() < 32) { 
+        hashtext = "0" + hashtext; 
+      } 
+      return hashtext; 
+    }  
+	
+    catch (NoSuchAlgorithmException e) { 
+    	throw new RuntimeException(e); 
+	 	} 
 	}
-
-	public String ReportTable(String Condition, String SortOption) {
-
-		Date d1, d2;		
-		int dblLineLength = 200;
-		int recordCount = 0;
+	
+	// Process login from the given username and password. 
+	// Returns a Users object if successful or null if failed.
+	public static Users performLogIn(String username, String password) {
 		
-		String buff = "", tmp = "";
+		Connection conn = new DBConnector().getDBConnection();
+		Users buff = null;
 		
-		d1 = new Date();
-
-		Users CLSs[] = List(Condition, SortOption);		
-		
-		tmp += String.format("%s\n", dblLine(dblLineLength));
-		tmp += String.format("%s\n", columns.replace(",", "\t"));
-		tmp += String.format("%s\n", dblLine(dblLineLength));
-		buff += tmp;
-		tmp = "";
-		
-		if(CLSs != null && CLSs.length > 0) {
-			recordCount = CLSs.length;
-			for(Users cls : CLSs) {
-				try{
-					tmp = String.format("Integer\t %s\t %s\t %s\t %s\t %d\n", cls.user_id(), cls.username(), cls.password(), cls.email(), cls.phone(), cls.is_admin());
-					buff += tmp;
-
-				}catch(Exception e){
-					buff += "Error found : " +e.getMessage()+ "\n";
-
-				}				
+		try {
+			String qry = "SELECT *"
+					+ " FROM users"
+					+ " WHERE username=? AND password=?";
+			PreparedStatement stmt = conn.prepareStatement(qry);
+			stmt.setString(1, username );
+			stmt.setString(2, getMD5(password));
+			
+			ResultSet rs = stmt.executeQuery();
+			while(rs.next()) {
+				buff = new Users(rs.getString("username"));
 			}
-		}
+			
+			conn.close();
+			
+		} catch (SQLException e) {
+			try {
+				conn.close();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			e.printStackTrace();
+		} 
 		
-		d2 = new Date();
-		
-		tmp += String.format("%s\n",dblLine(dblLineLength));		
-		tmp += String.format("%s\n",recordCount+ " item(s) found.");
-		tmp += String.format("%s\n",dblLine(dblLineLength));
-		tmp += String.format("%s\n","[Report started] "+d1);
-		tmp += String.format("%s\n","[Report finished] "+d2);
-		tmp += String.format("%s\n",dblLine(dblLineLength));
-		buff += tmp;
-
 		return buff;
-	
+		
 	}
-}
 
+}

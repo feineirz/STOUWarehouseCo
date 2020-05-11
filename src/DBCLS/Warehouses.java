@@ -1,445 +1,220 @@
 package DBCLS;
 
-import java.io.*;
 import java.sql.*;
 import java.util.*;
-import java.util.Date;
-import java.lang.*;
 
 public class Warehouses {	
 
-	//==================== Header ====================
-
-	private Connection conn;
-	public boolean holdConnection = false;
-
-	public boolean openConnection() {
+	/************************** Class Header ***************************/
+	
+	public static enum WHStatus{
+		EMPTY, FULL, MAINTENANCE
+	}
+	private WHStatus status;
+	private String loc_id, remark;
+	public final String relName = "warehouses";
+	public final String columnNames = "loc_id, status, remark";
+	
+	/************************** Class Structure ***************************/
+	public static class WarehouseInfo {
+		WHStatus status;
+		String loc_id, remark;
+	}
+	
+	/************************** Constructor ***************************/
+	public Warehouses() {}
+	
+	// Create a Warehouse object from the given loc_id.
+	public Warehouses(String loc_id) {
+		
+		Connection conn = new DBConnector().getDBConnection();
 		try {
-			if(host != null || InitConnectionConfiguration()) {
-				Class.forName("com.mysql.jdbc.Driver");
-				conn = DriverManager.getConnection("jdbc:mysql://"+host+":"+port+"/"+database, user, password);
-				return true;
-				
-			}else{
-				return false;
-				
+			String qry = "SELECT *"
+					+ " FROM " + relName
+					+ " WHERE loc_id=?";
+			PreparedStatement stmt = conn.prepareStatement(qry);
+			stmt.setString(1, loc_id);
+			
+			ResultSet rs = stmt.executeQuery();
+			while(rs.next()) {
+				this.loc_id = rs.getString("loc_id");
+				String status = rs.getString("status");
+				switch (status) {
+				case "E":
+					this.status = WHStatus.EMPTY;
+					break;
+				case "F":
+					this.status = WHStatus.FULL;
+					break;
+				case "M":
+					this.status = WHStatus.MAINTENANCE;
+					break;
+
+				default:
+					this.status = WHStatus.EMPTY;
+					break;
+				}
+				this.remark = rs.getString("remark");
 			}
 			
-		}catch(Exception e) {
-			return false;
-			
-		}
-	}
-	
-	public boolean isConnectionValid() {
-		try {
-			return conn.isValid(0);
+			conn.close();
 			
 		} catch (SQLException e) {
-			return false;
-			
+			try {
+				conn.close();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			e.printStackTrace();
 		}
+		
 	}
 	
-	public boolean isConnectionClose() {
-		try {
-			return conn.isClosed();
-			
-		}catch(SQLException e) {
-			return false;
-			
-		}
+	/************************** Properties ***************************/
+	public String getLocID() {
+		return loc_id;
 	}
 	
-	public boolean closeConnection() {
+	public WHStatus getStatus() {
+		return status;
+	}
+	
+	public boolean setStatus(WHStatus status) {
+		return Warehouses.updateWarehouseInfo(loc_id, status, remark);
+	}
+	
+	public String getRemark() {
+		return remark;
+	}
+	
+	public boolean setRemark(String remark) {
+		return Warehouses.updateWarehouseInfo(loc_id, status, remark);
+	}
+	
+	/************************** Required Method ***************************/
+	
+	// List //
+	// List all warehouse slot in the database as a Warehouses objects.
+	public static ArrayList<Warehouses> listAllWarehouseLocation(String condition, String order) {
+		
+		ArrayList<Warehouses> buff = new ArrayList<Warehouses>();
+		
+		if(condition != "") condition = " WHERE " + condition;
+		if(order != "") order = " ORDER BY " + order;
+		
+		Connection conn = new DBConnector().getDBConnection();
 		try {
+			String qry = "SELECT *"
+					+ " FROM warehouses"
+					+ condition
+					+ order;
+			Statement stmt = conn.createStatement();			
+			ResultSet rs = stmt.executeQuery(qry);
+			while(rs.next()) {
+				buff.add(new Warehouses(rs.getString("loc_id")));
+			}
+			
+			conn.close();
+			
+		} catch (SQLException e) {
+			try {
+				conn.close();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			e.printStackTrace();
+		}
+		
+		return buff;
+		
+	}
+	
+	// Add //
+	// Warehouse slots is a fixed size and manually created from a SQL initial query.
+	
+	// Update //
+	public static boolean updateWarehouseInfo(String loc_id, WHStatus whStatus, String remark) {
+		
+		Connection conn = new DBConnector().getDBConnection();
+		try {
+			String qry = "UPDATE warehouses"
+					+ " SET status=?, remark = ?"
+					+ " WHERE loc_id = ?";
+			PreparedStatement stmt = conn.prepareStatement(qry);
+			
+			String status = "E";
+			switch (whStatus) {
+			case EMPTY:
+				status = "E";
+				break;
+			case FULL:
+				status = "E";
+				break;
+			case MAINTENANCE:
+				status = "M";
+				break;
+
+			default:
+				status = "E";
+				break;
+			}
+			stmt.setString(1, status);
+			
+			stmt.setString(2, remark);
+			stmt.setString(3, loc_id);
+			
+			stmt.execute();			
 			conn.close();
 			return true;
 			
-		}catch(Exception e) {
+		} catch (SQLException e) {
+			try {
+				conn.close();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			e.printStackTrace();
 			return false;
-			
-		}		
-	}	
-
-	//@Connection info.
-	private Properties props = new Properties();
-	private String host;
-	private String port;
-	private String database;
-	private String user;
-	private String password;
+		}
+		
+	}
 	
-	//InternalVariable
-	private String _loc_id;
-	private String _status;
-	private String _remark;
+	// Delete //
+	// Warehouse slots is a fixed size and cannot be delete.
 	
-	public final String relName = "warehouses";
-	public final String columns = "loc_id, status, remark";
-	public final String columnsArr[] = {"loc_id", "status", "remark"};
-
-	//Initialize
-	private boolean InitConnectionConfiguration() {
+	// IsExist //
+	// Check if record(s) from the given condition is exist in a database.
+	public static boolean isExist(String condition) {
 		
-		String dbconf = "dbconf.conf";
-		try (InputStream inputStream = new FileInputStream(dbconf)) {
-			 
-			// Loading the properties.
-			props.load(inputStream);
- 
-			// Getting properties 
-			host = props.getProperty("host");
-			port = props.getProperty("port");
-			database = props.getProperty("database");
-			user = props.getProperty("user");
-			password = props.getProperty("password");
-			/*
-			System.out.println("Host = " + host);
-			System.out.println("Port = " + port);
-			System.out.println("Database = " + database);
-			System.out.println("User = " + user);
-			System.out.println("Password = " + password);
-			*/
-			return true;
-			
-		} catch (IOException ex) {
-			System.out.println("Problem occurs when reading file !");
-			ex.printStackTrace();
-			return false;
-			
-		}
-	}
-
-	//Constructor
-	public Warehouses() {
-		if(host == null) InitConnectionConfiguration();
-	}
-
-	public Warehouses(String loc_id) {
-
-		if(host != null || InitConnectionConfiguration()) {
-			try{ 
-				if(conn == null || conn.isClosed()){
-					Class.forName("com.mysql.jdbc.Driver");
-					conn = DriverManager.getConnection("jdbc:mysql://"+host+":"+port+"/"+database, user, password);
-				}
-
-				Statement stmt = conn.createStatement();
-				String SQL = "SELECT * FROM "+relName+" WHERE loc_id = '"+loc_id+"'";
-				ResultSet rs = stmt.executeQuery(SQL);
-				while(rs.next()) {
-				this._loc_id = rs.getString("loc_id");
-				this._status = rs.getString("status");
-				this._remark = rs.getString("remark");
-				}
-			
-			if(!holdConnection) conn.close();
-			
-			}catch(Exception e){ 
-				System.out.println(e);
-			
-			}					
-		}
-	}
-
-	//ClassInfo DataType
-	public class WarehousesInfo {
-		String loc_id;
-		String status;
-		String remark;
-	}
-
-	//==================== Properties ====================
-	public String loc_id() {
-		return this._loc_id;
-	}
-
-	public Integer loc_id(String value) {
-
-		int rs = 0;
-		try{
-			if(conn == null || conn.isClosed()){
-				Class.forName("com.mysql.jdbc.Driver");
-				conn = DriverManager.getConnection("jdbc:mysql://"+host+":"+port+"/"+database, user, password);
-			}
-
-			String SQL = "UPDATE "+relName+" SET loc_id = '"+value+"' WHERE loc_id = '"+this._loc_id+"'";
-			Statement stm = conn.createStatement();
-			rs = stm.executeUpdate(SQL);
-
-			if(!holdConnection) conn.close();
-			
-		}catch(Exception e){ 
-			System.out.println(e);
-
-		}
+		Connection conn = new DBConnector().getDBConnection();
 		
-		return rs;
-		
-	}
-
-	public String status() {
-		return this._status;
-	}
-
-	public Integer status(String value) {
-
-		int rs = 0;
-		try{
-			if(conn == null || conn.isClosed()){
-				Class.forName("com.mysql.jdbc.Driver");
-				conn = DriverManager.getConnection("jdbc:mysql://"+host+":"+port+"/"+database, user, password);
-			}
-
-			String SQL = "UPDATE "+relName+" SET status = '"+value+"' WHERE loc_id = '"+this._loc_id+"'";
-			Statement stm = conn.createStatement();
-			rs = stm.executeUpdate(SQL);
-
-			if(!holdConnection) conn.close();
-			
-		}catch(Exception e){ 
-			System.out.println(e);
-
-		}
-		
-		return rs;
-		
-	}
-
-	public String remark() {
-		return this._remark;
-	}
-
-	public Integer remark(String value) {
-
-		int rs = 0;
-		try{
-			if(conn == null || conn.isClosed()){
-				Class.forName("com.mysql.jdbc.Driver");
-				conn = DriverManager.getConnection("jdbc:mysql://"+host+":"+port+"/"+database, user, password);
-			}
-
-			String SQL = "UPDATE "+relName+" SET remark = '"+value+"' WHERE loc_id = '"+this._loc_id+"'";
-			Statement stm = conn.createStatement();
-			rs = stm.executeUpdate(SQL);
-
-			if(!holdConnection) conn.close();
-			
-		}catch(Exception e){ 
-			System.out.println(e);
-
-		}
-		
-		return rs;
-		
-	}
-
-	//==================== Basic Function ====================
-		
-	//List
-	public Warehouses[] List() {
-		return List("","");
-	}	
-	public Warehouses[] List(String Condition) {
-		return List(Condition,"");
-	}	
-	public Warehouses[] List(String Condition, String SortOrder) {
-		
-		//Init Parameter
-		if(Condition != "") {Condition = " WHERE " +Condition;}
-		if(SortOrder != "") {SortOrder = " ORDER BY " +SortOrder;}
-		
-		Warehouses[] rt = null;
-		String SQL;
-		String loc_id;
-		int rc, i = 0;
-		try{
-			if(conn == null || conn.isClosed()){
-				Class.forName("com.mysql.jdbc.Driver");
-				conn = DriverManager.getConnection("jdbc:mysql://"+host+":"+port+"/"+database, user, password);
-			}
-
-			Statement stm = conn.createStatement();
-			SQL = "SELECT COUNT(*) FROM " +relName+Condition+SortOrder;
-			ResultSet rs = stm.executeQuery(SQL);
-			rs.next();
-			rc = rs.getInt(1);
-			
-			SQL = "SELECT loc_id FROM " +relName+Condition+SortOrder;
-			stm = conn.createStatement();
-			rs = stm.executeQuery(SQL);
-			rt = new Warehouses[rc];
-			while(rs.next()){
-				loc_id = rs.getString("loc_id");
-				rt[i] = new Warehouses(loc_id);
-				i++;
+		if(condition != "") condition = " WHERE " + condition;
+		try {
+			String qry = "SELECT *" 
+					+ " FROM warehouses3"
+					+ condition;
+			Statement stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery(qry);
+			while (rs.next()) {
+				conn.close();
+				return true;
 			}			
+			conn.close();
+			return false;
 			
-			if(!holdConnection) conn.close();
-			
-		}catch(Exception e){ 
-			System.out.println(e);
-
-		}
-		
-		return rt;
-
-	}
-
-	//Add
-	public int Add( WarehousesInfo[] Items) {
-		int rt = 0;
-		try{
-			String SQL;
-			String ItemList = "";
-			if(Items.length > 0) {
-				for(WarehousesInfo A : Items) {
-					if(ItemList != "") {ItemList += ",";}
-					
-					ItemList += "('";
-					ItemList += A.loc_id +"','";
-					ItemList += A.status +"','";
-					ItemList += A.remark;
-					ItemList += "')";
-					
-				}
-				ItemList += ";";
-
+		} catch (SQLException e) {
+			try {
+				conn.close();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
 			}
-			
-			if(conn == null || conn.isClosed()){
-				Class.forName("com.mysql.jdbc.Driver");
-				conn = DriverManager.getConnection("jdbc:mysql://"+host+":"+port+"/"+database, user, password);
-			}
-
-			Statement stm = conn.createStatement();
-			SQL = "INSERT INTO " +relName+ "(loc_id, status, remark)";
-			SQL += " VALUES"+ItemList;
-			rt = stm.executeUpdate(SQL);
-
-			if(!holdConnection) conn.close();
-			
-		}catch(Exception e){ 
-			System.out.println(e);
-
+			e.printStackTrace();
+			return true;
 		}
 		
-		return rt;
-	}
-
-	//Delete
-	public int Remove() {
-		int rt = 0;
-		try{
-			String SQL;
-			
-			if(conn == null || conn.isClosed()){
-				Class.forName("com.mysql.jdbc.Driver");
-				conn = DriverManager.getConnection("jdbc:mysql://"+host+":"+port+"/"+database, user, password);
-			}
-
-			Statement stm = conn.createStatement();
-			SQL = "DELETE FROM " +relName+ " WHERE loc_id = '"+this._loc_id+"'";
-			rt = stm.executeUpdate(SQL);
-			
-			if(!holdConnection) conn.close();
-			
-		}catch(Exception e){ 
-			System.out.println(e);
-		}
-		
-		return rt;
-	}
-
-		public int Remove(String Condition) {
-		int rt = 0;
-		try{
-			String SQL;
-			
-			if(conn == null || conn.isClosed()){
-				Class.forName("com.mysql.jdbc.Driver");
-				conn = DriverManager.getConnection("jdbc:mysql://"+host+":"+port+"/"+database, user, password);
-			}
-
-			Statement stm = conn.createStatement();
-			SQL = "DELETE FROM " +relName+ " WHERE " +Condition;
-			rt = stm.executeUpdate(SQL);
-
-			if(!holdConnection) conn.close();
-			
-		}catch(Exception e){ 
-			System.out.println(e);
-			
-		}
-		
-		return rt;
-	}
-
-	public String dblLine(int length) {
-
-		if(length < 1) length = 1;
-		String buff = "";
-		for(int i = 0; i < length; i++) {
-			buff += "=";
-		}
-		
-		return buff;
-		
-	}
-
-	public String ReportTable() {
-		return ReportTable("","");
 	}
 	
-	public String ReportTable(String Condition) {
-		return ReportTable(Condition,"");
-	}
-
-	public String ReportTable(String Condition, String SortOption) {
-
-		Date d1, d2;		
-		int dblLineLength = 200;
-		int recordCount = 0;
-		
-		String buff = "", tmp = "";
-		
-		d1 = new Date();
-
-		Warehouses CLSs[] = List(Condition, SortOption);		
-		
-		tmp += String.format("%s\n", dblLine(dblLineLength));
-		tmp += String.format("%s\n", columns.replace(",", "\t"));
-		tmp += String.format("%s\n", dblLine(dblLineLength));
-		buff += tmp;
-		tmp = "";
-		
-		if(CLSs != null && CLSs.length > 0) {
-			recordCount = CLSs.length;
-			for(Warehouses cls : CLSs) {
-				try{
-					tmp = String.format("%s\t %s\t %s\n", cls.loc_id(), cls.status(), cls.remark());
-					buff += tmp;
-
-				}catch(Exception e){
-					buff += "Error found : " +e.getMessage()+ "\n";
-
-				}				
-			}
-		}
-		
-		d2 = new Date();
-		
-		tmp += String.format("%s\n",dblLine(dblLineLength));		
-		tmp += String.format("%s\n",recordCount+ " item(s) found.");
-		tmp += String.format("%s\n",dblLine(dblLineLength));
-		tmp += String.format("%s\n","[Report started] "+d1);
-		tmp += String.format("%s\n","[Report finished] "+d2);
-		tmp += String.format("%s\n",dblLine(dblLineLength));
-		buff += tmp;
-
-		return buff;
+	/************************** Custom Method ***************************/
 	
-	}
 }
 
