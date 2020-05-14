@@ -107,7 +107,7 @@ public class DefaultDesigner extends JFrame {
 		currentRow++;
 		
 		// Subtitle Label
-		JLabel lblSubTitle = new JLabel("Think Warehouse, Think STOU.");
+		JLabel lblSubTitle = new JLabel("Thinks Warehouse, Thinks STOU.");
 		lblSubTitle.setFont(fontSubTitle);
 		lblSubTitle.setBounds(
 				currentX,
