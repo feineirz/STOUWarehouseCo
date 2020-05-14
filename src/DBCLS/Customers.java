@@ -109,6 +109,14 @@ public class Customers {
 	
 	// List //
 	// List all customers in the database as a Customers objects.
+	/// Overload ///
+	public static ArrayList<Customers> listAllCustomers(){
+		return listAllCustomers("","");
+	}
+	public static ArrayList<Customers> listAllCustomers(String condition){
+		return listAllCustomers(condition,"");
+	}	
+	/// Main ///
 	public static ArrayList<Customers> listAllCustomers(String condition, String order) {
 		
 		ArrayList<Customers> buff = new ArrayList<Customers>();

@@ -130,6 +130,14 @@ public class Users {
 	/************************** Required Method ***************************/
 	// List //
 	// List all users in the database as a Users object.
+	/// Overload ///
+	public static ArrayList<Users> listAllUsers(){
+		return listAllUsers("","");
+	}
+	public static ArrayList<Users> listAllUsers(String condition){
+		return listAllUsers(condition,"");
+	}	
+	/// Main ///
 	public static ArrayList<Users> listAllUsers(String condition, String order) {
 		
 		ArrayList<Users> buff = new ArrayList<Users>();
