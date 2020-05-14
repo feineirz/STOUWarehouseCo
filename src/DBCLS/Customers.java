@@ -3,12 +3,6 @@ package DBCLS;
 import java.sql.*;
 import java.util.*;
 
-import java.io.*;
-import java.sql.*;
-import java.util.*;
-import java.util.Date;
-import java.lang.*;
-
 public class Customers {	
 
 	/************************** Class Header ***************************/
