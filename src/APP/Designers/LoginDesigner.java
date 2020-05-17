@@ -1,12 +1,23 @@
 package APP.Designers;
 import javax.swing.*;
-import java.awt.*;
 
-public class LoginDesigner extends JFrame{
+import APP.Controllers.CustomerMgr;
+import APP.Controllers.Login;
+
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class LoginDesigner extends JFrame implements ActionListener{
+	
+	public static JTextField txtUser;
+	public static JPasswordField txtPass;
+	public static JButton btnLogin, btnExit;
+	
 	public LoginDesigner() {
 		setSize(600, 350);
 		setTitle("Login");
-		
+		/*
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int screenWidth = screenSize.width;
 		int screenHeight = screenSize.height;
@@ -14,7 +25,8 @@ public class LoginDesigner extends JFrame{
 		x=(screenWidth-getWidth())/2;
 		y=(screenHeight-getHeight())/2;
 		setLocation(x,y);
-		
+		*/
+		this.setLocationRelativeTo(null);
 		Container c =getContentPane();
 		c.setLayout(null);
 		
@@ -44,7 +56,7 @@ public class LoginDesigner extends JFrame{
 		lblUser.setBounds(80, 80, 50, 30);
 		pnlRight.add(lblUser);
 		
-		JTextField txtUser=new JTextField();
+		txtUser=new JTextField();
 		txtUser.setBorder(BorderFactory.createEmptyBorder());
 		txtUser.setBounds(130, 80, 200, 30);
 		pnlRight.add(txtUser);
@@ -59,22 +71,35 @@ public class LoginDesigner extends JFrame{
 		lblPass.setBounds(80, 120, 50, 30);
 		pnlRight.add(lblPass);
 		
-		JPasswordField txtPass = new JPasswordField();
+		txtPass = new JPasswordField();
 		txtPass.setBorder(BorderFactory.createEmptyBorder());
 		txtPass.setBounds(130, 120, 200, 30);
 		pnlRight.add(txtPass);	
 		
-		JButton btnLogin=new JButton("Login");
+		btnLogin=new JButton("Login");
 		btnLogin.setBackground(Color.GRAY);
 		btnLogin.setBounds(80, 200, 120, 30);
+		btnLogin.addActionListener(this);
 		pnlRight.add(btnLogin);
 		
-		JButton btnExit=new JButton("Exit");
+		btnExit=new JButton("Exit");
 		btnExit.setBackground(Color.GRAY);
 		btnExit.setBounds(210, 200, 120, 30);
+		btnExit.addActionListener(this);
 		pnlRight.add(btnExit);		
 
 		c.add(pnlRight);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		if(arg0.getSource()==btnLogin) {
+			new Login().clickbtnlogin();
+		}else if(arg0.getSource()==btnExit) {
+			new Login().clickbtnexit();
+			
+		}
+		
 	}
 
 }

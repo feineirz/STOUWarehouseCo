@@ -2,10 +2,16 @@ package APP.Designers;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
-import java.awt.*;
+import APP.Controllers.AddCustomer;
 
-public class AddCustomerDesigner extends JFrame{
-	
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class AddCustomerDesigner extends JFrame implements ActionListener{
+	public static JTextField txtCustId,txtCustName,txtCustPhone,txtCustFax,txtCustEmail;
+	public static JTextArea txtCustAddr;
+	public static JButton btnAdd,btnExit;
 	public AddCustomerDesigner() {
 
 		setSize(600, 350);
@@ -47,7 +53,7 @@ public class AddCustomerDesigner extends JFrame{
 		lblCustId.setBounds(10, 20, 100, 25);
 		pnlRight.add(lblCustId);
 		
-		JTextField txtCustId=new JTextField();
+		txtCustId=new JTextField();
 		txtCustId.setBounds(110, 20, 260, 25);
 		pnlRight.add(txtCustId);
 		
@@ -55,7 +61,7 @@ public class AddCustomerDesigner extends JFrame{
 		lbl_CustName.setBounds(10, 50, 100, 25);
 		pnlRight.add(lbl_CustName);
 		
-		JTextField txtCustName=new JTextField();
+		txtCustName=new JTextField();
 		txtCustName.setBounds(110, 50, 260, 25);
 		pnlRight.add(txtCustName);
 		
@@ -64,7 +70,7 @@ public class AddCustomerDesigner extends JFrame{
 		lbl_CustAddr.setBounds(10, 80, 100, 25);
 		pnlRight.add(lbl_CustAddr);
 		
-		JTextArea txtCustAddr=new JTextArea();
+		txtCustAddr=new JTextArea();
 		txtCustAddr.setBounds(110, 80, 260, 70);
 		pnlRight.add(txtCustAddr);
 		
@@ -72,7 +78,7 @@ public class AddCustomerDesigner extends JFrame{
 		lbl_CustPhone.setBounds(10, 160, 100, 25);
 		pnlRight.add(lbl_CustPhone);
 		
-		JTextField txtCustPhone=new JTextField();
+		txtCustPhone=new JTextField();
 		txtCustPhone.setBounds(110, 160, 260, 25);
 		pnlRight.add(txtCustPhone);		
 		
@@ -80,7 +86,7 @@ public class AddCustomerDesigner extends JFrame{
 		lbl_CustFax.setBounds(10, 190, 100, 25);
 		pnlRight.add(lbl_CustFax);
 		
-		JTextField txtCustFax=new JTextField();
+		txtCustFax=new JTextField();
 		txtCustFax.setBounds(110, 190, 260, 25);
 		pnlRight.add(txtCustFax);	
 		
@@ -88,21 +94,35 @@ public class AddCustomerDesigner extends JFrame{
 		lbl_CustEmail.setBounds(10, 220, 100, 25);
 		pnlRight.add(lbl_CustEmail);
 		
-		JTextField txtCustEmail=new JTextField();
+		txtCustEmail=new JTextField();
 		txtCustEmail.setBounds(110, 220, 260, 25);
 		pnlRight.add(txtCustEmail);	
 		
-		JButton btnLogin=new JButton("Add");
-		btnLogin.setBackground(Color.GRAY);
-		btnLogin.setBounds(10, 260, 120, 30);
-		pnlRight.add(btnLogin);
+		btnAdd=new JButton("เพิ่ม");
+		btnAdd.setBackground(Color.GRAY);
+		btnAdd.setBounds(10, 260, 120, 30);
+		btnAdd.addActionListener(this);
+		pnlRight.add(btnAdd);
 		
-		JButton btnExit=new JButton("Cancle");
+		btnExit=new JButton("ยกเลิก");
 		btnExit.setBackground(Color.GRAY);
 		btnExit.setBounds(250, 260, 120, 30);
+		btnExit.addActionListener(this);
 		pnlRight.add(btnExit);		
 
 		c.add(pnlRight);
+		
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource()==btnAdd) {
+			new AddCustomer().btnAdd();
+
+		}else if(e.getSource()==btnExit) {
+			this.setVisible(false);
+			
+		}
 		
 	}
 }

@@ -1,6 +1,4 @@
 package APP.Controllers;
-import javax.swing.*;
-import java.awt.*;
 import APP.Designers.*;
 
 public class About {

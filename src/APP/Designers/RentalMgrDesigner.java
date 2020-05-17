@@ -1,9 +1,13 @@
 package APP.Designers;
 
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+
+import APP.Controllers.CustomerMgr;
 
 
 public class RentalMgrDesigner extends DefaultDesigner{
@@ -17,7 +21,7 @@ public class RentalMgrDesigner extends DefaultDesigner{
 		JLabel lblRentName=new JLabel("รายการการเช่า");
 		lblRentName.setBounds(10, 10, 100, 25);
 		pnlContent.add(lblRentName);
-		
+		/*
 		JLabel lblRentId=new JLabel("เลขที่ใบแจ้งหนี้");
 		lblRentId.setBounds(710, 10, 100, 25);
 		pnlContent.add(lblRentId);
@@ -25,6 +29,19 @@ public class RentalMgrDesigner extends DefaultDesigner{
 		JTextField txtRentId=new JTextField();
 		txtRentId.setBounds(810, 10, 200, 25);
 		pnlContent.add(txtRentId);
+		*/
+		JTextField txtSearchCust=new JTextField();
+		txtSearchCust.setBounds(700, 10, 200, 25);
+		txtSearchCust.addKeyListener(new KeyAdapter() {
+			public void keyReleased(KeyEvent keyevent) {
+				new CustomerMgr().showdata();
+			}
+		});
+		pnlContent.add(txtSearchCust);
+		
+		JButton btnSearchCust=new JButton("ค้นหา");
+		btnSearchCust.setBounds(910, 10, 100, 25);
+		pnlContent.add(btnSearchCust);
 		
 		//table
 		JScrollPane scrollTable=new JScrollPane();
