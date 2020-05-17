@@ -6,6 +6,8 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -40,6 +42,16 @@ public class WHLocationPickupDesigner extends JFrame implements ActionListener{
 					lbl.setOpaque(true);
 					lbl.setBackground(Color.WHITE);
 					lbl.setBounds(i*btnSize.width, j*btnSize.height, btnSize.width, btnSize.height);
+					lbl.addMouseListener(new MouseAdapter() {
+						public void mouseClicked(MouseEvent e) {
+							System.out.println("=>");
+							if(lbl.getBackground()==Color.WHITE) {
+								lbl.setBackground(Color.GREEN);
+							}else {
+								lbl.setBackground(Color.WHITE);
+							}
+						}
+					});
 					pnlContainer.add(lbl);
 				}
 			}
@@ -56,6 +68,16 @@ public class WHLocationPickupDesigner extends JFrame implements ActionListener{
 					lbl.setOpaque(true);
 					lbl.setBackground(Color.WHITE);
 					lbl.setBounds(i*btnSize.width, j*btnSize.height, btnSize.width, btnSize.height);
+					lbl.addMouseListener(new MouseAdapter() {
+						public void mouseClicked(MouseEvent e) {
+							System.out.println("=>");
+							if(lbl.getBackground()==Color.WHITE) {
+								lbl.setBackground(Color.GREEN);
+							}else {
+								lbl.setBackground(Color.WHITE);
+							}
+						}
+					});
 					pnlContainer.add(lbl);
 				}    
 			}
