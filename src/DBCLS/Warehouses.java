@@ -95,6 +95,14 @@ public class Warehouses {
 	
 	// List //
 	// List all warehouse slot in the database as a Warehouses objects.
+	/// Overload ///
+	public static ArrayList<Warehouses> listAllWarehouseLocation(){
+		return listAllWarehouseLocation("","");
+	}
+	public static ArrayList<Warehouses> listAllWarehouseLocation(String condition){
+		return listAllWarehouseLocation(condition,"");
+	}	
+	/// Main ///
 	public static ArrayList<Warehouses> listAllWarehouseLocation(String condition, String order) {
 		
 		ArrayList<Warehouses> buff = new ArrayList<Warehouses>();

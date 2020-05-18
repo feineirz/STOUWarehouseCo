@@ -141,6 +141,14 @@ public class Rental {
 	
 	// List //
 	// List all rentals in the database as a Rental objects.
+	/// Overload ///
+	public static ArrayList<Rental> listAllRental(){
+		return listAllRental("","");
+	}
+	public static ArrayList<Rental> listAllRental(String condition){
+		return listAllRental(condition,"");
+	}	
+	/// Main ///
 	public static ArrayList<Rental> listAllRental(String condition, String order) {
 		
 		ArrayList<Rental> buff = new ArrayList<Rental>();

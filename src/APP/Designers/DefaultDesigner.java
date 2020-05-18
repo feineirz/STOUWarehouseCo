@@ -5,15 +5,12 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Toolkit;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.*;
 
 import APP.Controllers.Global;
-import APP.Controllers.View;
 
 @SuppressWarnings("serial")
 public class DefaultDesigner extends JFrame {
@@ -31,9 +28,6 @@ public class DefaultDesigner extends JFrame {
 	protected int gap = 6;
 	
 	private int upiWidth = 220;
-	private int btnWidth = 100;
-	private int txfWidth = 150;
-	private int lblWidth = 40;
 	private int ctrlHeight = 25;
 	
 	protected int rowFactor = ctrlHeight + gap;
@@ -66,7 +60,7 @@ public class DefaultDesigner extends JFrame {
 		this.setBackground(Color.BLUE);
 		this.setPreferredSize(frameSize);
 		this.setResizable(false);
-		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(HIDE_ON_CLOSE);
 		
 		/********** Container **********/
 		Container container = this.getContentPane();
@@ -107,7 +101,7 @@ public class DefaultDesigner extends JFrame {
 		currentRow++;
 		
 		// Subtitle Label
-		JLabel lblSubTitle = new JLabel("Think Warehouse, Think STOU.");
+		JLabel lblSubTitle = new JLabel("Thinks Warehouse, Thinks STOU.");
 		lblSubTitle.setFont(fontSubTitle);
 		lblSubTitle.setBounds(
 				currentX,
@@ -146,7 +140,7 @@ public class DefaultDesigner extends JFrame {
 				);
 		pnlUserInfo.add(lblUserIcon);
 		
-		// Usernamme Label
+		// Username Label
 		lblUsername =  new JLabel("username");
 		lblUsername.setFont(font);
 		lblUsername.setBounds(
@@ -225,7 +219,7 @@ public class DefaultDesigner extends JFrame {
 			public void windowActivated(WindowEvent e) {
 				if(Global.currentUser != null) {
 					lblUsername.setText(Global.currentUser.getUsername());
-					lblEmail.setText(Global.currentUser.getUsername());
+					lblEmail.setText(Global.currentUser.getEmail());
 				}
 				
 			}

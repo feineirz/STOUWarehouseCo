@@ -8,8 +8,12 @@ import DBCLS.Users;
 public class AboutDesigner extends DefaultDesigner {
 	
 	public AboutDesigner() {
+		/*************** Init Frame Properties ***************/
 		this.setSize(1200,900);
 		reAdjustPanel();
+		
+		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		
 		pnlContent.setLayout(new FlowLayout());
 		
 		ArrayList<Users> users = Users.listAllUsers("", "");
