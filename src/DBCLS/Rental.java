@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class Rental {
@@ -196,6 +197,8 @@ public class Rental {
 	// Add rental to the database by giving a structured information.
 	public static boolean addNewRental(RentalInfo rentalInfo) {
 		
+		SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd");
+		
 		Connection conn = new DBConnector().getDBConnection();
 		try {
 			String qry = "INSERT INTO rents"
@@ -204,9 +207,9 @@ public class Rental {
 			PreparedStatement stmt = conn.prepareStatement(qry);
 			stmt.setInt(1, rentalInfo.cust_id);
 			stmt.setString(2, rentalInfo.loc_id);
-			stmt.setDate(3, rentalInfo.inv_date);
-			stmt.setDate(4, rentalInfo.start_date);
-			stmt.setDate(5, rentalInfo.expire_date);
+			stmt.setString(3, f.format(rentalInfo.inv_date));
+			stmt.setString(4, f.format(rentalInfo.start_date));
+			stmt.setString(5, f.format(rentalInfo.expire_date));
 			stmt.setFloat(6, rentalInfo.amount);
 			stmt.setInt(7, rentalInfo.user_id);
 			stmt.setString(8, rentalInfo.remark);
@@ -250,6 +253,8 @@ public class Rental {
 	// Update rental information to the database by giving a structured information.
 	public static boolean updateRentalInfo(RentalInfo rentalInfo) {
 		
+		SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd");
+		
 		Connection conn = new DBConnector().getDBConnection();
 		try {
 			String qry = "UPDATE rents"
@@ -258,9 +263,9 @@ public class Rental {
 			PreparedStatement stmt = conn.prepareStatement(qry);
 			stmt.setInt(1, rentalInfo.cust_id);
 			stmt.setString(2, rentalInfo.loc_id);
-			stmt.setDate(3, rentalInfo.inv_date);
-			stmt.setDate(4, rentalInfo.start_date);
-			stmt.setDate(5, rentalInfo.expire_date);
+			stmt.setString(3, f.format(rentalInfo.inv_date));
+			stmt.setString(4, f.format(rentalInfo.start_date));
+			stmt.setString(5, f.format(rentalInfo.expire_date));
 			stmt.setFloat(6, rentalInfo.amount);
 			stmt.setInt(7, rentalInfo.user_id);
 			stmt.setString(8, rentalInfo.remark);

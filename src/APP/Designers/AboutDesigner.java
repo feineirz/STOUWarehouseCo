@@ -1,7 +1,8 @@
 package APP.Designers;
 
 import java.awt.FlowLayout;
-import javax.swing.JButton;
+import java.util.ArrayList;
+import DBCLS.Users;
 
 @SuppressWarnings("serial")
 public class AboutDesigner extends DefaultDesigner {
@@ -11,10 +12,13 @@ public class AboutDesigner extends DefaultDesigner {
 		reAdjustPanel();
 		pnlContent.setLayout(new FlowLayout());
 		
-		for(int idx = 0; idx < 400; idx++) {
-			JButton btn = new JButton("B" + (idx + 1));
-			pnlContent.add(btn);
+		ArrayList<Users> users = Users.listAllUsers("", "");
+		if(!users.isEmpty()) {
+			for (Users user : users) {
+				System.out.printf("%s %s %s %s\n", user.getUserID(), user.getUsername(), user.getPhone(), user.getEmail());
+			}
 		}
+		
 		
 	}
 
