@@ -196,6 +196,7 @@ public class Customers {
 	public static boolean updateCustomerInfo(int cust_id, String cust_name, String address, String phone, String fax, String email) {
 		
 		CustomerInfo customerInfo = new CustomerInfo();
+		customerInfo.cust_id = cust_id;
 		customerInfo.cust_name = cust_name;
 		customerInfo.address = address;
 		customerInfo.phone = phone;

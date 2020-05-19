@@ -222,7 +222,7 @@ public class Users {
 	public static boolean updateUserInfoNonMD5(int user_id, String username, String password, String phone, String email) {
 		
 		UserInfo userInfo = new UserInfo();
-		userInfo.user_id = 0;
+		userInfo.user_id = user_id;
 		userInfo.username = username;
 		userInfo.password = password;
 		userInfo.phone = phone;
