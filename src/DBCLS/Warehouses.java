@@ -12,6 +12,7 @@ public class Warehouses {
 	}
 	private WHStatus status;
 	private String loc_id, remark;
+	private Double price;
 	public final String relName = "warehouses";
 	public final String columnNames = "loc_id, status, remark";
 	
@@ -36,6 +37,7 @@ public class Warehouses {
 			ResultSet rs = stmt.executeQuery();
 			while(rs.next()) {
 				this.loc_id = rs.getString("loc_id");
+				this.price = rs.getDouble("price");
 				String status = rs.getString("status");
 				switch (status) {
 				case "E":
@@ -53,6 +55,7 @@ public class Warehouses {
 					break;
 				}
 				this.remark = rs.getString("remark");
+				
 			}
 			
 			conn.close();
@@ -77,8 +80,12 @@ public class Warehouses {
 		return status;
 	}
 	
+	public Double getPrice() {
+		return price;
+	}
+	
 	public boolean setStatus(WHStatus status) {
-		return Warehouses.updateWarehouseInfo(loc_id, status, remark);
+		return Warehouses.updateWarehouseInfo(loc_id, status, price, remark);
 	}
 	
 	public String getRemark() {
@@ -86,7 +93,7 @@ public class Warehouses {
 	}
 	
 	public boolean setRemark(String remark) {
-		return Warehouses.updateWarehouseInfo(loc_id, status, remark);
+		return Warehouses.updateWarehouseInfo(loc_id, status, price, remark);
 	}
 	
 	/************************** Required Method ***************************/
@@ -129,12 +136,12 @@ public class Warehouses {
 	// NOT USE
 	
 	// Update //
-	public static boolean updateWarehouseInfo(String loc_id, WHStatus whStatus, String remark) {
+	public static boolean updateWarehouseInfo(String loc_id, WHStatus whStatus, double price, String remark) {
 		
 		Connection conn = new DBConnector().getDBConnection();
 		try {
 			String qry = "UPDATE warehouses"
-					+ " SET status=?, remark = ?"
+					+ " SET status=?, price=?, remark = ?"
 					+ " WHERE loc_id = ?";
 			PreparedStatement stmt = conn.prepareStatement(qry);
 			
@@ -144,7 +151,7 @@ public class Warehouses {
 				status = "E";
 				break;
 			case FULL:
-				status = "E";
+				status = "F";
 				break;
 			case MAINTENANCE:
 				status = "M";
@@ -155,9 +162,9 @@ public class Warehouses {
 				break;
 			}
 			stmt.setString(1, status);
-			
-			stmt.setString(2, remark);
-			stmt.setString(3, loc_id);
+			stmt.setDouble(2, price);
+			stmt.setString(3, remark);
+			stmt.setString(4, loc_id);
 			
 			stmt.execute();			
 			conn.close();

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import javax.swing.*;
 import APP.Designers.UserMgrDesigner;
+//import APP.Designers.CustomerMgrDesigner;
 import APP.Designers.DefaultDesigner;
 import DBCLS.*;
 
@@ -25,8 +26,9 @@ public class UserMgr {
 	*/
 	public static void getusermgr() {
 		addUser.setVisible(true);
-		textlock();
 		showdata();
+		textlock();
+		
 		
 	}
 	
@@ -49,7 +51,7 @@ public class UserMgr {
 			ArrayList<Users> users = Users.listAllUsers("username LIKE'%"+search+"%'", "");
 			if(!users.isEmpty()) {
 				for (Users user : users) {
-					//System.out.printf("%S %S %S %S\n", cut.getCustomerID(), cut.getCustomerName(), cut.getPhone(), cut.getEmail());
+
 					UserMgrDesigner.tableModel.addRow(new Object[0]);
 					UserMgrDesigner.tableModel.setValueAt(user.getUserID(),row,0);
 					UserMgrDesigner.tableModel.setValueAt(user.getUsername(),row,1);
@@ -70,11 +72,16 @@ public class UserMgr {
 	
 	public static void mouseclick() {
 		int index=UserMgrDesigner.tableUser.getSelectedRow();
+		
 		UserMgrDesigner.txtUserId.setText(UserMgrDesigner.tableUser.getValueAt(index, 0).toString());
+		
 		UserMgrDesigner.txtUserName.setText(UserMgrDesigner.tableUser.getValueAt(index, 1).toString());
 		UserMgrDesigner.txtPassword.setText(UserMgrDesigner.tableUser.getValueAt(index, 2).toString());
 		UserMgrDesigner.txtUserPhone.setText(UserMgrDesigner.tableUser.getValueAt(index, 3).toString());
 		UserMgrDesigner.txtUserEmail.setText(UserMgrDesigner.tableUser.getValueAt(index, 4).toString());
+	
+		UserMgrDesigner.btnEdit.setEnabled(true);
+		
 
 	}
 	
@@ -156,6 +163,8 @@ public class UserMgr {
 		UserMgrDesigner.txtPassword.setEnabled(false);
 		UserMgrDesigner.txtUserPhone.setEnabled(false);
 		UserMgrDesigner.txtUserEmail.setEnabled(false);
+		UserMgrDesigner.btnEdit.setEnabled(false);
+		UserMgrDesigner.btnSave.setEnabled(false);
 	}
 
 	public static void textunlock() {

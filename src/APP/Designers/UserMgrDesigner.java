@@ -145,12 +145,7 @@ public class UserMgrDesigner extends DefaultDesigner implements ActionListener{
 	
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource()==btnAdd) {
-			//c.addNewCustomer(txtCustName.getText(), txtCustAddr.getText(), txtCustPhone.getText(), txtCustFax.getText(), txtCustEmail.getText());
-			/*
-			CustomerMgr CustMgr=new CustomerMgr();
-			new CustomerMgr().addcust();
-			new CustomerMgr().showdata();
-			*/
+
 			new UserMgr().clickbtnadd();
 		}else if(e.getSource()==btnEdit) {
 			new UserMgr().clickbtnedit();

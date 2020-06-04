@@ -5,6 +5,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import APP.Designers.CustomerMgrDesigner;
+//import APP.Designers.UserMgrDesigner;
 import DBCLS.*;
 
 import java.awt.Color;
@@ -19,46 +20,7 @@ public class CustomerMgr{
 	static boolean btnEditClicked=false;
 	static int maxId=0;
 	
-	//public static void main(String[] arg){
-		
-		//defaultFrame.setVisible(true);
 
-		
-		//System.out.println(dbcls.listAllCustomers("cust_id",""));
-		//dbcls.listAllCustomers("","");
-		//System.out.println(dbcls.listAllCustomers("cust_id='11'","").size());
-
-		//cus.txtSearchCust.setText(dbcls.getCustomerName());
-		//cus.txtSearchCust.setText("xxxxxxx");
-		/*
-		for(int i=0; i<dbcls.listAllCustomers("cust_id='11'","").size(); i++) {
-			System.out.println("=>"+dbcls.getCustomerName());
-			for(int x=0; x<5; x++) {
-				//System.out.println("===>"+x+dbcls.getCustomerName());
-			}
-			
-			
-		}
-		*/
-		/*
-		ArrayList<Users> users = Users.listAllUsers("", "");
-		  if(!users.isEmpty()) {
-		   for (Users user : users) {
-		    System.out.printf("%S %S %S %S\n", user.getUserID(), user.getUsername(), user.getPhone(), user.getEmail());
-		   }
-		  }
-		  */
-		/*
-		ArrayList<Customers> cuts = Customers.listAllCustomers("", "");
-		if(!cuts.isEmpty()) {
-			for (Customers cut : cuts) {
-				System.out.printf("%S %S %S %S\n", cut.getCustomerID(), cut.getCustomerName(), cut.getPhone(), cut.getEmail());
-			}
-		}
-		*/
-
-
-	//}
 	public static void getcustomerMgr() {
 		cust.setVisible(true);
 		textlock();
@@ -75,28 +37,10 @@ public class CustomerMgr{
 			}
 			int row=0;
 			
-			/*
-			String search = cus.txtSearchCust.getText().trim();
-			String sql="SELECT * FROM customers";
-			ResultSet rs=conn.createStatement().executeQuery(sql);
-
-			while(rs.next()) {
-				cus.tableModel.addRow(new Object[0]);
-				cus.tableModel.setValueAt(rs.getString("cust_id"),row,0);
-				cus.tableModel.setValueAt(rs.getString("cust_name"),row,1);
-				cus.tableModel.setValueAt(rs.getString("address"),row,2);
-				cus.tableModel.setValueAt(rs.getString("phone"),row,3);
-				cus.tableModel.setValueAt(rs.getString("email"),row,4);
-				row++;
-			}
-			*/
-			
-			
 			String search = CustomerMgrDesigner.txtSearchCust.getText().trim();
 			ArrayList<Customers> cuts = Customers.listAllCustomers("cust_name LIKE'%"+search+"%'", "");
 			if(!cuts.isEmpty()) {
 				for (Customers cut : cuts) {
-					//System.out.printf("%S %S %S %S\n", cut.getCustomerID(), cut.getCustomerName(), cut.getPhone(), cut.getEmail());
 					CustomerMgrDesigner.tableModel.addRow(new Object[0]);
 					CustomerMgrDesigner.tableModel.setValueAt(cut.getCustomerID(),row,0);
 					CustomerMgrDesigner.tableModel.setValueAt(cut.getCustomerName(),row,1);
@@ -124,6 +68,7 @@ public class CustomerMgr{
 		CustomerMgrDesigner.txtCustPhone.setText(CustomerMgrDesigner.tableCust.getValueAt(index, 3).toString());
 		CustomerMgrDesigner.txtCustFax.setText(CustomerMgrDesigner.tableCust.getValueAt(index, 4).toString());
 		CustomerMgrDesigner.txtCustEmail.setText(CustomerMgrDesigner.tableCust.getValueAt(index, 5).toString());
+		CustomerMgrDesigner.btnEdit.setEnabled(true);
 	}
 	
 	public static void clickbtnadd() {
@@ -205,6 +150,7 @@ public class CustomerMgr{
 		CustomerMgrDesigner.txtCustPhone.setEnabled(false);
 		CustomerMgrDesigner.txtCustFax.setEnabled(false);
 		CustomerMgrDesigner.txtCustEmail.setEnabled(false);
+		CustomerMgrDesigner.btnEdit.setEnabled(false);
 		CustomerMgrDesigner.btnSave.setEnabled(false);
 	}
 

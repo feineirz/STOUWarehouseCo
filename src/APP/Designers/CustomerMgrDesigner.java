@@ -171,32 +171,6 @@ public class CustomerMgrDesigner extends DefaultDesigner implements ActionListen
 		}
 
 	}
-	/*
-	public static void showdata() {
-		Connection conn = new DBConnector().getDBConnection();
-		
-		try {
-			String sql="SELECT * FROM customers";
-			ResultSet rs=conn.createStatement().executeQuery(sql);
-			int row=0;
-			
-			
-			while(rs.next()) {
-				tableModel.addRow(new Object[0]);
-				tableModel.setValueAt(rs.getString("cust_id"),row,0);
-				tableModel.setValueAt(rs.getString("cust_name"),row,1);
-				tableModel.setValueAt(rs.getString("address"),row,2);
-				tableModel.setValueAt(rs.getString("phone"),row,3);
-				tableModel.setValueAt(rs.getString("email"),row,4);
-				row++;
-			};
-			tableCust.setModel(tableModel);
-		}catch(Exception e) {
-			e.printStackTrace();
-		}
-	}
-	*/
-	
 
 
 }

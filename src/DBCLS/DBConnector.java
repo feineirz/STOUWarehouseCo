@@ -15,9 +15,17 @@ public class DBConnector {
 		try{
 			Class.forName("com.mysql.cj.jdbc.Driver");  
 			conn = DriverManager.getConnection(
-					"jdbc:mysql://localhost/db_stouwarehouseco?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC",
+					/*
+					"jdbc:mysql://localhost/stouwarehouse?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC",
 					"root",
 					""
+					*/
+					
+					
+					"jdbc:mysql://feinz.net:3306/feinznet_stou?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC",
+					"feinznet_stou",
+					"stouproj"
+					
 					);	
 			//System.out.println("เชื่อมต่อแล้ว");
 

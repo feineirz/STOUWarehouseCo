@@ -21,7 +21,7 @@ public class Login{
 			if(login != null) {
 				Global.currentUser=login;
 				frmLogin.setVisible(false);
-				new MainMenu().getmain();
+				new MainMenu().getMainMenu();
 
 			}else{
 

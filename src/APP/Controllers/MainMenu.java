@@ -5,6 +5,15 @@ import APP.Designers.*;
 public class MainMenu{
 	// Preload Assets
 	static JFrame mainMenu = new MainMenuDesigner();
+	public static void getMainMenu() {
+		
+		mainMenu.setVisible(true);
+
+		
+	}
+	
+	
+	
 	public static void getmain() {
 		mainMenu.setVisible(true);
 
@@ -16,10 +25,24 @@ public class MainMenu{
 	}
 	
 	public static void btnManegLog() {
-		//new CustomerMgr().getshow()
+		new WarehouseMgr().getWarehouseMgr();
 	}
-	
+	public static void btnManegRent() {
+		new AddRental().getAddRental();
+	}
 	public static void btnManegUser() {
 		new UserMgr().getusermgr();
+	}
+	
+	public static void btnRental() {
+		new RentalMgr().getRental();
+	}
+	
+	public static void btnManegReport() {
+		new ReportGen().getReport();
+	}
+	
+	public static void btnAbout() {
+		new About().getAbout();
 	}
 }

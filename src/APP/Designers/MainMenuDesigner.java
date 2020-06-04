@@ -8,7 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class MainMenuDesigner extends DefaultDesigner implements ActionListener{
-	public static JButton btnManegMoney,btnManegLog,btnManegRent,btnManegReport,btnManegUser,btnExit;
+	public static JButton btnManegMoney,btnManegLog,btnManegRent,btnManegReport,btnRental,btnManegUser,btnAbout,btnExit;
 	public MainMenuDesigner() {
 		this.setSize(1400,700);
 		reAdjustPanel();
@@ -18,11 +18,30 @@ public class MainMenuDesigner extends DefaultDesigner implements ActionListener{
 		JPanel DashBoard=new JPanel();
 		DashBoard.setBounds(10, 10, 1370, 300);
 		DashBoard.setBackground(Color.GRAY);
+		
+		JLabel imgDash=new JLabel ( new ImageIcon ( "assets/dash4.jpeg" ), SwingConstants.CENTER );
+		//JLabel lblUser=new JLabel("USER:");
+		imgDash.setBackground(Color.WHITE);
+		imgDash.setOpaque(true);
+		imgDash.setBounds(0, 0, 1370, 170);
+		DashBoard.add(imgDash);
+		
 		pnlContent.add(DashBoard);
 		
-		JPanel pnlMenu=new JPanel();
-		pnlMenu.setBounds(10, 320, 1370, 170);
+
 		
+		
+		JPanel pnlMenu=new JPanel();
+		pnlMenu.setBounds(10, 320, 1370, 185);
+		
+		ImageIcon imgUserIcon = new ImageIcon("assets/cust3.png", BorderLayout.NORTH);
+		btnManegUser=new JButton("<html>ระบบจัดการ<br />ผู้ใช้</html>",imgUserIcon);
+		btnManegUser.setBackground(new Color(200,200,200));
+		btnManegUser.setPreferredSize(new Dimension(120, 120));
+		btnManegUser.addActionListener(this);
+		btnManegUser.setHorizontalTextPosition(SwingConstants.CENTER);
+		btnManegUser.setVerticalTextPosition(SwingConstants.BOTTOM);
+		pnlMenu.add(btnManegUser);
 		
 		ImageIcon imgMoneyIcon = new ImageIcon("assets/cust3.png", BorderLayout.NORTH);
 		btnManegMoney=new JButton("<html>ระบบจัดการ<br />ลูกค้า</html>",imgMoneyIcon);
@@ -43,7 +62,7 @@ public class MainMenuDesigner extends DefaultDesigner implements ActionListener{
 		pnlMenu.add(btnManegLog);
 		
 		ImageIcon imgRentIcon = new ImageIcon("assets/cart2.png", BorderLayout.NORTH);
-		btnManegRent=new JButton("<html>ระบบจัดการ<br />การเช่าคลังสินค้า</html>",imgRentIcon);
+		btnManegRent=new JButton("เช่าคลังสินค้า",imgRentIcon);
 		btnManegRent.setBackground(new Color(200,200,200));
 		btnManegRent.setPreferredSize(new Dimension(120, 120));
 		btnManegRent.addActionListener(this);
@@ -51,7 +70,16 @@ public class MainMenuDesigner extends DefaultDesigner implements ActionListener{
 		btnManegRent.setVerticalTextPosition(SwingConstants.BOTTOM);
 		pnlMenu.add(btnManegRent);
 		
-		ImageIcon imgReport = new ImageIcon("assets/report5.png", BorderLayout.NORTH);
+		ImageIcon imgRetal = new ImageIcon("assets/rental2.png", BorderLayout.NORTH);
+		btnRental=new JButton("สัญญาเช่า",imgRetal);
+		btnRental.setBackground(new Color(200,200,200));
+		btnRental.setPreferredSize(new Dimension(120, 120));
+		btnRental.addActionListener(this);
+		btnRental.setHorizontalTextPosition(SwingConstants.CENTER);
+		btnRental.setVerticalTextPosition(SwingConstants.BOTTOM);
+		pnlMenu.add(btnRental);
+		
+		ImageIcon imgReport = new ImageIcon("assets/report3.png", BorderLayout.NORTH);
 		btnManegReport=new JButton("ระบบรายงาน",imgReport);
 		btnManegReport.setBackground(new Color(200,200,200));
 		btnManegReport.setPreferredSize(new Dimension(120, 120));
@@ -64,15 +92,18 @@ public class MainMenuDesigner extends DefaultDesigner implements ActionListener{
 		pnlContent.add(pnlMenu);
 		
 		//footer
-		btnManegUser=new JButton("ระบบจัดการผู้ใช้");
-		btnManegUser.setBackground(new Color(200,200,200));
-		btnManegUser.setBounds(10, 20, 150, 25);
-		btnManegUser.addActionListener(this);
-		pnlFooter.add(btnManegUser);
+		
+		btnAbout=new JButton("คณะผู้จัดทำ");
+		btnAbout.setBackground(new Color(200,200,200));
+		btnAbout.setBounds(10, 20, 150, 25);
+		btnAbout.addActionListener(this);
+		pnlFooter.add(btnAbout);
+		
 		
 		btnExit=new JButton("ออกจากโปรแกรม");
 		btnExit.setBackground(new Color(200,200,200));
 		btnExit.setBounds(1220, 20, 150, 25);
+		btnExit.addActionListener(this);
 		pnlFooter.add(btnExit);		
 	}
 
@@ -82,19 +113,23 @@ public class MainMenuDesigner extends DefaultDesigner implements ActionListener{
 
 			new MainMenu().btnManegMoney();
 		}else if(e.getSource()==btnManegLog) {
-			//new UserMgr().clickbtnedit();
+			new MainMenu().btnManegLog();
 			
 		}else if(e.getSource()==btnManegRent) {
-			//new UserMgr().clickbtnsave();
-			
+			new MainMenu().btnManegRent();
+		}else if(e.getSource()==btnRental) {
+			new MainMenu().btnRental();
 		}else if(e.getSource()==btnManegReport) {
-			//new UserMgr().clickbtnsave();
+			new MainMenu().btnManegReport();
 			
 		}else if(e.getSource()==btnManegUser) {
 			new MainMenu().btnManegUser();
 			
+		}else if(e.getSource()==btnAbout) {
+			new MainMenu().btnAbout();
+			
 		}else if(e.getSource()==btnExit) {
-			//new UserMgr().clickbtnsave();
+			this.dispose();
 			
 		}
 		

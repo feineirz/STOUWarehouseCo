@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.*;
+import java.util.ArrayList;
+
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
@@ -13,12 +15,21 @@ import APP.Controllers.*;
 import DBCLS.*;
 
 public class WarehouseMgrDesigner extends DefaultDesigner implements ActionListener{
-	public static JButton btnSearchCust,btnAdd,btnEdit,btnSave;
-	public static JTextField txtSearchLoc,txtLocId,txtLocStatus,txtLocRemark,txtRentId,txtCustName,txtRentTotal,txtStartDate,txtEndDate,txtDadeLine;
-	public static DefaultTableModel tableModel;
-	public static JTable tableWh;
+	public static JButton btnSearchCust,btnRemake,btnEdit,btnSave;
+	public static JTextField txtSearchLoc,txtLocId,txtLocPrice,txtLocStatus,txtLocRemark,txtRentId,txtCustName,txtRentTotal,txtStartDate,txtEndDate,txtDadeLine;
+	//public static DefaultTableModel tableModel;
+	//public static JTable tableWh;
+	
 	static String btnA[];
 	static String btnB[];
+	public static String selectedLoc;
+	public static JLabel[] lbl=new JLabel[168];
+	static int a =0;
+	public static int locSelected;
+	static int lastSelectedLoc;
+	public static Color lastBgColor;
+	public static Color currentBgColor;
+	
 	public WarehouseMgrDesigner() {
 		this.setSize(1400,700);
 		reAdjustPanel();
@@ -31,46 +42,119 @@ public class WarehouseMgrDesigner extends DefaultDesigner implements ActionListe
 		pnlLeft.setBackground(new Color(200,200,200));
 		
 
-		//JPanel pnlContainer = new JPanel();
-		//pnlContainer.setLayout(null);
-
 		Font font = new Font("Tahoma", Font.PLAIN, 10);
 		Border bdr = BorderFactory.createLineBorder(Color.black);
 		Dimension btnSize = new Dimension(35,35);
-
+		
+		
 		String[] rowID1 = {"A","B","","C","D","","E","F"};
 		String slotID = "";
+		Border border = BorderFactory.createLineBorder(Color.GREEN, 5);
 
 		for(int i = 1; i < 9; i++){
 			for(int j = 1; j <= 12; j++) {
 				if(i != 3 && i != 6) {
 					slotID = rowID1[i-1] + String.format("%02d", j);
-					JLabel lbl = new JLabel(slotID,SwingConstants.CENTER);
-					lbl.setBorder(bdr);
-					lbl.setFont(font);
-					lbl.setOpaque(true);
-					lbl.setBackground(Color.WHITE);
-					lbl.setBounds(i*btnSize.width, j*btnSize.height, btnSize.width, btnSize.height);
-					pnlLeft.add(lbl);
+					
+					//System.out.println(a);
+					int b=a;
+					lbl[a] = new JLabel(slotID,SwingConstants.CENTER);
+					lbl[a].setBorder(bdr);
+					lbl[a].setFont(font);
+					lbl[a].setOpaque(true);
+					lbl[a].setBackground(Color.WHITE);
+					lbl[a].setBounds(i*btnSize.width, j*btnSize.height, btnSize.width, btnSize.height);
+					lbl[a].addMouseListener(new MouseAdapter() {
+						public void mouseClicked(MouseEvent e) {
+
+							selectedLoc=lbl[b].getText();
+							locSelected=b;
+							System.out.println("=>"+b);
+							txtLocId.setText(lbl[b].getText().toString());
+							//System.out.println("++>"+lastBgColor);
+							//System.out.println(lbl[b].getBackground());
+							currentBgColor=lbl[b].getBackground();
+							
+							if(lbl[b].getBackground()==Color.WHITE || lbl[b].getBackground()==Color.RED || lbl[b].getBackground()==Color.YELLOW) {
+								lbl[b].setBorder(border);
+							}
+							lbl[lastSelectedLoc].setBorder(bdr);
+			
+
+							WarehouseMgr.mouseclick();
+							lastSelectedLoc=b;
+							lastBgColor=currentBgColor;
+
+
+
+							
+						}
+					});
+					pnlLeft.add(lbl[a]);
+					a++;
 				}
 			}
 		}
-
+		
+		
+		
 		String[] rowID2 = {"G","H","","I","J","","K","L","","M","N"};
-		for(int i = 10; i < 22; i++) {
-			for(int j = 1; j < 12; j++) {
-				if(j != 3 && j != 6 && j != 9) {
-					slotID = rowID2[j-1] + String.format("%02d", i - 9);
-					JLabel lbl = new JLabel(slotID,SwingConstants.CENTER);
-					lbl.setBorder(bdr);
-					lbl.setFont(font);
-					lbl.setOpaque(true);
-					lbl.setBackground(Color.WHITE);
-					lbl.setBounds(i*btnSize.width, j*btnSize.height, btnSize.width, btnSize.height);
-					pnlLeft.add(lbl);
+		for(int i = 1; i < 12; i++) {
+			for(int j = 10; j < 22; j++) {
+				
+				if(i != 3 && i != 6 && i != 9) {
+					int b=a;
+					
+					slotID = rowID2[i-1] + String.format("%02d", j - 9);
+					
+					//System.out.println(a);
+					
+					lbl[a] = new JLabel(slotID,SwingConstants.CENTER);
+					
+					lbl[a].setBorder(bdr);
+					lbl[a].setFont(font);
+					lbl[a].setOpaque(true);
+					lbl[a].setBackground(Color.WHITE);
+					lbl[a].setBounds(j*btnSize.width, i*btnSize.height, btnSize.width, btnSize.height);
+					lbl[a].addMouseListener(new MouseAdapter() {
+						public void mouseClicked(MouseEvent e) {
+
+							selectedLoc=lbl[b].getText();
+							locSelected=b;
+							System.out.println("=>"+b);
+							txtLocId.setText(lbl[b].getText().toString());
+							//System.out.println("++>"+lastBgColor);
+							//System.out.println(lbl[b].getBackground());
+							currentBgColor=lbl[b].getBackground();
+							
+							if(lbl[b].getBackground()==Color.WHITE || lbl[b].getBackground()==Color.RED || lbl[b].getBackground()==Color.YELLOW) {
+								lbl[b].setBorder(border);
+							}
+							lbl[lastSelectedLoc].setBorder(bdr);
+			
+
+							WarehouseMgr.mouseclick();
+							lastSelectedLoc=b;
+							lastBgColor=currentBgColor;
+
+
+
+							
+						}
+					});
+					
+					pnlLeft.add(lbl[a]);
+					
+					a++;
 				}    
+				
+				
 			}
 		}
+		
+		
+		//System.out.println("==>"+lbl[167].getText());
+		
 
 		//this.add(pnlContainer);
 		
@@ -123,26 +207,68 @@ public class WarehouseMgrDesigner extends DefaultDesigner implements ActionListe
 		
 		
 		
-		//รายละเอียด
+		//สถานะคลังสินค้า
 		JPanel pnlDetail = new JPanel();
 		pnlDetail.setLayout(null);
 		pnlDetail.setBorder(BorderFactory.createTitledBorder("สถานะคลังสินค้า"));
-		pnlDetail.setBounds(1030, 10, 330, 100);
+		pnlDetail.setBounds(1030, 10, 330, 240);
+		
+		JLabel lblLocId = new JLabel("เลขที่คลังสินค้า:");
+		lblLocId.setBounds(10, 30, 100, 25);
+		pnlDetail.add(lblLocId);
+		
+		txtLocId=new JTextField();
+		txtLocId.setBounds(110, 30, 210, 25);
+		pnlDetail.add(txtLocId);
+		pnlContent.add(pnlDetail);
+		
+		JLabel lblPrice = new JLabel("ราคาเช่า:");
+		lblPrice.setBounds(10, 60, 100, 25);
+		pnlDetail.add(lblPrice);
+		
+		txtLocPrice=new JTextField();
+		txtLocPrice.setBounds(110, 60, 210, 25);
+		pnlDetail.add(txtLocPrice);
+		pnlContent.add(pnlDetail);
 		
 		JLabel lblLocStatus = new JLabel("สถานะ:");
-		lblLocStatus.setBounds(10, 30, 100, 25);
+		lblLocStatus.setBounds(10, 90, 100, 25);
 		pnlDetail.add(lblLocStatus);
 		
 		txtLocStatus=new JTextField();
-		txtLocStatus.setBounds(110, 30, 210, 25);
+		txtLocStatus.setBounds(110, 90, 210, 25);
 		pnlDetail.add(txtLocStatus);
 		pnlContent.add(pnlDetail);
 		
+		JLabel lblLocRemark = new JLabel("หมายเหตุ:");
+		lblLocRemark.setBounds(10, 120, 100, 25);
+		pnlDetail.add(lblLocRemark);
 		
+		txtLocRemark=new JTextField();
+		txtLocRemark.setBounds(110, 120, 210, 25);
+		pnlDetail.add(txtLocRemark);
+		pnlContent.add(pnlDetail);
+		
+		btnEdit=new JButton("แก้ไข");
+		btnEdit.setBounds(110, 170, 100, 25);
+		btnEdit.addActionListener(this);
+		pnlDetail.add(btnEdit);	
+		
+		btnSave=new JButton("บันทึก");
+		btnSave.setBounds(220, 170, 100, 25);
+		btnSave.addActionListener(this);
+		pnlDetail.add(btnSave);	
+		
+		btnRemake=new JButton("ตั้งเป็นสถานะซ่อมบำรุง");
+		btnRemake.setBounds(110, 200, 210, 25);
+		btnRemake.addActionListener(this);
+		pnlDetail.add(btnRemake);	
+		
+		//รายละเอียดผู้เช่า
 		JPanel pnlBottom1 = new JPanel();
 		pnlBottom1.setLayout(null);
 		pnlBottom1.setBorder(BorderFactory.createTitledBorder("รายละเอียดผู้เช่า"));
-		pnlBottom1.setBounds(1030, 150, 330, 350);
+		pnlBottom1.setBounds(1030, 260, 330, 240);
 		
 		JLabel lbl_RentId=new JLabel("เลขที่ใบแจ้างหนี้:");
 		lbl_RentId.setBounds(10, 30, 100, 25);
@@ -192,20 +318,44 @@ public class WarehouseMgrDesigner extends DefaultDesigner implements ActionListe
 		txtDadeLine.setBounds(110, 180, 210, 25);
 		pnlBottom1.add(txtDadeLine);
 		
-		btnAdd=new JButton("ตั้งเป็นสถานะซ่อมบำรุง");
-		btnAdd.setBounds(110, 300, 210, 25);
-		btnAdd.addActionListener(this);
-		pnlBottom1.add(btnAdd);			
-		
-		
-		
+
 		pnlContent.add(pnlBottom1);
+		
 	}
 	
+	
+	
 	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		// TODO Auto-generated method stub
+	public void actionPerformed(ActionEvent e) {
+		
+		if(e.getSource()==btnRemake) {
+			
+			
+			if(currentBgColor==Color.YELLOW) {
+				lastBgColor=Color.WHITE;
+			}else if(currentBgColor==Color.WHITE) {
+				lastBgColor=Color.YELLOW;
+			}
+			
+
+			new WarehouseMgr().btnRemake();
+			
+			
+
+		}else if(e.getSource()==btnEdit) {
+			new WarehouseMgr().clickbtnedit();
+			
+		}else if(e.getSource()==btnSave) {
+			if(currentBgColor==Color.YELLOW) {
+				lastBgColor=Color.WHITE;
+			}else if(currentBgColor==Color.WHITE) {
+				lastBgColor=Color.YELLOW;
+			}
+			new WarehouseMgr().clickbtnsave();
+			
+		}
 		
 	}
+	
 
 }
