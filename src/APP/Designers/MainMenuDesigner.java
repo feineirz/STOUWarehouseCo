@@ -34,7 +34,7 @@ public class MainMenuDesigner extends DefaultDesigner implements ActionListener{
 		JPanel pnlMenu=new JPanel();
 		pnlMenu.setBounds(10, 320, 1370, 185);
 		
-		ImageIcon imgUserIcon = new ImageIcon("assets/cust3.png", BorderLayout.NORTH);
+		ImageIcon imgUserIcon = new ImageIcon("assets/addUser1.png", BorderLayout.NORTH);
 		btnManegUser=new JButton("<html>ระบบจัดการ<br />ผู้ใช้</html>",imgUserIcon);
 		btnManegUser.setBackground(new Color(200,200,200));
 		btnManegUser.setPreferredSize(new Dimension(120, 120));

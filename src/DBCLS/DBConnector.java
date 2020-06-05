@@ -16,13 +16,14 @@ public class DBConnector {
 			Class.forName("com.mysql.cj.jdbc.Driver");  
 			conn = DriverManager.getConnection(
 					/*
-					"jdbc:mysql://localhost/stouwarehouse?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC",
+					"jdbc:mysql://localhost/stouwarehouse?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&characterEncoding=utf-8",
 					"root",
 					""
 					*/
 					
+		
 					
-					"jdbc:mysql://feinz.net:3306/feinznet_stou?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC",
+					"jdbc:mysql://feinz.net:3306/feinznet_stou?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&characterEncoding=utf-8",
 					"feinznet_stou",
 					"stouproj"
 					

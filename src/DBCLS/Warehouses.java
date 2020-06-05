@@ -5,11 +5,14 @@ import java.util.*;
 
 public class Warehouses {	
 
+
+	
 	/************************** Class Header ***************************/
 	
 	public static enum WHStatus{
 		EMPTY, FULL, MAINTENANCE
 	}
+
 	private WHStatus status;
 	private String loc_id, remark;
 	private Double price;
@@ -71,6 +74,31 @@ public class Warehouses {
 		
 	}
 	
+	public Warehouses(String Warehouses_loc_id, Connection conn) {
+		
+		try {
+			String qry = "SELECT *"
+			+ " FROM " + relName
+			+ " WHERE loc_id = ?";
+			PreparedStatement stmt = conn.prepareStatement(qry);
+			stmt.setString(1, Warehouses_loc_id);
+			   
+			ResultSet rs = stmt.executeQuery();
+			while(rs.next()) {
+				this.loc_id = rs.getString("loc_id");
+				this.status = StringToLocStatus(rs.getString("status"));
+				this.price = rs.getDouble("price");
+				this.remark = rs.getString("remark");
+			}
+		   
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	  
+	}
+	
+
+		 
 	/************************** Properties ***************************/
 	public String getLocID() {
 		return loc_id;
@@ -114,7 +142,8 @@ public class Warehouses {
 			Statement stmt = conn.createStatement();			
 			ResultSet rs = stmt.executeQuery(qry);
 			while(rs.next()) {
-				buff.add(new Warehouses(rs.getString("loc_id")));
+				//buff.add(new Warehouses(rs.getString("loc_id")));
+				buff.add(new Warehouses(rs.getString("loc_id"), conn));
 			}
 			
 			conn.close();
@@ -217,6 +246,20 @@ public class Warehouses {
 	}
 	
 	/************************** Custom Method ***************************/
-	
+	public static String locStatusToString(WHStatus ls) {
+		switch (ls){
+			case EMPTY: return "E";
+			case FULL: return "F";
+			default: return "M";  
+		}
+	}
+	 
+	public static WHStatus StringToLocStatus(String status) {
+		switch (status) {
+			case "E": return WHStatus.EMPTY;
+			case "F": return WHStatus.FULL;
+			default: return WHStatus.MAINTENANCE;
+		}
+	}
 }
 

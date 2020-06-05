@@ -14,6 +14,11 @@ import DBCLS.DBConnector;
 import DBCLS.Warehouses;
 import DBCLS.Warehouses.WHStatus;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 public class WarehouseMgr {
 	static JFrame wareHouse = new WarehouseMgrDesigner();
 	
@@ -27,7 +32,7 @@ public class WarehouseMgr {
 	
 	static int maxId=0;
 	static String locStatClick;
-	
+	/*
 	public static void main(String[] arg) {
 		wareHouse.setVisible(true);
 		textlock();
@@ -39,13 +44,15 @@ public class WarehouseMgr {
 
 		
 	}
+	*/
 	
 	public static void getWarehouseMgr() {
-		wareHouse.setVisible(true);
 		
+		wareHouse.setVisible(true);
 		textlock();
 		x=0;
 		showdata();
+		
 		WarehouseMgrDesigner.btnEdit.setEnabled(false);	
 		WarehouseMgrDesigner.btnSave.setEnabled(false);	
 		WarehouseMgrDesigner.btnRemake.setEnabled(false);	
@@ -56,13 +63,18 @@ public class WarehouseMgr {
 	
 	
 	public static void showdata() {
-		
+       Date date = new Date();
+       //Pattern for showing milliseconds in the time "SSS"
+       DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+       String stringDate = sdf.format(date);
+       
+       System.out.println(stringDate);
 		try {
 			ArrayList<Warehouses> locs=Warehouses.listAllWarehouseLocation("", "");
 			
 			if(!locs.isEmpty()) {
 				for (Warehouses loc : locs) {
-
+					
 					if(loc.getStatus().toString()=="FULL") {
 						WarehouseMgrDesigner.lbl[x].setBackground(Color.RED);
 					}else if(loc.getStatus().toString()=="MAINTENANCE") {
@@ -71,6 +83,7 @@ public class WarehouseMgr {
 						WarehouseMgrDesigner.lbl[x].setBackground(Color.WHITE);
 					}
 					x++;
+					System.out.println("=>"+loc.getLocID());
 				}
 			}
 
@@ -79,7 +92,11 @@ public class WarehouseMgr {
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
-		
+       Date date2 = new Date();
+       //Pattern for showing milliseconds in the time "SSS"
+       DateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+       String stringDate2 = sdf2.format(date2);
+       System.out.println(stringDate2);
 
 	}
 	

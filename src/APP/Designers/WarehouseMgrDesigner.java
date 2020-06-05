@@ -75,11 +75,14 @@ public class WarehouseMgrDesigner extends DefaultDesigner implements ActionListe
 							//System.out.println(lbl[b].getBackground());
 							currentBgColor=lbl[b].getBackground();
 							
-							if(lbl[b].getBackground()==Color.WHITE || lbl[b].getBackground()==Color.RED || lbl[b].getBackground()==Color.YELLOW) {
-								lbl[b].setBorder(border);
+							if(b != lastSelectedLoc) {
+								if(lbl[b].getBackground()==Color.WHITE || lbl[b].getBackground()==Color.RED || lbl[b].getBackground()==Color.YELLOW) {
+									lbl[b].setBorder(border);
+								}
+
+								lbl[lastSelectedLoc].setBorder(bdr);
 							}
-							lbl[lastSelectedLoc].setBorder(bdr);
-			
+
 
 							WarehouseMgr.mouseclick();
 							lastSelectedLoc=b;
@@ -127,10 +130,13 @@ public class WarehouseMgrDesigner extends DefaultDesigner implements ActionListe
 							//System.out.println(lbl[b].getBackground());
 							currentBgColor=lbl[b].getBackground();
 							
-							if(lbl[b].getBackground()==Color.WHITE || lbl[b].getBackground()==Color.RED || lbl[b].getBackground()==Color.YELLOW) {
-								lbl[b].setBorder(border);
+							if(b != lastSelectedLoc) {
+								if(lbl[b].getBackground()==Color.WHITE || lbl[b].getBackground()==Color.RED || lbl[b].getBackground()==Color.YELLOW) {
+									lbl[b].setBorder(border);
+								}
+
+								lbl[lastSelectedLoc].setBorder(bdr);
 							}
-							lbl[lastSelectedLoc].setBorder(bdr);
 			
 
 							WarehouseMgr.mouseclick();
