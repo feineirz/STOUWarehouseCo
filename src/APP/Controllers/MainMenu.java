@@ -25,7 +25,10 @@ public class MainMenu{
 	}
 	
 	public static void btnManegLog() {
-		new WarehouseMgr().getWarehouseMgr();
+		new WarehouseMgr();
+		
+		//WarehouseMgr.wareHouse.setVisible(true);
+		WarehouseMgr.getWarehouseMgr();
 	}
 	public static void btnManegRent() {
 		new AddRental().getAddRental();

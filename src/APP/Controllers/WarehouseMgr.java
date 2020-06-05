@@ -17,6 +17,7 @@ import DBCLS.Warehouses.WHStatus;
 import java.util.Calendar;
 import java.util.Date;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 
 public class WarehouseMgr {
@@ -32,43 +33,73 @@ public class WarehouseMgr {
 	
 	static int maxId=0;
 	static String locStatClick;
-	/*
+	
 	public static void main(String[] arg) {
 		wareHouse.setVisible(true);
+		WarehouseMgrDesigner.pnlLeft.setVisible(false);
+		WarehouseMgrDesigner.pnlDetail.setVisible(false);
+		WarehouseMgrDesigner.pnlBottom1.setVisible(false);
 		textlock();
 		x=0;
-		showdata();
+		listData(0);
+		//showdata();
+		
+		WarehouseMgrDesigner.pnlLeft.setVisible(true);
+		WarehouseMgrDesigner.pnlDetail.setVisible(true);
+		WarehouseMgrDesigner.pnlBottom1.setVisible(true);
+		
 		WarehouseMgrDesigner.btnEdit.setEnabled(false);	
 		WarehouseMgrDesigner.btnSave.setEnabled(false);	
 		WarehouseMgrDesigner.btnRemake.setEnabled(false);	
 
 		
 	}
-	*/
+	
 	
 	public static void getWarehouseMgr() {
-		
+
 		wareHouse.setVisible(true);
+
+		
+		WarehouseMgrDesigner.pnlLeft.setVisible(false);
+		WarehouseMgrDesigner.pnlDetail.setVisible(false);
+		WarehouseMgrDesigner.pnlBottom1.setVisible(false);
+		
+		
+
 		textlock();
 		x=0;
-		showdata();
+		listData();
+		
+		//showdata();
+		
+		WarehouseMgrDesigner.pnlLeft.setVisible(true);
+		WarehouseMgrDesigner.pnlDetail.setVisible(true);
+		WarehouseMgrDesigner.pnlBottom1.setVisible(true);
+		
 		
 		WarehouseMgrDesigner.btnEdit.setEnabled(false);	
 		WarehouseMgrDesigner.btnSave.setEnabled(false);	
 		WarehouseMgrDesigner.btnRemake.setEnabled(false);	
 		
 
-	}
 
+
+	}
+	
+	public static void listData() {
+		listData(0);
+	}
 	
 	
 	public static void showdata() {
-       Date date = new Date();
-       //Pattern for showing milliseconds in the time "SSS"
-       DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-       String stringDate = sdf.format(date);
-       
-       System.out.println(stringDate);
+		/*
+   		Date date = new Date();
+   		//Pattern for showing milliseconds in the time "SSS"
+   		DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+   		String stringDate = sdf.format(date);
+		 	*/
+		// System.out.println(stringDate);
 		try {
 			ArrayList<Warehouses> locs=Warehouses.listAllWarehouseLocation("", "");
 			
@@ -86,18 +117,57 @@ public class WarehouseMgr {
 					System.out.println("=>"+loc.getLocID());
 				}
 			}
-
+		
 			
-
+		
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
-       Date date2 = new Date();
-       //Pattern for showing milliseconds in the time "SSS"
-       DateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-       String stringDate2 = sdf2.format(date2);
-       System.out.println(stringDate2);
-
+		/*
+		Date date2 = new Date();
+		//Pattern for showing milliseconds in the time "SSS"
+		DateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+		String stringDate2 = sdf2.format(date2);
+		System.out.println(stringDate2);
+		*/
+	}
+	
+	public static void listData(int ProgressType) {
+		ArrayList<Warehouses> whs = Warehouses.listAllWarehouseLocation("", "");
+		if(whs.size() > 0) {
+			Integer i = 0;
+			Integer max = whs.size();
+			WarehouseMgrDesigner.pgbPregress.setMaximum(max);
+			for(Warehouses wh:whs) {
+				System.out.println(wh.getLocID());
+				WarehouseMgrDesigner.pgbPregress.setValue(++i);
+				
+				if(wh.getStatus().toString()=="FULL") {
+					WarehouseMgrDesigner.lbl[x].setBackground(Color.RED);
+				}else if(wh.getStatus().toString()=="MAINTENANCE") {
+					WarehouseMgrDesigner.lbl[x].setBackground(Color.YELLOW);
+				}else if(wh.getStatus().toString()=="EMPTY") {
+					WarehouseMgrDesigner.lbl[x].setBackground(Color.WHITE);
+				}
+				x++;
+				
+				if(ProgressType == 0) {
+					// Records
+					WarehouseMgrDesigner.pgbPregress.setString(i.toString() + " of " + max.toString() + " item(s) completed.");     
+				} else {
+					// Percentage
+					Float cur =(i / (float)max) * 100;
+					WarehouseMgrDesigner.pgbPregress.setString(new DecimalFormat("0.00").format(cur) + "% completed.");
+				}
+				
+				try {
+				//delay(10);
+				Thread.sleep(30);
+				} catch (Exception e) {
+				// whatever
+				}
+			}
+		}
 	}
 	
 	public static void showdataClicked() {
@@ -205,7 +275,8 @@ public class WarehouseMgr {
 	}
 	
 	public static void clickbtnedit() {
-		
+		listData();
+		/*
 		if(WarehouseMgrDesigner.btnEdit.getText()=="·°È‰¢") {
 			cleartxt();
 
@@ -225,6 +296,7 @@ public class WarehouseMgr {
 			btnAddClicked=false;
 			
 		}
+		*/
 	}
 	
 	
@@ -331,5 +403,7 @@ public class WarehouseMgr {
 		}
 
 	}
+	
+	
 	
 }

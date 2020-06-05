@@ -4,8 +4,10 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Toolkit;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.text.DecimalFormat;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -29,14 +31,23 @@ public class WarehouseMgrDesigner extends DefaultDesigner implements ActionListe
 	static int lastSelectedLoc;
 	public static Color lastBgColor;
 	public static Color currentBgColor;
+	public static JPanel pnlLeft,pnlDetail,pnlBottom1;
+	public static JProgressBar pgbPregress;
 	
 	public WarehouseMgrDesigner() {
 		this.setSize(1400,700);
 		reAdjustPanel();
 		pnlContent.setLayout(null);
 		this.setDefaultCloseOperation(this.DISPOSE_ON_CLOSE);
+		//**progressbar
+		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+		Dimension frameSize = new Dimension(1400, 700);
+		Dimension pgbSize = new Dimension(frameSize.width / 2, 20);
+		 
 		
-		JPanel pnlLeft=new JPanel();
+		//**progressbar
+		
+		pnlLeft=new JPanel();
 		pnlLeft.setLayout(null);
 		pnlLeft.setBounds(10, 10, 1000, 490);
 		pnlLeft.setBackground(new Color(200,200,200));
@@ -158,6 +169,21 @@ public class WarehouseMgrDesigner extends DefaultDesigner implements ActionListe
 			}
 		}
 		
+		//******progressbar
+		pgbPregress = new JProgressBar(0,100);
+		pgbPregress.setBounds(
+			(frameSize.width - pgbSize.width) / 2,
+			(frameSize.height - pgbSize.height) / 2,
+			pgbSize.width,
+			pgbSize.height
+		);
+		pgbPregress.setValue(0);
+		pgbPregress.setStringPainted(true);
+		pgbPregress.setString("");
+		this.add(pgbPregress);
+		 
+		this.revalidate();
+		this.repaint();
 		
 		//System.out.println("==>"+lbl[167].getText());
 		
@@ -214,7 +240,7 @@ public class WarehouseMgrDesigner extends DefaultDesigner implements ActionListe
 		
 		
 		//สถานะคลังสินค้า
-		JPanel pnlDetail = new JPanel();
+		pnlDetail = new JPanel();
 		pnlDetail.setLayout(null);
 		pnlDetail.setBorder(BorderFactory.createTitledBorder("สถานะคลังสินค้า"));
 		pnlDetail.setBounds(1030, 10, 330, 240);
@@ -271,7 +297,7 @@ public class WarehouseMgrDesigner extends DefaultDesigner implements ActionListe
 		pnlDetail.add(btnRemake);	
 		
 		//รายละเอียดผู้เช่า
-		JPanel pnlBottom1 = new JPanel();
+		pnlBottom1 = new JPanel();
 		pnlBottom1.setLayout(null);
 		pnlBottom1.setBorder(BorderFactory.createTitledBorder("รายละเอียดผู้เช่า"));
 		pnlBottom1.setBounds(1030, 260, 330, 240);
