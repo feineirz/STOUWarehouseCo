@@ -72,10 +72,11 @@ public class UserMgr {
 				for (Users user : users) {
 
 					UserMgrDesigner.tableModel.addRow(new Object[0]);
-					UserMgrDesigner.tableModel.setValueAt(user.getUserID(),row,0);
-					UserMgrDesigner.tableModel.setValueAt(user.getUsername(),row,1);
-					UserMgrDesigner.tableModel.setValueAt(user.getPhone(),row,2);
-					UserMgrDesigner.tableModel.setValueAt(user.getEmail(),row,3);
+					UserMgrDesigner.tableModel.setValueAt(row+1,row,0);
+					UserMgrDesigner.tableModel.setValueAt(user.getUserID(),row,1);
+					UserMgrDesigner.tableModel.setValueAt(user.getUsername(),row,2);
+					UserMgrDesigner.tableModel.setValueAt(user.getPhone(),row,3);
+					UserMgrDesigner.tableModel.setValueAt(user.getEmail(),row,4);
 					maxId=user.getUserID();
 					row++;
 				}

@@ -76,12 +76,11 @@ public class UserMgrDesigner extends DefaultDesigner implements ActionListener{
 		tableUser=new JTable();
 		tableUser.setRowHeight(30);
 		Object data[][]= {
-				{null,null,null,null,null},
-				{null,null,null,null,null},
-				{null,null,null,null,null},
+				{null,null,null,null,null,null},
+
 				
 		};
-		String columns[]= {"UserID","Username","À¡“¬‡≈¢‚∑√»—æ∑Ï","Õ’‡¡≈"};
+		String columns[]= {"≈”¥—∫","UserID","Username","À¡“¬‡≈¢‚∑√»—æ∑Ï","Õ’‡¡≈"};
 		tableModel=new DefaultTableModel(data, columns) {
 			public boolean isCellEditable(int row, int column) {
 				return false;
