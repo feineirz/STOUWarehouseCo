@@ -27,6 +27,7 @@ public class LoginDesigner extends JFrame implements ActionListener{
 		setLocation(x,y);
 		*/
 		this.setLocationRelativeTo(null);
+		this.setIconImage(new ImageIcon("assets/appicon.png").getImage());
 		Container c =getContentPane();
 		c.setLayout(null);
 		
