@@ -2,11 +2,15 @@ package APP.Designers;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowEvent;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -27,22 +31,23 @@ import APP.Controllers.AddCustomer;
 import APP.Controllers.AddRental;
 import APP.Controllers.CustomerMgr;
 import APP.Controllers.MainMenu;
+import APP.Controllers.UserMgr;
 import APP.Controllers.WHLocationPickup;
 
 
 public class AddRentalDesigner extends DefaultDesigner implements ActionListener{
 	public static JButton btnCustAdd,btnSelect,btnEdit,btnDelete,btnReset,btnPrint,btnRentSave;
-	public static JTextField txtRentId,txtLocId,txtRentStart,txtRentEnd;
+	public static JTextField txtRentId,txtLocId,txtRentStart,txtRentEnd,txtDiscount2;
 	public static JComboBox cbCustName;
 	public static DefaultTableModel tableModel;
 	public static JTable tableCust;
 	public static UtilDateModel model, model2;
 	public static JDatePanelImpl startDatePanel, endDatePanel;
 	public static JDatePickerImpl startDatePicker, endDatePicker;
-	public static JLabel lblSumTotal;
-	
+	public static JLabel lblSumTotal,lblVat2,lblTotal2;
+	protected Font fontHead = new Font("Tahoma", Font.BOLD, 15);
 	public AddRentalDesigner() {
-		this.setDefaultCloseOperation(this.DISPOSE_ON_CLOSE);
+		
 		model = new UtilDateModel();  
 		model2 = new UtilDateModel();  
 		
@@ -57,25 +62,51 @@ public class AddRentalDesigner extends DefaultDesigner implements ActionListener
 		this.setSize(1400,700);
 		reAdjustPanel();
 		pnlContent.setLayout(null);
-		
+		this.setDefaultCloseOperation(this.DISPOSE_ON_CLOSE);
+		this.addWindowListener(new java.awt.event.WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				MainMenu.getmain();
+			}
+		});
 		//ค้นหา
+		JPanel pnlcolor=new JPanel();
+		pnlcolor.setBounds(10,10,10,30);
+		pnlcolor.setBackground(Color.ORANGE);
+		pnlContent.add(pnlcolor);
+		
+		JPanel pnlbar=new JPanel();
+		pnlbar.setLayout(null);
+		pnlbar.setBounds(10,10,1000,30);
+		pnlbar.setBackground(Color.GRAY);
+		pnlContent.add(pnlbar);
+		
+		JLabel lblHead=new JLabel("รายการการเช่าคลังสินค้า");
+		lblHead.setBounds(20, 0, 300, 25);
+		lblHead.setForeground(Color.ORANGE);
+		lblHead.setFont(fontHead);
+		pnlbar.add(lblHead);
+		/*
 		JLabel lblRentName=new JLabel("รายการการเช่าคลังสินค้า");
 		lblRentName.setBounds(10, 10, 200, 25);
 		pnlContent.add(lblRentName);
-		
-		JLabel lblRentId=new JLabel("เลขที่ใบแจ้งหนี้");
-		lblRentId.setBounds(710, 10, 100, 25);
-		pnlContent.add(lblRentId);
+		*/
+		JLabel lblRentId=new JLabel("เลขที่สัญญาเช่า");
+		lblRentId.setBounds(710, 2, 100, 25);
+		lblRentId.setForeground(Color.WHITE);
+		pnlbar.add(lblRentId);
 		
 		txtRentId=new JTextField();
-		txtRentId.setBounds(810, 10, 200, 25);
-		pnlContent.add(txtRentId);
+		txtRentId.setBounds(810, 2, 185, 25);
+		txtRentId.setEditable(false);
+		pnlbar.add(txtRentId);
 		
 		//table
 		JScrollPane scrollTable=new JScrollPane();
-		scrollTable.setBounds(10, 50, 1000, 350);
+		scrollTable.setBounds(10, 50, 1000, 320);
 		scrollTable.setPreferredSize(new Dimension(750,300));
 		tableCust=new JTable();
+		tableCust.setRowHeight(30);
 		Object data[][]= {
 
 				
@@ -96,19 +127,76 @@ public class AddRentalDesigner extends DefaultDesigner implements ActionListener
 		scrollTable.setViewportView(tableCust);
 		pnlContent.add(scrollTable);
 		
-		JLabel lblSum=new JLabel("รวมราคา:");
-		lblSum.setBounds(700,420,120,25);
+		JLabel lblSum=new JLabel("ยอดรวม:");
+		lblSum.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblSum.setBounds(660,380,120,25);
 		pnlContent.add(lblSum);
 		
 		lblSumTotal=new JLabel("",SwingConstants.RIGHT);
-		lblSumTotal.setBounds(800,420,140,25);
+		lblSumTotal.setBounds(800,380,140,25);
 		lblSumTotal.setBackground(Color.GRAY);
+		lblSumTotal.setForeground(Color.WHITE);
 		lblSumTotal.setOpaque(true);
 		pnlContent.add(lblSumTotal);
 		
 		JLabel lblBath=new JLabel("บาท");
-		lblBath.setBounds(950,420,120,25);
+		lblBath.setBounds(970,380,100,25);
 		pnlContent.add(lblBath);
+		
+		
+		JLabel lblVat=new JLabel("ภาษีมูลค่าเพิ่ม 7%:");
+		lblVat.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblVat.setBounds(660,410,120,25);
+		pnlContent.add(lblVat);
+		
+		lblVat2=new JLabel("",SwingConstants.RIGHT);
+		lblVat2.setBounds(800,410,140,25);
+		lblVat2.setBackground(Color.GRAY);
+		lblVat2.setForeground(Color.WHITE);
+		lblVat2.setOpaque(true);
+		pnlContent.add(lblVat2);
+		
+		JLabel lblBath2=new JLabel("บาท");
+		lblBath2.setBounds(970,410,100,25);
+		pnlContent.add(lblBath2);
+		
+		JLabel lblDiscount=new JLabel("ส่วนลด:");
+		lblDiscount.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblDiscount.setBounds(660,440,120,25);
+		pnlContent.add(lblDiscount);
+		
+		txtDiscount2=new JTextField("");
+		txtDiscount2.setHorizontalAlignment(SwingConstants.RIGHT);
+		txtDiscount2.setBounds(800,440,140,25);
+		txtDiscount2.setBackground(Color.GRAY);
+		txtDiscount2.setForeground(Color.WHITE);
+		txtDiscount2.addKeyListener(new KeyAdapter() {
+			public void keyReleased(KeyEvent keyevent) {
+				new AddRental().getsumtotal();
+			}
+		});
+		txtDiscount2.setOpaque(true);
+		pnlContent.add(txtDiscount2);
+		
+		JLabel lblBath3=new JLabel("บาท");
+		lblBath3.setBounds(970,440,100,25);
+		pnlContent.add(lblBath3);
+		
+		JLabel lblTotal=new JLabel("รวมทั้งสิ้น:");
+		lblTotal.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblTotal.setBounds(660,470,120,25);
+		pnlContent.add(lblTotal);
+		
+		lblTotal2=new JLabel("",SwingConstants.RIGHT);
+		lblTotal2.setBounds(800,470,140,25);
+		lblTotal2.setBackground(Color.GRAY);
+		lblTotal2.setForeground(Color.YELLOW);
+		lblTotal2.setOpaque(true);
+		pnlContent.add(lblTotal2);
+		
+		JLabel lblBath4=new JLabel("บาท");
+		lblBath4.setBounds(970,470,100,25);
+		pnlContent.add(lblBath4);
 		
 		//รายละเอียด
 		JPanel pnlDetail = new JPanel();
@@ -209,27 +297,27 @@ public class AddRentalDesigner extends DefaultDesigner implements ActionListener
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource()==btnCustAdd) {
 
-			new AddCustomer().getaddcustomer();
+			AddCustomer.getaddcustomer();
 
 		}else if(e.getSource()==btnSelect) {
-			new WHLocationPickup().getWHLocationPickup();
+			WHLocationPickup.getWHLocationPickup();
 			
 		}else if(e.getSource()==btnEdit) {
 			//new UserMgr().clickbtnedit();
 			
 		}else if(e.getSource()==btnDelete) {
 			//new UserMgr().clickbtnsave();
-			new AddRental().btnDelete();
+			AddRental.btnDelete();
 			
 		}else if(e.getSource()==btnReset) {
-			new AddRental().btnReset();
+			AddRental.btnReset();
 
 			
 		}else if(e.getSource()==btnPrint) {
 			//new MainMenu().btnManegUser();
 			
 		}else if(e.getSource()==btnRentSave) {
-			new AddRental().clickbtnsave();
+			AddRental.clickbtnsave();
 			
 
 			

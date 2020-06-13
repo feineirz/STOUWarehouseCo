@@ -8,7 +8,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class AddCustomerDesigner extends JFrame implements ActionListener{
+public class AddCustomerDesigner extends JDialog implements ActionListener{
 	public static JTextField txtCustId,txtCustName,txtCustPhone,txtCustFax,txtCustEmail;
 	public static JTextArea txtCustAddr;
 	public static JButton btnAdd,btnExit;
@@ -54,6 +54,7 @@ public class AddCustomerDesigner extends JFrame implements ActionListener{
 		pnlRight.add(lblCustId);
 		
 		txtCustId=new JTextField();
+		txtCustId.setEditable(false);
 		txtCustId.setBounds(110, 20, 260, 25);
 		pnlRight.add(txtCustId);
 		

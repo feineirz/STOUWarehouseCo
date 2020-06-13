@@ -111,22 +111,23 @@ public class MainMenuDesigner extends DefaultDesigner implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource()==btnManegMoney) {
 
-			new MainMenu().btnManegMoney();
+			MainMenu.btnManegMoney();
 		}else if(e.getSource()==btnManegLog) {
-			new MainMenu().btnManegLog();
+			MainMenu.btnManegLog();
+			
 			
 		}else if(e.getSource()==btnManegRent) {
-			new MainMenu().btnManegRent();
+			MainMenu.btnManegRent();
 		}else if(e.getSource()==btnRental) {
-			new MainMenu().btnRental();
+			MainMenu.btnRental();
 		}else if(e.getSource()==btnManegReport) {
-			new MainMenu().btnManegReport();
+			MainMenu.btnManegReport();
 			
 		}else if(e.getSource()==btnManegUser) {
-			new MainMenu().btnManegUser();
+			MainMenu.btnManegUser();
 			
 		}else if(e.getSource()==btnAbout) {
-			new MainMenu().btnAbout();
+			MainMenu.btnAbout();
 			
 		}else if(e.getSource()==btnExit) {
 			this.dispose();

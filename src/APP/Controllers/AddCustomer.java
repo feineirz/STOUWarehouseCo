@@ -1,20 +1,26 @@
 package APP.Controllers;
 import java.awt.Color;
+import java.util.ArrayList;
 
 import javax.swing.*;
 
 import APP.Designers.*;
 import DBCLS.Customers;
+import DBCLS.Users;
 
 public class AddCustomer {
 	// Preload Assets
-	static JFrame addCust = new AddCustomerDesigner();
+	static AddCustomerDesigner addCust = new AddCustomerDesigner();
+	static int maxuserId;
 	public static void getaddcustomer() {
 		
 		//defaultFrame.setVisible(true);
-		addCust.setVisible(true);
+		//addCust.setVisible(true);
+
 		cleartxt();
-		
+
+		addCust.setModal(true);
+		addCust.setVisible(true);
 		
 	}
 	
@@ -27,6 +33,20 @@ public class AddCustomer {
 		}
 		
 
+	}
+	
+	static int maxuserId() {
+
+		ArrayList<Customers> cuts = Customers.listAllCustomers("", "cust_id ASC");
+		if(!cuts.isEmpty()) {
+			for (Customers cut : cuts) {
+
+				maxuserId=cut.getCustomerID()+1;
+				
+
+			}
+		}
+		return maxuserId;
 	}
 	
 	public static boolean formValidation() {
@@ -72,6 +92,7 @@ public class AddCustomer {
 		AddCustomerDesigner.txtCustPhone.setText("");
 		AddCustomerDesigner.txtCustFax.setText("");
 		AddCustomerDesigner.txtCustEmail.setText("");
+		AddCustomerDesigner.txtCustId.setText(String.valueOf(maxuserId()));
 	}
 	
 	

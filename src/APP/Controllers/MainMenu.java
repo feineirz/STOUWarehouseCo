@@ -5,47 +5,43 @@ import APP.Designers.*;
 public class MainMenu{
 	// Preload Assets
 	static JFrame mainMenu = new MainMenuDesigner();
-	public static void getMainMenu() {
-		
-		mainMenu.setVisible(true);
 
-		
-	}
-	
-	
 	
 	public static void getmain() {
 		mainMenu.setVisible(true);
-
 	}
 	
-	
 	public static void btnManegMoney() {
-		new CustomerMgr().getcustomerMgr();
+		CustomerMgr.getcustomerMgr();
+		mainMenu.setVisible(false);
 	}
 	
 	public static void btnManegLog() {
-		new WarehouseMgr();
-		
-		//WarehouseMgr.wareHouse.setVisible(true);
 		WarehouseMgr.getWarehouseMgr();
+		mainMenu.setVisible(false);
+		
 	}
 	public static void btnManegRent() {
-		new AddRental().getAddRental();
+		AddRental.getAddRental();
+		mainMenu.setVisible(false);
 	}
 	public static void btnManegUser() {
-		new UserMgr().getusermgr();
+		UserMgr.getusermgr();
+		mainMenu.setVisible(false);
 	}
 	
 	public static void btnRental() {
-		new RentalMgr().getRental();
+		RentalMgr.getRental();
+		mainMenu.setVisible(false);
 	}
 	
 	public static void btnManegReport() {
-		new ReportGen().getReport();
+		ReportGen.getReport();
+		mainMenu.setVisible(false);
 	}
 	
 	public static void btnAbout() {
-		new About().getAbout();
+		About.getAbout();
+		mainMenu.setVisible(false);
 	}
 }

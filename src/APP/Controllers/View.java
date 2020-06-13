@@ -8,7 +8,7 @@ public class View {
 	
 	// Preload Assets
 	static JFrame defaultFrame = new AboutDesigner();
-	static JFrame addCust = new AddCustomerDesigner();
+	static AddCustomerDesigner addCust = new AddCustomerDesigner();
 	public static void main(String[] arg) {
 		
 		//defaultFrame.setVisible(true);

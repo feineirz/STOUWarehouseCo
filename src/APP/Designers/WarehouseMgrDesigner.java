@@ -35,10 +35,17 @@ public class WarehouseMgrDesigner extends DefaultDesigner implements ActionListe
 	public static JProgressBar pgbPregress;
 	
 	public WarehouseMgrDesigner() {
+		
 		this.setSize(1400,700);
 		reAdjustPanel();
 		pnlContent.setLayout(null);
 		this.setDefaultCloseOperation(this.DISPOSE_ON_CLOSE);
+		this.addWindowListener(new java.awt.event.WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				MainMenu.getmain();
+			}
+		});
 		//**progressbar
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		Dimension frameSize = new Dimension(1400, 700);
@@ -170,6 +177,7 @@ public class WarehouseMgrDesigner extends DefaultDesigner implements ActionListe
 		}
 		
 		//******progressbar
+		/*
 		pgbPregress = new JProgressBar(0,100);
 		pgbPregress.setBounds(
 			(frameSize.width - pgbSize.width) / 2,
@@ -177,6 +185,7 @@ public class WarehouseMgrDesigner extends DefaultDesigner implements ActionListe
 			pgbSize.width,
 			pgbSize.height
 		);
+		
 		pgbPregress.setValue(0);
 		pgbPregress.setStringPainted(true);
 		pgbPregress.setString("");
@@ -184,7 +193,7 @@ public class WarehouseMgrDesigner extends DefaultDesigner implements ActionListe
 		 
 		this.revalidate();
 		this.repaint();
-		
+		*/
 		//System.out.println("==>"+lbl[167].getText());
 		
 
@@ -233,6 +242,15 @@ public class WarehouseMgrDesigner extends DefaultDesigner implements ActionListe
 		JLabel lblRented = new JLabel("เลือก");
 		lblRented.setBounds(860, 270, 100, 20);
 		pnlLeft.add(lblRented);
+		
+		pgbPregress = new JProgressBar(0,100);
+		pgbPregress.setBounds(35,460,930,20);
+		
+		pgbPregress.setValue(0);
+		pgbPregress.setStringPainted(true);
+		pgbPregress.setString("");
+		pnlLeft.add(pgbPregress);
+
 		
 		pnlContent.add(pnlLeft);
 		
@@ -302,7 +320,7 @@ public class WarehouseMgrDesigner extends DefaultDesigner implements ActionListe
 		pnlBottom1.setBorder(BorderFactory.createTitledBorder("รายละเอียดผู้เช่า"));
 		pnlBottom1.setBounds(1030, 260, 330, 240);
 		
-		JLabel lbl_RentId=new JLabel("เลขที่ใบแจ้างหนี้:");
+		JLabel lbl_RentId=new JLabel("เลขที่สัญญาเช่า:");
 		lbl_RentId.setBounds(10, 30, 100, 25);
 		pnlBottom1.add(lbl_RentId);
 		
@@ -323,8 +341,12 @@ public class WarehouseMgrDesigner extends DefaultDesigner implements ActionListe
 		pnlBottom1.add(lbl_RentTotal);
 		
 		txtRentTotal=new JTextField();
-		txtRentTotal.setBounds(110, 90, 210, 25);
+		txtRentTotal.setBounds(110, 90, 180, 25);
 		pnlBottom1.add(txtRentTotal);
+		
+		JLabel lblRentTotal=new JLabel("วัน");
+		lblRentTotal.setBounds(300, 90, 30, 25);
+		pnlBottom1.add(lblRentTotal);
 		
 		JLabel lbl_StartDate=new JLabel("วันเริ่มต้น:");
 		lbl_StartDate.setBounds(10, 120, 100, 25);
@@ -347,10 +369,13 @@ public class WarehouseMgrDesigner extends DefaultDesigner implements ActionListe
 		pnlBottom1.add(lbl_DadeLine);
 		
 		txtDadeLine=new JTextField();
-		txtDadeLine.setBounds(110, 180, 210, 25);
+		txtDadeLine.setBounds(110, 180, 180, 25);
 		pnlBottom1.add(txtDadeLine);
 		
-
+		JLabel lblDadeLine=new JLabel("วัน");
+		lblDadeLine.setBounds(300, 180, 30, 25);
+		pnlBottom1.add(lblDadeLine);
+		
 		pnlContent.add(pnlBottom1);
 		
 	}

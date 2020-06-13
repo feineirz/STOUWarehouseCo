@@ -1,7 +1,11 @@
 package APP.Designers;
 
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -10,47 +14,74 @@ import APP.Controllers.*;
 import DBCLS.*;
 
 public class UserMgrDesigner extends DefaultDesigner implements ActionListener{
-	public static JButton btnSearchCust,btnAdd,btnEdit,btnSave;
-	public static JTextField txtSearchUser,txtPassword,txtUserId,txtUserName,txtUserPhone,txtUserEmail;
+	public static JButton btnSearchCust,btnAdd,btnDelete,btnEdit,btnSave;
+	public static JTextField txtSearchUser,txtPass,txtUserId,txtUserName,txtUserPhone,txtUserEmail;
 	public static DefaultTableModel tableModel;
 	public static JTable tableUser;
-	
+	public static JLabel lblTotalsum,lblTime;
+	public static JPasswordField txtPassword;
+	protected Font fontHead = new Font("Tahoma", Font.BOLD, 15);
 	public UserMgrDesigner() {
 		this.setSize(1400,700);
 		reAdjustPanel();
 		pnlContent.setLayout(null);
 		this.setDefaultCloseOperation(this.DISPOSE_ON_CLOSE);
 		
+		this.addWindowListener(new java.awt.event.WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				MainMenu.getmain();
+			}
+		});
 		//ค้นหา
+		JPanel pnlcolor=new JPanel();
+		pnlcolor.setBounds(10,10,10,30);
+		pnlcolor.setBackground(Color.ORANGE);
+		pnlContent.add(pnlcolor);
+		
+		JPanel pnlbar=new JPanel();
+		pnlbar.setLayout(null);
+		pnlbar.setBounds(10,10,1000,30);
+		pnlbar.setBackground(Color.GRAY);
+		pnlContent.add(pnlbar);
+		
+		JLabel lblHead=new JLabel("รายชื่อผู้ใช้ระบบ");
+		lblHead.setBounds(20, 0, 300, 25);
+		lblHead.setForeground(Color.ORANGE);
+		lblHead.setFont(fontHead);
+		pnlbar.add(lblHead);
+		/*
 		JLabel lblUserName=new JLabel("รายชื่อผู้ใช้ระบบ");
 		lblUserName.setBounds(10, 10, 100, 25);
 		pnlContent.add(lblUserName);
-		
+		*/
 		txtSearchUser=new JTextField();
-		txtSearchUser.setBounds(700, 10, 200, 25);
+		txtSearchUser.setBounds(700, 2, 200, 25);
 		txtSearchUser.addKeyListener(new KeyAdapter() {
 			public void keyReleased(KeyEvent keyevent) {
 				new UserMgr().showdata();
 			}
 		});
-		pnlContent.add(txtSearchUser);
+		pnlbar.add(txtSearchUser);
 		
 		JButton btnSearchUser=new JButton("ค้นหา");
-		btnSearchUser.setBounds(910, 10, 100, 25);
-		pnlContent.add(btnSearchUser);
+		btnSearchUser.setBounds(910, 2, 90, 25);
+		pnlbar.add(btnSearchUser);
+
 		
 		//table
 		JScrollPane scrollTable=new JScrollPane();
 		scrollTable.setBounds(10, 50, 1000, 450);
 		scrollTable.setPreferredSize(new Dimension(750,300));
 		tableUser=new JTable();
+		tableUser.setRowHeight(30);
 		Object data[][]= {
 				{null,null,null,null,null},
 				{null,null,null,null,null},
 				{null,null,null,null,null},
 				
 		};
-		String columns[]= {"รหัสผู้ใช้","Username","Password","หมายเชขโทรศัพท์ลูกค้า","อีเมลลูกค้า"};
+		String columns[]= {"UserID","Username","หมายเลขโทรศัพท์","อีเมล"};
 		tableModel=new DefaultTableModel(data, columns) {
 			public boolean isCellEditable(int row, int column) {
 				return false;
@@ -92,10 +123,15 @@ public class UserMgrDesigner extends DefaultDesigner implements ActionListener{
 		lbl_Password.setBounds(10, 80, 100, 25);
 		pnlDetail.add(lbl_Password);
 		
+		/*
 		txtPassword=new JTextField();
 		txtPassword.setBounds(110, 80, 210, 25);
 		pnlDetail.add(txtPassword);	
-				
+		*/	
+		txtPassword = new JPasswordField();
+		txtPassword.setBounds(110, 80, 210, 25);
+		pnlDetail.add(txtPassword);	
+		
 		JLabel lbl_UserPhone=new JLabel("เบอร์โทรศัพท์:");
 		lbl_UserPhone.setBounds(10, 110, 100, 25);
 		pnlDetail.add(lbl_UserPhone);
@@ -116,19 +152,24 @@ public class UserMgrDesigner extends DefaultDesigner implements ActionListener{
 				
 		
 		btnAdd=new JButton("เพิ่ม");
-		btnAdd.setBounds(110, 290, 70, 25);
+		btnAdd.setBounds(10, 240, 100, 25);
 		btnAdd.addActionListener(this);
-		pnlDetail.add(btnAdd);			
-		
+		pnlDetail.add(btnAdd);		
+				
 		btnEdit=new JButton("แก้ไข");
-		btnEdit.setBounds(180, 290, 70, 25);
+		btnEdit.setBounds(115, 240, 100, 25);
 		btnEdit.addActionListener(this);
 		pnlDetail.add(btnEdit);				
 		
 		btnSave=new JButton("บันทึก");
-		btnSave.setBounds(250, 290, 70, 25);
+		btnSave.setBounds(220, 240, 100, 25);
 		btnSave.addActionListener(this);
 		pnlDetail.add(btnSave);	
+		
+		btnDelete=new JButton("ลบ");
+		btnDelete.setBounds(10, 310, 100, 25);
+		btnDelete.addActionListener(this);
+		pnlDetail.add(btnDelete);
 		
 		pnlContent.add(pnlDetail);
 		
@@ -140,13 +181,23 @@ public class UserMgrDesigner extends DefaultDesigner implements ActionListener{
 		
 		
 		pnlContent.add(pnlBottom1);
+		
+		
+		lblTotalsum=new JLabel("จำนวนทั้งหมด: ");
+		lblTotalsum.setBounds(10, 20, 200, 25);
+		pnlFooter.add(lblTotalsum);
+
 
 	}
 	
+
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource()==btnAdd) {
 
 			new UserMgr().clickbtnadd();
+		}else if(e.getSource()==btnDelete) {
+			new UserMgr().clickbtndelete();
+			
 		}else if(e.getSource()==btnEdit) {
 			new UserMgr().clickbtnedit();
 			

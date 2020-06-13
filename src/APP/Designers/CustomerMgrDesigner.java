@@ -17,36 +17,61 @@ public class CustomerMgrDesigner extends DefaultDesigner implements ActionListen
 	public static JLabel lbl_CustName;
 	public static JTable tableCust;
 	//static Customers c=new Customers();
+	protected Font fontHead = new Font("Tahoma", Font.BOLD, 15);
 	public CustomerMgrDesigner() {
 		
 		this.setSize(1400,700);
 		reAdjustPanel();
 		pnlContent.setLayout(null);
 		this.setDefaultCloseOperation(this.DISPOSE_ON_CLOSE);
-		
+		this.addWindowListener(new java.awt.event.WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				MainMenu.getmain();
+			}
+		});
 		//ค้นหา
+		JPanel pnlcolor=new JPanel();
+		pnlcolor.setBounds(10,10,10,30);
+		pnlcolor.setBackground(Color.ORANGE);
+		pnlContent.add(pnlcolor);
+		
+		JPanel pnlbar=new JPanel();
+		pnlbar.setLayout(null);
+		pnlbar.setBounds(10,10,1000,30);
+		pnlbar.setBackground(Color.GRAY);
+		pnlContent.add(pnlbar);
+		
+		JLabel lblHead=new JLabel("รายชื่อลูกค้า");
+		lblHead.setBounds(20, 0, 300, 25);
+		lblHead.setForeground(Color.ORANGE);
+		lblHead.setFont(fontHead);
+		pnlbar.add(lblHead);
+		
+		/*
 		JLabel lblCustName=new JLabel("รายชื่อลูกค้า");
 		lblCustName.setBounds(10, 10, 100, 25);
 		pnlContent.add(lblCustName);
-		
+		*/
 		txtSearchCust=new JTextField();
-		txtSearchCust.setBounds(700, 10, 200, 25);
+		txtSearchCust.setBounds(700, 2, 200, 25);
 		txtSearchCust.addKeyListener(new KeyAdapter() {
 			public void keyReleased(KeyEvent keyevent) {
-				new CustomerMgr().showdata();
+				CustomerMgr.showdata();
 			}
 		});
-		pnlContent.add(txtSearchCust);
+		pnlbar.add(txtSearchCust);
 		
 		btnSearchCust=new JButton("ค้นหา");
-		btnSearchCust.setBounds(910, 10, 100, 25);
-		pnlContent.add(btnSearchCust);
+		btnSearchCust.setBounds(910, 2, 90, 25);
+		pnlbar.add(btnSearchCust);
 		
 		//table
 		JScrollPane scrollTable=new JScrollPane();
 		scrollTable.setBounds(10, 50, 1000, 450);
 		scrollTable.setPreferredSize(new Dimension(750,300));
 		tableCust=new JTable();
+		tableCust.setRowHeight(30);
 		Object data[][]= {
 				{null,null,null,null,null,null},
 				{null,null,null,null,null,null},

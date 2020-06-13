@@ -31,6 +31,13 @@ public class AddRental {
 		
 	}
 	*/
+	public static void getAddRental() {
+		addRental.setVisible(true);
+		cleartxt();
+		showdata();
+
+	}
+	
     public static double getsum(){
         int rowscount = AddRentalDesigner.tableCust.getRowCount();
         double sum=0;
@@ -41,20 +48,41 @@ public class AddRental {
         
     }
     
-	public static void getAddRental() {
-		addRental.setVisible(true);
-		showdata();
-	}
+    public static void getsumtotal() {
+		AddRentalDesigner.lblSumTotal.setText(Double.toString(getsum()));
+		AddRentalDesigner.lblVat2.setText(Double.toString(getsum()*7/100));
+		AddRentalDesigner.lblTotal2.setText(Double.toString(getsum()+(getsum()*7/100)-Double.parseDouble(AddRentalDesigner.txtDiscount2.getText())));
+    }
+    
+
 	
+	public static void getMaxId() {
+		int maxID=0;
+		try {
+			ArrayList<Rental> rentals2 = Rental.listAllRental("", "");
+			if(!rentals2.isEmpty()) {
+				for (Rental rental1 : rentals2) {
+					maxID=rental1.getInvNo();
+				}
+				AddRentalDesigner.txtRentId.setText(String.valueOf(maxID+1));
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
 	public static void showdata() {
+		getMaxId();
+
 		AddRentalDesigner.cbCustName.removeAllItems();
 		AddRentalDesigner.cbCustName.addItem("กรุษาเลือกชื่อลูกค้า");
-		ArrayList<Customers> cuts = Customers.listAllCustomers("", "");
+		ArrayList<Customers> cuts = Customers.listAllCustomers("", "cust_id ASC");
 		if(!cuts.isEmpty()) {
 			for (Customers cut : cuts) {
 				AddRentalDesigner.cbCustName.addItem(cut.getCustomerName());
 			}
 		}
+
+		AddRentalDesigner.txtDiscount2.setText("0");
 		AddRentalDesigner.btnEdit.setEnabled(false);
 		AddRentalDesigner.btnDelete.setEnabled(false);
 	
@@ -125,7 +153,8 @@ public class AddRental {
 		AddRentalDesigner.btnDelete.setEnabled(false);
 		System.out.println(indexSelect);
 		//new WHLocationPickup().getWHLocationPickup();
-		AddRentalDesigner.lblSumTotal.setText(Double.toString(getsum()));
+		//AddRentalDesigner.lblSumTotal.setText(Double.toString(getsum()));
+		getsumtotal();
 		
 	}
 	
@@ -145,13 +174,37 @@ public class AddRental {
 		}
 
 		AddRentalDesigner.tableCust.setModel(AddRentalDesigner.tableModel);
-		System.out.println("Sum:"+getsum());
+		//System.out.println("Sum:"+getsum());
+		getsumtotal();
+		/*
 		AddRentalDesigner.lblSumTotal.setText(Double.toString(getsum()));
+		AddRentalDesigner.lblVat2.setText(Double.toString(getsum()*7/100));
+		AddRentalDesigner.lblTotal2.setText(Double.toString((getsum()*7/100)-Double.parseDouble(AddRentalDesigner.txtDiscount2.getText())));
+		*/
+	}
+	
+	static int rentMaxId() {
+		int rentalMaxId = 0;
+		ArrayList<Rental> rentals = Rental.listAllRental();
+		if(!rentals.isEmpty()) {
+			for (Rental rental : rentals) {
+
+				rentalMaxId=rental.getInvNo();
+				
+
+			}
+			
+		}
+		return rentalMaxId;
+
 	}
 	
 	public static void clickbtnsave() {
 		Date d1 = new Date();
-		//System.out.println(df.format(selectedDate));
+
+		String stime = new SimpleDateFormat("HH:mm:ss").format(d1.getTime());
+
+		System.out.println(stime);
 		if(formValidation()) {
 			ArrayList<Customers> cuts2 = Customers.listAllCustomers("cust_name LIKE'%"+AddRentalDesigner.cbCustName.getItemAt(AddRentalDesigner.cbCustName.getSelectedIndex()).toString()+"%'", "");		
 			if(!cuts2.isEmpty()) {
@@ -185,24 +238,14 @@ public class AddRental {
 				System.out.println("Please select some Date!!");
 			}
 
-			int rentalMaxId = 0;
-			Rental.addNewRental(custID, d1, selectedStartDate, selectedEndtDate, Float.parseFloat(AddRentalDesigner.lblSumTotal.getText()), Global.currentUser.getUserID(), "t");
 			
-			ArrayList<Rental> rentals = Rental.listAllRental();
-			if(!rentals.isEmpty()) {
-				for (Rental rental : rentals) {
-
-					rentalMaxId=rental.getInvNo();
-					
-
-				}
-			}
+			Rental.addNewRental(custID, d1,stime, selectedStartDate, selectedEndtDate, Float.parseFloat(AddRentalDesigner.lblVat2.getText()), Float.parseFloat(AddRentalDesigner.txtDiscount2.getText()), Float.parseFloat(AddRentalDesigner.lblTotal2.getText()), Global.currentUser.getUserID(), "1");
 			
-			System.out.println("MaxRentId:"+rentalMaxId);
+
 			for(pickupLoc pickupLoc : WHLocationPickup.list) {
 
 				//WHLocationPickupDesigner.lbl[pickupLoc.gets_loc()].setBackground(Color.GREEN);
-				RentDetail.addNewRentDetail(rentalMaxId, pickupLoc.getLocId(), 1, 0.0, pickupLoc.getLocPrice());
+				RentDetail.addNewRentDetail(rentMaxId(), pickupLoc.getLocId(), 1, 0.0, pickupLoc.getLocPrice());
 				Warehouses.updateWarehouseInfo(pickupLoc.getLocId(), WHStatus.FULL, pickupLoc.getLocPrice(), pickupLoc.getLocRemark());
 				
 			}
@@ -215,7 +258,7 @@ public class AddRental {
 	}
 	
 	public static void cleartxt() {
-		AddRentalDesigner.txtRentId.setText("");
+		AddRentalDesigner.txtRentId.setText(String.valueOf(rentMaxId()+1));
 		AddRentalDesigner.txtLocId.setText("");
 		AddRentalDesigner.startDatePicker.getModel().setValue(null);
 		AddRentalDesigner.endDatePicker.getModel().setValue(null);
@@ -223,6 +266,9 @@ public class AddRental {
 		AddRentalDesigner.cbCustName.setSelectedIndex(0);
 		AddRentalDesigner.lblSumTotal.setText("");
 
+		AddRentalDesigner.lblVat2.setText("");
+		AddRentalDesigner.txtDiscount2.setText("0");
+		AddRentalDesigner.lblTotal2.setText("");
 		int totalRow=AddRentalDesigner.tableCust.getRowCount()-1;
 		while(totalRow > -1) {
 			AddRentalDesigner.tableModel.removeRow(totalRow);

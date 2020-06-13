@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
 import javax.swing.*;
@@ -15,11 +16,12 @@ import javax.swing.border.Border;
 
 import APP.Controllers.AddCustomer;
 import APP.Controllers.AddRental;
+import APP.Controllers.MainMenu;
 import APP.Controllers.WHLocationPickup;
 import APP.Controllers.WarehouseMgr;
 import APP.Designers.AddRentalDesigner;
 
-public class WHLocationPickupDesigner extends JFrame implements ActionListener{
+public class WHLocationPickupDesigner extends JDialog implements ActionListener{
 	public static String selected;
 	public static JButton btnSelect;
 	

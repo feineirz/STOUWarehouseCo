@@ -6,6 +6,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowEvent;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -21,6 +22,7 @@ import org.jdatepicker.impl.UtilDateModel;
 
 import APP.Controllers.AddCustomer;
 import APP.Controllers.CustomerMgr;
+import APP.Controllers.MainMenu;
 import APP.Controllers.ReportGen;
 import APP.Controllers.WHLocationPickup;
 
@@ -38,13 +40,18 @@ public class ReportGenDesigner extends DefaultDesigner implements ActionListener
 	public static JDatePanelImpl beginDatePanel, toDatePanel;
 	public static JDatePickerImpl beginDatePicker, toDatePicker;
 	public static JLabel lblSumTotal;
-	
+	protected Font fontHead = new Font("Tahoma", Font.BOLD, 15);
 	public ReportGenDesigner() {
 		this.setSize(1400,700);
 		reAdjustPanel();
 		pnlContent.setLayout(null);
 		this.setDefaultCloseOperation(this.DISPOSE_ON_CLOSE);
-		
+		this.addWindowListener(new java.awt.event.WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				MainMenu.getmain();
+			}
+		});
 		beginModel = new UtilDateModel();  
 		toModel = new UtilDateModel();  
 		
@@ -57,18 +64,30 @@ public class ReportGenDesigner extends DefaultDesigner implements ActionListener
 		toDatePanel = new JDatePanelImpl(toModel,r);  
 		
 		//ค้นหา
-		JLabel lblCustName=new JLabel("แสดงรายงาน");
-		lblCustName.setBounds(10, 10, 100, 25);
-		pnlContent.add(lblCustName);
+		JPanel pnlcolor=new JPanel();
+		pnlcolor.setBounds(10,10,10,30);
+		pnlcolor.setBackground(Color.ORANGE);
+		pnlContent.add(pnlcolor);
+		
+		JPanel pnlbar=new JPanel();
+		pnlbar.setLayout(null);
+		pnlbar.setBounds(10,10,1000,30);
+		pnlbar.setBackground(Color.GRAY);
+		pnlContent.add(pnlbar);
+		
+		JLabel lblHead=new JLabel("แสดงรายงานการเช่าคลังสินค้า");
+		lblHead.setBounds(20, 0, 300, 25);
+		lblHead.setForeground(Color.ORANGE);
+		lblHead.setFont(fontHead);
+		pnlbar.add(lblHead);
 		
 		//table
 		JScrollPane scrollTable=new JScrollPane();
 		scrollTable.setBounds(10, 50, 1000, 350);
 		scrollTable.setPreferredSize(new Dimension(750,300));
 		tableReport=new JTable();
+		tableReport.setRowHeight(30);
 		Object data[][]= {
-				{null,null,null,null,null,null},
-
 				
 		};
 		String columns[]= {"เลขที่สัญญา","ลูกค้า","เริ่มวันที่","สินสุดวันที่","เจ้าหน้าที่","ราคา"};
@@ -96,6 +115,8 @@ public class ReportGenDesigner extends DefaultDesigner implements ActionListener
 		lblSumTotal.setBounds(800,420,140,25);
 		lblSumTotal.setBackground(Color.GRAY);
 		lblSumTotal.setOpaque(true);
+		lblSumTotal.setForeground(Color.ORANGE);
+		lblSumTotal.setFont(fontHead);
 		pnlContent.add(lblSumTotal);
 		
 		JLabel lblBath=new JLabel("บาท");

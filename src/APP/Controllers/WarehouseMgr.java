@@ -1,5 +1,7 @@
 package APP.Controllers;
 import java.awt.Color;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -8,6 +10,7 @@ import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.SwingWorker;
 
 import APP.Designers.*;
 import DBCLS.DBConnector;
@@ -18,6 +21,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 public class WarehouseMgr {
@@ -33,49 +37,33 @@ public class WarehouseMgr {
 	
 	static int maxId=0;
 	static String locStatClick;
-	
+	/*
 	public static void main(String[] arg) {
-		wareHouse.setVisible(true);
-		WarehouseMgrDesigner.pnlLeft.setVisible(false);
-		WarehouseMgrDesigner.pnlDetail.setVisible(false);
-		WarehouseMgrDesigner.pnlBottom1.setVisible(false);
-		textlock();
-		x=0;
-		listData(0);
-		//showdata();
-		
-		WarehouseMgrDesigner.pnlLeft.setVisible(true);
-		WarehouseMgrDesigner.pnlDetail.setVisible(true);
-		WarehouseMgrDesigner.pnlBottom1.setVisible(true);
-		
-		WarehouseMgrDesigner.btnEdit.setEnabled(false);	
-		WarehouseMgrDesigner.btnSave.setEnabled(false);	
-		WarehouseMgrDesigner.btnRemake.setEnabled(false);	
 
+		getWarehouseMgr();
 		
 	}
-	
+	*/
 	
 	public static void getWarehouseMgr() {
 
 		wareHouse.setVisible(true);
 
-		
+		/*
 		WarehouseMgrDesigner.pnlLeft.setVisible(false);
 		WarehouseMgrDesigner.pnlDetail.setVisible(false);
 		WarehouseMgrDesigner.pnlBottom1.setVisible(false);
 		
-		
-
+		WarehouseMgrDesigner.pgbPregress.setVisible(true);
+		*/
+		clearLocStatus();
 		textlock();
 		x=0;
 		listData();
 		
 		//showdata();
 		
-		WarehouseMgrDesigner.pnlLeft.setVisible(true);
-		WarehouseMgrDesigner.pnlDetail.setVisible(true);
-		WarehouseMgrDesigner.pnlBottom1.setVisible(true);
+
 		
 		
 		WarehouseMgrDesigner.btnEdit.setEnabled(false);	
@@ -87,26 +75,18 @@ public class WarehouseMgr {
 
 	}
 	
-	public static void listData() {
-		listData(0);
-	}
-	
 	
 	public static void showdata() {
-		/*
-   		Date date = new Date();
-   		//Pattern for showing milliseconds in the time "SSS"
-   		DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-   		String stringDate = sdf.format(date);
-		 	*/
-		// System.out.println(stringDate);
+		
 		try {
-			ArrayList<Warehouses> locs=Warehouses.listAllWarehouseLocation("", "");
+			
+			ArrayList<Warehouses> locs=Warehouses.listAllWarehouseLocation("", "loc_id ASC");
 			
 			if(!locs.isEmpty()) {
 				for (Warehouses loc : locs) {
-					
+					//Warehouses.updateWarehouseInfo(loc.getLocID(), WHStatus.EMPTY,200,"");
 					if(loc.getStatus().toString()=="FULL") {
+						
 						WarehouseMgrDesigner.lbl[x].setBackground(Color.RED);
 					}else if(loc.getStatus().toString()=="MAINTENANCE") {
 						WarehouseMgrDesigner.lbl[x].setBackground(Color.YELLOW);
@@ -115,6 +95,7 @@ public class WarehouseMgr {
 					}
 					x++;
 					System.out.println("=>"+loc.getLocID());
+					
 				}
 			}
 		
@@ -123,51 +104,75 @@ public class WarehouseMgr {
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
-		/*
-		Date date2 = new Date();
-		//Pattern for showing milliseconds in the time "SSS"
-		DateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-		String stringDate2 = sdf2.format(date2);
-		System.out.println(stringDate2);
-		*/
+
 	}
-	
-	public static void listData(int ProgressType) {
-		ArrayList<Warehouses> whs = Warehouses.listAllWarehouseLocation("", "");
-		if(whs.size() > 0) {
-			Integer i = 0;
-			Integer max = whs.size();
-			WarehouseMgrDesigner.pgbPregress.setMaximum(max);
-			for(Warehouses wh:whs) {
-				System.out.println(wh.getLocID());
-				WarehouseMgrDesigner.pgbPregress.setValue(++i);
-				
-				if(wh.getStatus().toString()=="FULL") {
-					WarehouseMgrDesigner.lbl[x].setBackground(Color.RED);
-				}else if(wh.getStatus().toString()=="MAINTENANCE") {
-					WarehouseMgrDesigner.lbl[x].setBackground(Color.YELLOW);
-				}else if(wh.getStatus().toString()=="EMPTY") {
-					WarehouseMgrDesigner.lbl[x].setBackground(Color.WHITE);
-				}
-				x++;
-				
-				if(ProgressType == 0) {
-					// Records
-					WarehouseMgrDesigner.pgbPregress.setString(i.toString() + " of " + max.toString() + " item(s) completed.");     
-				} else {
-					// Percentage
-					Float cur =(i / (float)max) * 100;
-					WarehouseMgrDesigner.pgbPregress.setString(new DecimalFormat("0.00").format(cur) + "% completed.");
-				}
-				
-				try {
-				//delay(10);
-				Thread.sleep(30);
-				} catch (Exception e) {
-				// whatever
-				}
+
+	private static void listData() {
+		class BackgroundWorker extends SwingWorker<Void, Void> {
+
+			public BackgroundWorker() {
+				addPropertyChangeListener(new PropertyChangeListener() {
+					@Override
+					public void propertyChange(PropertyChangeEvent evt) {
+						WarehouseMgrDesigner.pgbPregress.setValue(getProgress());
+					}
+
+				});
 			}
-		}
+
+			@Override
+			protected void done() {
+				/*
+				WarehouseMgrDesigner.pnlLeft.setVisible(true);
+				WarehouseMgrDesigner.pnlDetail.setVisible(true);
+				WarehouseMgrDesigner.pnlBottom1.setVisible(true);
+				WarehouseMgrDesigner.pgbPregress.setVisible(false);
+				*/
+			}
+
+			protected Void doInBackground() throws Exception {
+				int ProgressType=0;
+				ArrayList<Warehouses> whs = Warehouses.listAllWarehouseLocation("", "");
+				if(whs.size() > 0) {
+					Integer i = 0;
+					Integer max = whs.size();
+					WarehouseMgrDesigner.pgbPregress.setMaximum(max);
+					for(Warehouses wh:whs) {
+						System.out.println(wh.getLocID());
+						WarehouseMgrDesigner.pgbPregress.setValue(++i);
+
+						if(wh.getStatus().toString()=="FULL") {
+							WarehouseMgrDesigner.lbl[x].setBackground(Color.RED);
+						}else if(wh.getStatus().toString()=="MAINTENANCE") {
+							WarehouseMgrDesigner.lbl[x].setBackground(Color.YELLOW);
+						}else if(wh.getStatus().toString()=="EMPTY") {
+							WarehouseMgrDesigner.lbl[x].setBackground(Color.WHITE);
+						}
+						x++;
+						
+						if(ProgressType == 0) {
+							// Records
+							WarehouseMgrDesigner.pgbPregress.setString("โหลดข้อมุล  "+i.toString() + " / " + max.toString() + " รายการ สำเร็จ.");     
+						} else {
+							// Percentage
+							Float cur =(i / (float)max) * 100;
+							WarehouseMgrDesigner.pgbPregress.setString(new DecimalFormat("0.00").format(cur) + "% สำเร็จ.");
+						}
+						
+						try {
+							//delay(10);
+							Thread.sleep(20);
+						} catch (Exception e) {
+							// whatever
+						}
+					}
+				}
+				
+				return null;
+			}
+			
+		};
+		new BackgroundWorker().execute();
 	}
 	
 	public static void showdataClicked() {
@@ -231,6 +236,8 @@ public class WarehouseMgr {
 					}else if(loc.getStatus().toString()=="FULL") {
 						WarehouseMgrDesigner.btnRemake.setEnabled(false);
 						Connection conn = new DBConnector().getDBConnection();
+						Date d1 = new Date();
+						SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd");
 						try {
 
 							String qry = "SELECT cus.cust_id, cus.cust_name, rents.inv_no, rents.start_date, rents.expire_date, rentdetail.rentdetail_id, rentdetail.loc_id, warehouses.status, warehouses.price, warehouses.remark FROM customers AS cus INNER JOIN rents ON cus.cust_id = rents.cust_id INNER JOIN rentdetail on rents.inv_no = rentdetail.inv_no INNER JOIN warehouses on rentdetail.loc_id = warehouses.loc_id WHERE rentdetail.loc_id = '"+WarehouseMgrDesigner.selectedLoc+"'";
@@ -239,10 +246,10 @@ public class WarehouseMgr {
 							while(rs.next()) {
 								WarehouseMgrDesigner.txtRentId.setText(rs.getString("inv_no"));
 								WarehouseMgrDesigner.txtCustName.setText(rs.getString("cust_name"));
-								WarehouseMgrDesigner.txtRentTotal.setText("");
+								WarehouseMgrDesigner.txtRentTotal.setText(Long.toString(getDayDiff(rs.getString("start_date"), rs.getString("expire_date"),f)));
 								WarehouseMgrDesigner.txtStartDate.setText(rs.getString("start_date"));
 								WarehouseMgrDesigner.txtEndDate.setText(rs.getString("expire_date"));
-								WarehouseMgrDesigner.txtDadeLine.setText("");
+								WarehouseMgrDesigner.txtDadeLine.setText(Long.toString(getDayDiff(d1, rs.getString("expire_date"),f)+1));
 							}
 
 							conn.close();
@@ -275,10 +282,9 @@ public class WarehouseMgr {
 	}
 	
 	public static void clickbtnedit() {
-		listData();
-		/*
+
+		
 		if(WarehouseMgrDesigner.btnEdit.getText()=="แก้ไข") {
-			cleartxt();
 
 			textunlock();
 			WarehouseMgrDesigner.btnEdit.setText("ยกเลิก");
@@ -290,13 +296,12 @@ public class WarehouseMgr {
 			WarehouseMgrDesigner.btnEdit.setText("แก้ไข");
 			WarehouseMgrDesigner.btnEdit.setEnabled(true);
 			WarehouseMgrDesigner.btnSave.setEnabled(false);
-			cleartxt();
 			textlock();
 			btnEditClicked=false;	
 			btnAddClicked=false;
 			
 		}
-		*/
+		
 	}
 	
 	
@@ -312,7 +317,7 @@ public class WarehouseMgr {
 				if(locStatClick=="EMPTY") {
 					locSta= WHStatus.EMPTY;
 				}else if(locStatClick=="FULL"){
-					System.out.println("ffffffffffffffffff");
+					
 					locSta= WHStatus.FULL;
 				}else if(locStatClick=="MAINTENANCE"){
 					locSta= WHStatus.MAINTENANCE;
@@ -326,7 +331,7 @@ public class WarehouseMgr {
 			WarehouseMgrDesigner.btnEdit.setText("แก้ไข");
 			WarehouseMgrDesigner.btnEdit.setEnabled(true);
 			WarehouseMgrDesigner.btnSave.setEnabled(false);
-			cleartxt();
+			//cleartxt();
 			textlock();
 			x=0;
 			showdata();
@@ -355,12 +360,56 @@ public class WarehouseMgr {
 		}
 	}
 	
+	public static void clearLocStatus() {
+
+		for (int i=0; i<168; i++) {
+			
+			WarehouseMgrDesigner.lbl[i].setBackground(Color.WHITE);
+
+		}
+
+	}
+	
+	public static long getDayDiff(Date dateStart, Date dateEnd) {
+		long diff = dateEnd.getTime() - dateStart.getTime();
+		long diffDays = diff / (24*60*60*1000);
+		
+		return diffDays;
+	}
+		 
+	public static long getDayDiff(String dateStart, String dateEnd, SimpleDateFormat f) {
+		try {
+			Date d1 = f.parse(dateStart);
+			Date d2 = f.parse(dateEnd);
+			   
+			return getDayDiff(d1, d2);
+		   
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		  
+		return -1;
+	}
+	
+	public static long getDayDiff(Date dateStart, String dateEnd, SimpleDateFormat f) {
+		try {
+			Date d1 = dateStart;
+			Date d2 = f.parse(dateEnd);
+			   
+			return getDayDiff(d1, d2);
+		   
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		  
+		return -1;
+	}
 	public static void cleartxt() {
-		UserMgrDesigner.txtUserId.setText("");
-		UserMgrDesigner.txtUserName.setText("");
-		UserMgrDesigner.txtPassword.setText("");
-		UserMgrDesigner.txtUserPhone.setText("");
-		UserMgrDesigner.txtUserEmail.setText("");
+		WarehouseMgrDesigner.txtLocId.setText("");
+		WarehouseMgrDesigner.txtLocPrice.setText("");
+		WarehouseMgrDesigner.txtLocStatus.setText("");
+		WarehouseMgrDesigner.txtLocRemark.setText("");
+
 	}
 
 	public static void textlock() {

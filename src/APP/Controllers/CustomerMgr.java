@@ -9,6 +9,8 @@ import APP.Designers.CustomerMgrDesigner;
 import DBCLS.*;
 
 import java.awt.Color;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*; 
 
 public class CustomerMgr{
@@ -28,7 +30,13 @@ public class CustomerMgr{
 	}
 	
 	public static void showdata() {
-		
+		btnEditClicked=false;	
+		btnAddClicked=false;
+		CustomerMgrDesigner.btnAdd.setEnabled(true);
+		CustomerMgrDesigner.btnEdit.setEnabled(false);
+		CustomerMgrDesigner.btnSave.setEnabled(false);
+		CustomerMgrDesigner.btnAdd.setText("เพิ่ม");
+		cleartxt();
 		try {
 			int totalRow=CustomerMgrDesigner.tableCust.getRowCount()-1;
 			while(totalRow > -1) {
@@ -162,7 +170,8 @@ public class CustomerMgr{
 		CustomerMgrDesigner.txtCustFax.setEnabled(true);
 		CustomerMgrDesigner.txtCustEmail.setEnabled(true);
 	}
-	
+		 
+		 
 	public static boolean formValidation() {
 		boolean checkfrm=CustomerMgrDesigner.txtCustName.getText().isEmpty();
 		if(checkfrm) {
@@ -171,9 +180,10 @@ public class CustomerMgr{
 		String txt="กรุณากรอกข้อมูลต่อไปนี้ให้ครบ\n";
 		int check=0;
 		if(CustomerMgrDesigner.txtCustName.getText().isEmpty()) {
-			
+			/*
 			CustomerMgrDesigner.txtCustName.setBorder(BorderFactory.createLineBorder(Color.RED, 1));
 			CustomerMgrDesigner.lbl_CustName.setForeground (Color.red);
+			*/
 			txt +="-ชื่อลูกค้า\n";
 			check=1;
 		}

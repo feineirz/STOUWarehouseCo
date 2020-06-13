@@ -13,16 +13,17 @@ import DBCLS.pickupLoc;
 
 public class WHLocationPickup {
 	static ArrayList<pickupLoc> list = new ArrayList<pickupLoc>();
-	static JFrame WHPicup = new WHLocationPickupDesigner();
+	static WHLocationPickupDesigner WHPicup = new WHLocationPickupDesigner();
 	static int x=0;
 	public static void getWHLocationPickup() {
 		
-		//defaultFrame.setVisible(true);
-		WHPicup.setVisible(true);
 		x=0;
 		//pickupList=0;
 		showdata();
+		WHPicup.setModal(true);
+		WHPicup.setVisible(true);
 		
+	
 	}
 	
 	public static void showdata() {

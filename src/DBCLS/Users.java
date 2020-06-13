@@ -240,6 +240,43 @@ public class Users {
 		
 	}
 	
+	// Not Update Password//
+	public static boolean updateWithNoMD5(int user_id, String username, String phone, String email) {
+		
+		Connection conn = new DBConnector().getDBConnection();
+		try {
+			String qry = "UPDATE users"
+					+ " SET username=?, phone = ?, email = ?"
+					+ " WHERE user_id = ?";
+			PreparedStatement stmt = conn.prepareStatement(qry);
+			stmt.setString(1, username);
+			stmt.setString(2, phone);
+			stmt.setString(3, email);
+			stmt.setInt(4, user_id);
+			
+			stmt.execute();			
+			conn.close();
+			return true;
+			
+		} catch (SQLException e) {
+			try {
+				conn.close();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			e.printStackTrace();
+			return false;
+		}
+		
+	}
+	
+	public static boolean updateUserInfo(int user_id, String username, String phone, String email) {
+		
+		return Users.updateWithNoMD5(user_id, username, phone, email);
+		
+	}
+	
+	
 	// Delete //
 	public static boolean deleteUser(int user_id) {
 		

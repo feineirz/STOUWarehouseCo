@@ -7,6 +7,9 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -20,7 +23,9 @@ import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 
+import APP.Controllers.AddCustomer;
 import APP.Controllers.CustomerMgr;
+import APP.Controllers.MainMenu;
 import APP.Controllers.RentalMgr;
 import APP.Controllers.UserMgr;
 
@@ -32,17 +37,24 @@ public class RentalMgrDesigner extends DefaultDesigner implements ActionListener
 	public static JTextField txtSearchRent;
 	public static JLabel lblCustId,lblCustName,lblCustAddr,lblLocId,lblAmount,lblCustPhone,lblCustFax,lblCustEmail;
 	public static JLabel lblRentId,lblRentDate,lblStartRentDate,lblEndRentDate,lblRentStatus;
-	public static JLabel lblSumTotal;
+	public static JLabel lblSumTotal,lblVat2,lblDiscount2,lblTotal2;
 	
-	public static JButton btnAdd,btnEdit,btnSave,btnRentCancle;
+	public static JButton btnAdd,btnEdit,btnSave,btnRentCancle, btnCancelRent,btnSearchCust;
 	public static JTable tableRent,tableRentDetail;
 	public static DefaultTableModel tableModel,tableModelDetail;
+	protected Font fontHead = new Font("Tahoma", Font.BOLD, 15);
+	public static JComboBox cbhowsearch;
 	public RentalMgrDesigner() {
 		this.setSize(1400,700);
 		reAdjustPanel();
 		pnlContent.setLayout(null);
 		this.setDefaultCloseOperation(this.DISPOSE_ON_CLOSE);
-		
+		this.addWindowListener(new java.awt.event.WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				MainMenu.getmain();
+			}
+		});
 		model = new UtilDateModel();  
 		model2 = new UtilDateModel();  
 		
@@ -53,13 +65,36 @@ public class RentalMgrDesigner extends DefaultDesigner implements ActionListener
 		
 		startDatePanel = new JDatePanelImpl(model,p);  
 		endDatePanel = new JDatePanelImpl(model2,p);  
-			
+		
+		JPanel pnlcolor=new JPanel();
+		pnlcolor.setBounds(10,10,10,30);
+		pnlcolor.setBackground(Color.ORANGE);
+		pnlContent.add(pnlcolor);
+		
+		JPanel pnlbar=new JPanel();
+		pnlbar.setLayout(null);
+		pnlbar.setBounds(10,10,1000,30);
+		pnlbar.setBackground(Color.GRAY);
+		pnlContent.add(pnlbar);
+		
+		JLabel lblHead=new JLabel("สัญญาเช่า");
+		lblHead.setBounds(20, 0, 300, 25);
+		lblHead.setForeground(Color.ORANGE);
+		lblHead.setFont(fontHead);
+		pnlbar.add(lblHead);
+		
+		/*
+		JLabel lblHead=new JLabel("สัญญาเช่า");
+		lblHead.setBounds(10,10,500,25);
+		lblHead.setFont(fontHead);
+		pnlContent.add(lblHead);
+		*/
 
 		//รายละเอียดลูกค้า
 		JPanel pnlDetail = new JPanel();
 		pnlDetail.setLayout(null);
 		pnlDetail.setBorder(BorderFactory.createTitledBorder("ข้อมูลลูกค้า"));
-		pnlDetail.setBounds(10, 10, 550, 180);
+		pnlDetail.setBounds(10, 50, 550, 180);
 		
 		JLabel lbl_CustId = new JLabel("รหัสลูกค้า:");
 		lbl_CustId.setBounds(25, 20, 100, 25);
@@ -116,7 +151,7 @@ public class RentalMgrDesigner extends DefaultDesigner implements ActionListener
 		JPanel pnlRenttal = new JPanel();
 		pnlRenttal.setLayout(null);
 		pnlRenttal.setBorder(BorderFactory.createTitledBorder("ข้อมูลการเช่า"));
-		pnlRenttal.setBounds(560, 10, 450, 180);
+		pnlRenttal.setBounds(560, 50, 450, 180);
 		
 		JLabel lbl_RentId = new JLabel("เลขที่สัญญาเช่า:");
 		lbl_RentId.setBounds(25, 20, 100, 25);
@@ -157,20 +192,27 @@ public class RentalMgrDesigner extends DefaultDesigner implements ActionListener
 		lblRentStatus=new JLabel();
 		lblRentStatus.setBounds(125, 120, 260, 25);
 		pnlRenttal.add(lblRentStatus);	
-		
+		/*
+		btnCancelRent=new JButton("ยกเลิกการเช่า");
+		btnCancelRent.setBounds(125,140, 260, 25);
+		btnCancelRent.setBackground(Color.RED);
+		btnCancelRent.addActionListener(this);
+		pnlRenttal.add(btnCancelRent);	
+		*/
 		pnlContent.add(pnlRenttal);
 
 		//table
 		JScrollPane scrollTable=new JScrollPane();
-		scrollTable.setBounds(10, 200, 1000, 250);
+		scrollTable.setBounds(10, 250, 1000, 120);
 		scrollTable.setPreferredSize(new Dimension(750,300));
 		tableRentDetail=new JTable();
+		tableRentDetail.setRowHeight(30);
 		Object data[][]= {
 
 
 				
 		};
-		String columns[]= {"เลขที่คลัง","สถานะ","ราคา","หมายเหตุ"/*,"สินสุดวันที่","จำนวนเงิน","สถานะซ่อม"*/};
+		String columns[]= {"เลขที่คลัง","ราคา","จำนวน"/*,"สินสุดวันที่","จำนวนเงิน","สถานะซ่อม"*/};
 		tableModelDetail=new DefaultTableModel(data, columns) {
 			public boolean isCellEditable(int row, int column) {
 				return false;
@@ -181,61 +223,108 @@ public class RentalMgrDesigner extends DefaultDesigner implements ActionListener
 		scrollTable.setViewportView(tableRentDetail);
 		pnlContent.add(scrollTable);
 		
-		JLabel lblSum=new JLabel("รวมราคา:");
-		lblSum.setBounds(700,470,120,25);
+		JLabel lblSum=new JLabel("ยอดรวม:");
+		lblSum.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblSum.setBounds(660,380,120,25);
 		pnlContent.add(lblSum);
 		
 		lblSumTotal=new JLabel("",SwingConstants.RIGHT);
-		lblSumTotal.setBounds(800,470,140,25);
+		lblSumTotal.setBounds(800,380,140,25);
 		lblSumTotal.setBackground(Color.GRAY);
+		lblSumTotal.setForeground(Color.WHITE);
 		lblSumTotal.setOpaque(true);
 		pnlContent.add(lblSumTotal);
 		
 		JLabel lblBath=new JLabel("บาท");
-		lblBath.setBounds(950,470,120,25);
+		lblBath.setBounds(970,380,100,25);
 		pnlContent.add(lblBath);
 		
-
-		//ค้นหา
-		/*
-		JLabel lblRentName=new JLabel("รายการการเช่า");
-		lblRentName.setBounds(1030, 10, 100, 25);
-		pnlContent.add(lblRentName);
-		*/
-		/*
-		JLabel lblRentId=new JLabel("เลขที่ใบแจ้งหนี้");
-		lblRentId.setBounds(710, 10, 100, 25);
-		pnlContent.add(lblRentId);
 		
-		JTextField txtRentId=new JTextField();
-		txtRentId.setBounds(810, 10, 200, 25);
-		pnlContent.add(txtRentId);
-		*/
+		JLabel lblVat=new JLabel("ภาษีมูลค่าเพิ่ม 7%:");
+		lblVat.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblVat.setBounds(660,410,120,25);
+		pnlContent.add(lblVat);
+		
+		lblVat2=new JLabel("",SwingConstants.RIGHT);
+		lblVat2.setBounds(800,410,140,25);
+		lblVat2.setBackground(Color.GRAY);
+		lblVat2.setForeground(Color.WHITE);
+		lblVat2.setOpaque(true);
+		pnlContent.add(lblVat2);
+		
+		JLabel lblBath2=new JLabel("บาท");
+		lblBath2.setBounds(970,410,100,25);
+		pnlContent.add(lblBath2);
+		
+		JLabel lblDiscount=new JLabel("ส่วนลด:");
+		lblDiscount.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblDiscount.setBounds(660,440,120,25);
+		pnlContent.add(lblDiscount);
+		
+		lblDiscount2=new JLabel("",SwingConstants.RIGHT);
+		lblDiscount2.setBounds(800,440,140,25);
+		lblDiscount2.setBackground(Color.GRAY);
+		lblDiscount2.setForeground(Color.WHITE);
+		lblDiscount2.setOpaque(true);
+		pnlContent.add(lblDiscount2);
+		
+		JLabel lblBath3=new JLabel("บาท");
+		lblBath3.setBounds(970,440,100,25);
+		pnlContent.add(lblBath3);
+		
+		JLabel lblTotal=new JLabel("รวมทั้งสิ้น:");
+		lblTotal.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblTotal.setBounds(660,470,120,25);
+		pnlContent.add(lblTotal);
+		
+		lblTotal2=new JLabel("",SwingConstants.RIGHT);
+		lblTotal2.setBounds(800,470,140,25);
+		lblTotal2.setBackground(Color.GRAY);
+		lblTotal2.setForeground(Color.YELLOW);
+		lblTotal2.setOpaque(true);
+		pnlContent.add(lblTotal2);
+		
+		JLabel lblBath4=new JLabel("บาท");
+		lblBath4.setBounds(970,470,100,25);
+		pnlContent.add(lblBath4);
+		
+
+		cbhowsearch = new JComboBox<String>();
+		cbhowsearch.setBounds(1030, 10, 110, 23);
+		cbhowsearch.addItem("แสดงทั้งหมด");
+		cbhowsearch.addItem("หมดสัญญา");
+		cbhowsearch.addItem("ยังอยู่ในสัญญา");
+		cbhowsearch.addActionListener(this);
+		pnlContent.add(cbhowsearch);
+		
 		
 		txtSearchRent=new JTextField();
-		txtSearchRent.setBounds(1030, 10, 200, 25);
+		txtSearchRent.setBounds(1140, 10, 170, 25);
 		txtSearchRent.addKeyListener(new KeyAdapter() {
 			public void keyReleased(KeyEvent keyevent) {
-				new CustomerMgr().showdata();
+				cbhowsearch.setSelectedIndex(0);
+				new RentalMgr().showdata();
 			}
 		});
 		pnlContent.add(txtSearchRent);
 		
-		JButton btnSearchCust=new JButton("ค้นหา");
-		btnSearchCust.setBounds(1280, 10, 100, 25);
+		btnSearchCust=new JButton("ค้นหา");
+		btnSearchCust.setBounds(1310, 10, 70, 25);
+		btnSearchCust.addActionListener(this);
 		pnlContent.add(btnSearchCust);
 		
 		//table
 		JScrollPane scrollTableR=new JScrollPane();
-		scrollTableR.setBounds(1030, 45, 350, 400);
+		scrollTableR.setBounds(1030, 45, 350, 460);
 		scrollTableR.setPreferredSize(new Dimension(750,300));
 		tableRent=new JTable();
+		tableRent.setRowHeight(30);
 		Object dataR[][]= {
 				{null,null,null,null,null}
 
 				
 		};
-		String columnsR[]= {"หมายเลขสัญญา","ผู้เช่า","เริ่มวันที่","สินสุดวันที่","วันคงเหลือ"};
+		String columnsR[]= {"หมายเลขสัญญา","ผู้เช่า","วันที่","เวลา","วันคงเหลือ"};
 		tableModel=new DefaultTableModel(dataR, columnsR) {
 			public boolean isCellEditable(int row, int column) {
 				return false;
@@ -249,103 +338,24 @@ public class RentalMgrDesigner extends DefaultDesigner implements ActionListener
 		});
 		scrollTableR.setViewportView(tableRent);
 		pnlContent.add(scrollTableR);
-		
-		/*
-		JPanel pnlDetail = new JPanel();
-		pnlDetail.setLayout(null);
-		pnlDetail.setBorder(BorderFactory.createTitledBorder("ข้อมูลลูกค้า"));
-		pnlDetail.setBounds(1030, 10, 330, 350);
-		
-		JLabel lblCustId = new JLabel("เลขที่ใบแจ้งหนี้:");
-		lblCustId.setBounds(10, 20, 100, 25);
-		pnlDetail.add(lblCustId);
-		
-		txtCustId=new JTextField();
-		txtCustId.setBounds(110, 20, 210, 25);
-		pnlDetail.add(txtCustId);
-		
-		JLabel lbl_CustName=new JLabel("ชื่อลูกก้า:");
-		lbl_CustName.setBounds(10, 50, 100, 25);
-		pnlDetail.add(lbl_CustName);
-		
-		txtCustName=new JTextField();
-		txtCustName.setBounds(110, 50, 210, 25);
-		pnlDetail.add(txtCustName);
-		
-		JLabel lbl_CustAddr=new JLabel("รหัสตำแหน่ง:");
-		lbl_CustAddr.setBounds(10, 80, 100, 25);
-		pnlDetail.add(lbl_CustAddr);
-		
-		txtLocId=new JTextField();
-		txtLocId.setBounds(110, 80, 210, 25);
-		pnlDetail.add(txtLocId);
-		
-		
-		JLabel lblRentStart = new JLabel("วันเริ่มต้น:");
-		lblRentStart.setBounds(10, 110, 100, 25);
-		pnlDetail.add(lblRentStart);		
-
-		startDatePicker = new JDatePickerImpl(startDatePanel, new startDateLabelFormatter());
-		startDatePicker.setBounds(110, 110, 210, 25);
-		pnlDetail.add(startDatePicker);	
-		
-		JLabel lblRentEnd = new JLabel("วันสิ้นสุด:");
-		lblRentEnd.setBounds(10, 140, 100, 25);
-		pnlDetail.add(lblRentEnd);		
-		
-		endDatePicker = new JDatePickerImpl(endDatePanel, new endDateLabelFormatter());
-		endDatePicker.setBounds(110, 140, 210, 25);
-		pnlDetail.add(endDatePicker);	
-		
-		JLabel lbl_Amount=new JLabel("จำนวนเงิน:");
-		lbl_Amount.setBounds(10, 170, 100, 25);
-		pnlDetail.add(lbl_Amount);
-		
-		txtAmount=new JTextField();
-		txtAmount.setBounds(110, 170, 210, 25);
-		pnlDetail.add(txtAmount);
-		*/
-		/*
-		btnAdd=new JButton("เพิ่ม");
-		btnAdd.setBounds(10, 270, 80, 25);
-		pnlDetail.add(btnAdd);			
-
-		
-		btnEdit=new JButton("แก้ไข");
-		btnEdit.setBounds(120, 270, 80, 25);
-		pnlDetail.add(btnEdit);			
-		
-		btnSave=new JButton("บันทึก");
-		btnSave.setBounds(230, 270, 80, 25);
-		pnlDetail.add(btnSave);				
-		
-		btnRentCancle=new JButton("ยกเลิกการเช่า");
-		btnRentCancle.setBounds(10, 310, 120, 25);
-		btnRentCancle.setBackground(Color.RED);
-		pnlDetail.add(btnRentCancle);	
-		
-		pnlContent.add(pnlDetail);
-		*/
-		//รายละเอียด
-		/*
-		JPanel pnlBottom1 = new JPanel();
-		pnlBottom1.setLayout(null);
-		pnlBottom1.setBorder(BorderFactory.createTitledBorder(""));
-		pnlBottom1.setBounds(1030, 370, 330, 130);
-		
-		pnlContent.add(pnlBottom1);
-		*/
-
-
-				
+					
 
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		
+		if(e.getSource()==btnCancelRent) {
+
+			RentalMgr.btnCancelRent();
+
+		}else if(e.getSource()==cbhowsearch) {
+			RentalMgr.showdata();
+		}else if(e.getSource()==btnSearchCust) {
+			RentalMgr.showdata();
+		}
 	}
+	
 }
 
 class startDateLabelFormatter extends AbstractFormatter {
