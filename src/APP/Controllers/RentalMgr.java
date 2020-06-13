@@ -198,7 +198,7 @@ public class RentalMgr {
 					RentalMgrDesigner.tableModel.setValueAt(rs.getString("inv_date"),row,2);
 					RentalMgrDesigner.tableModel.setValueAt(rs.getString("time"),row,3);
 		
-					if(WarehouseMgr.getDayDiff(d1, rs.getString("expire_date"),f)>0) {
+					if((WarehouseMgr.getDayDiff(d1, rs.getString("expire_date"),f)+1)>0) {
 						RentalMgrDesigner.tableModel.setValueAt(WarehouseMgr.getDayDiff(d1, rs.getString("expire_date").toString(),f)+1, row, 4);
 					}else {
 						if(Integer.parseInt(rs.getString("remark").toString())==1) {
