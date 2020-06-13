@@ -75,7 +75,7 @@ public class ReportGenDesigner extends DefaultDesigner implements ActionListener
 		pnlbar.setBackground(Color.GRAY);
 		pnlContent.add(pnlbar);
 		
-		JLabel lblHead=new JLabel("แสดงรายงานการเช่าคลังสินค้า");
+		JLabel lblHead=new JLabel("รายงานการเช่าคลังสินค้า");
 		lblHead.setBounds(20, 0, 300, 25);
 		lblHead.setForeground(Color.ORANGE);
 		lblHead.setFont(fontHead);
