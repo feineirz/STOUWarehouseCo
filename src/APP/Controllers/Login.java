@@ -7,7 +7,15 @@ public class Login{
 	// Preload Assets
 
 	static LoginDesigner frmLogin = new LoginDesigner();
+	/*
 	public static void main(String[] arg) {
+		
+		frmLogin.setVisible(true);
+		
+		
+	}
+	*/
+	public static void getmain() {
 		
 		frmLogin.setVisible(true);
 		

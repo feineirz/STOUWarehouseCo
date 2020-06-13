@@ -7,12 +7,20 @@ import APP.Designers.*;
 public class View {
 	
 	// Preload Assets
-	static JFrame defaultFrame = new AboutDesigner();
-	static AddCustomerDesigner addCust = new AddCustomerDesigner();
+
+	
 	public static void main(String[] arg) {
 		
 		//defaultFrame.setVisible(true);
-		addCust.setVisible(true);
+		
+		
+		if(Global.currentUser == null) {
+			Login login = new Login();
+			login.getmain();
+		}else {
+			MainMenu mainmenu = new MainMenu();
+			mainmenu.getmain();
+		}
 		
 		
 	}
