@@ -334,7 +334,7 @@ public class RentalMgrDesigner extends DefaultDesigner implements ActionListener
 		pnlContent.add(scrollTableR);
 		
 		
-		btnCancelRent=new JButton("ยกเลิกการเช่า");
+		btnCancelRent=new JButton("ยกเลิกสัญญา");
 		btnCancelRent.setBounds(1030,470, 120, 25);
 		btnCancelRent.setBackground(Color.RED);
 		btnCancelRent.addActionListener(this);

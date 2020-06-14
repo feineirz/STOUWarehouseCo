@@ -169,7 +169,7 @@ public class AddRental {
 			AddRentalDesigner.tableModel.addRow(new Object[0]);
 			AddRentalDesigner.tableModel.setValueAt(row+1,row,0);
 			AddRentalDesigner.tableModel.setValueAt(pickupLoc.getLocId(),row,1);
-			AddRentalDesigner.tableModel.setValueAt(pickupLoc.getLocStatus(),row,2);
+			AddRentalDesigner.tableModel.setValueAt(1,row,2);
 			AddRentalDesigner.tableModel.setValueAt(pickupLoc.getLocPrice(),row,3);
 			row++;
 		}
