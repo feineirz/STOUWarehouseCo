@@ -395,6 +395,7 @@ public class RentalMgr {
         return sum;
         
     }
+    //Progressbar
     
 	private static void loadData() {
 		class BackgroundWorker extends SwingWorker<Void, Void> {
