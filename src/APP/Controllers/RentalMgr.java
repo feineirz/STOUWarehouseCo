@@ -48,6 +48,11 @@ public class RentalMgr {
 	}
 	
 	public static void showdata() {
+		
+		RentalMgrDesigner.btnCancelRent.setEnabled(false);
+		RentalMgrDesigner.btnEdit.setEnabled(false);
+		RentalMgrDesigner.btnDelete.setEnabled(false);
+		
 		Date d1 = new Date();
 		SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd");
 		
@@ -271,9 +276,11 @@ public class RentalMgr {
 					if(Integer.parseInt(rent.getRemark().toString())==1) {
 						RentalMgrDesigner.lblRentStatus.setText("อยู่ในสัญญา");
 						RentalMgrDesigner.lblRentStatus.setForeground(Color.BLACK);
+						RentalMgrDesigner.btnCancelRent.setEnabled(true);
 					}else if(Integer.parseInt(rent.getRemark().toString())==0) {
 						RentalMgrDesigner.lblRentStatus.setText("หมดสัญญา");
 						RentalMgrDesigner.lblRentStatus.setForeground(Color.RED);
+						RentalMgrDesigner.btnCancelRent.setEnabled(false);
 					}
 					
 					

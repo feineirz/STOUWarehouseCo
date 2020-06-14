@@ -39,7 +39,7 @@ public class RentalMgrDesigner extends DefaultDesigner implements ActionListener
 	public static JLabel lblRentId,lblRentDate,lblStartRentDate,lblEndRentDate,lblRentStatus;
 	public static JLabel lblSumTotal,lblVat2,lblDiscount2,lblTotal2;
 	
-	public static JButton btnAdd,btnEdit,btnSave,btnRentCancle, btnCancelRent,btnSearchCust;
+	public static JButton btnAdd,btnEdit,btnSave,btnRentCancle, btnCancelRent,btnSearchCust,btnDelete;
 	public static JTable tableRent,tableRentDetail;
 	public static DefaultTableModel tableModel,tableModelDetail;
 	protected Font fontHead = new Font("Tahoma", Font.BOLD, 15);
@@ -341,10 +341,10 @@ public class RentalMgrDesigner extends DefaultDesigner implements ActionListener
 		pnlContent.add(btnCancelRent);	
 		
 		
-		btnAdd=new JButton("≈∫");
-		btnAdd.setBounds(1170, 470, 100, 25);
-		btnAdd.addActionListener(this);
-		pnlContent.add(btnAdd);			
+		btnDelete=new JButton("≈∫");
+		btnDelete.setBounds(1170, 470, 100, 25);
+		btnDelete.addActionListener(this);
+		pnlContent.add(btnDelete);			
 		
 		btnEdit=new JButton("·°È‰¢");
 		btnEdit.setBounds(1280, 470, 100, 25);
