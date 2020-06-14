@@ -192,13 +192,7 @@ public class RentalMgrDesigner extends DefaultDesigner implements ActionListener
 		lblRentStatus=new JLabel();
 		lblRentStatus.setBounds(125, 120, 260, 25);
 		pnlRenttal.add(lblRentStatus);	
-		/*
-		btnCancelRent=new JButton("ยกเลิกการเช่า");
-		btnCancelRent.setBounds(125,140, 260, 25);
-		btnCancelRent.setBackground(Color.RED);
-		btnCancelRent.addActionListener(this);
-		pnlRenttal.add(btnCancelRent);	
-		*/
+
 		pnlContent.add(pnlRenttal);
 
 		//table
@@ -212,7 +206,7 @@ public class RentalMgrDesigner extends DefaultDesigner implements ActionListener
 
 				
 		};
-		String columns[]= {"เลขที่คลัง","ราคา","จำนวน"/*,"สินสุดวันที่","จำนวนเงิน","สถานะซ่อม"*/};
+		String columns[]= {"ที่","เลขที่คลัง","จำนวน","ราคา"/*,"สินสุดวันที่","จำนวนเงิน","สถานะซ่อม"*/};
 		tableModelDetail=new DefaultTableModel(data, columns) {
 			public boolean isCellEditable(int row, int column) {
 				return false;
@@ -315,7 +309,7 @@ public class RentalMgrDesigner extends DefaultDesigner implements ActionListener
 		
 		//table
 		JScrollPane scrollTableR=new JScrollPane();
-		scrollTableR.setBounds(1030, 45, 350, 460);
+		scrollTableR.setBounds(1030, 45, 350, 400);
 		scrollTableR.setPreferredSize(new Dimension(750,300));
 		tableRent=new JTable();
 		tableRent.setRowHeight(30);
@@ -338,6 +332,24 @@ public class RentalMgrDesigner extends DefaultDesigner implements ActionListener
 		});
 		scrollTableR.setViewportView(tableRent);
 		pnlContent.add(scrollTableR);
+		
+		
+		btnCancelRent=new JButton("ยกเลิกการเช่า");
+		btnCancelRent.setBounds(1030,470, 120, 25);
+		btnCancelRent.setBackground(Color.RED);
+		btnCancelRent.addActionListener(this);
+		pnlContent.add(btnCancelRent);	
+		
+		
+		btnAdd=new JButton("ลบ");
+		btnAdd.setBounds(1170, 470, 100, 25);
+		btnAdd.addActionListener(this);
+		pnlContent.add(btnAdd);			
+		
+		btnEdit=new JButton("แก้ไข");
+		btnEdit.setBounds(1280, 470, 100, 25);
+		btnEdit.addActionListener(this);
+		pnlContent.add(btnEdit);	
 					
 
 	}

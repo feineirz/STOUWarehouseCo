@@ -313,9 +313,11 @@ public class RentalMgr {
 			while(rs.next()) {
 				//System.out.println(rs.getString("loc_id"));
 				RentalMgrDesigner.tableModelDetail.addRow(new Object[0]);
-				RentalMgrDesigner.tableModelDetail.setValueAt(rs.getString("loc_id"),row,0);
-				RentalMgrDesigner.tableModelDetail.setValueAt(rs.getString("saleprice"),row,1);
+				RentalMgrDesigner.tableModelDetail.setValueAt(row+1,row,0);
+				RentalMgrDesigner.tableModelDetail.setValueAt(rs.getString("loc_id"),row,1);
 				RentalMgrDesigner.tableModelDetail.setValueAt(rs.getString("quantity"),row,2);
+				RentalMgrDesigner.tableModelDetail.setValueAt(rs.getString("saleprice"),row,3);
+				
 				row++;
 
 			}
@@ -388,7 +390,7 @@ public class RentalMgr {
         int rowscount = RentalMgrDesigner.tableRentDetail.getRowCount();
         double sum=0;
         for(int i =0; i< rowscount; i++){
-            sum=sum+Double.valueOf(RentalMgrDesigner.tableRentDetail.getValueAt(i,1).toString());
+            sum=sum+Double.valueOf(RentalMgrDesigner.tableRentDetail.getValueAt(i,3).toString());
         }
         return sum;
         

@@ -111,7 +111,7 @@ public class AddRentalDesigner extends DefaultDesigner implements ActionListener
 
 				
 		};
-		String columns[]= {"รหัสตำแหน่ง","สถานะ","จำนวนเงิน"};
+		String columns[]= {"ที่","รหัสตำแหน่ง","สถานะ","จำนวนเงิน"};
 		tableModel=new DefaultTableModel(data, columns) {
 			public boolean isCellEditable(int row, int column) {
 				return false;

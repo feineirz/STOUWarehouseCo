@@ -42,7 +42,7 @@ public class AddRental {
         int rowscount = AddRentalDesigner.tableCust.getRowCount();
         double sum=0;
         for(int i =0; i< rowscount; i++){
-            sum=sum+Double.valueOf(AddRentalDesigner.tableCust.getValueAt(i,2).toString());
+            sum=sum+Double.valueOf(AddRentalDesigner.tableCust.getValueAt(i,3).toString());
         }
         return sum;
         
@@ -132,7 +132,7 @@ public class AddRental {
 		indexSelect=AddRentalDesigner.tableCust.getSelectedRow();
 		String locId=AddRentalDesigner.tableCust.getValueAt(indexSelect, 0).toString();
 		String locStatus=AddRentalDesigner.tableCust.getValueAt(indexSelect, 1).toString();
-		Double locPrice=(Double) AddRentalDesigner.tableCust.getValueAt(indexSelect, 2);
+		Double locPrice=(Double) AddRentalDesigner.tableCust.getValueAt(indexSelect, 3);
 		//String locRemark=AddRentalDesigner.tableCust.getValueAt(indexSelect, 3).toString();
 		
 
@@ -167,9 +167,10 @@ public class AddRental {
 		int row=0;
 		for(pickupLoc pickupLoc : WHLocationPickup.list) {
 			AddRentalDesigner.tableModel.addRow(new Object[0]);
-			AddRentalDesigner.tableModel.setValueAt(pickupLoc.getLocId(),row,0);
-			AddRentalDesigner.tableModel.setValueAt(pickupLoc.getLocStatus(),row,1);
-			AddRentalDesigner.tableModel.setValueAt(pickupLoc.getLocPrice(),row,2);
+			AddRentalDesigner.tableModel.setValueAt(row+1,row,0);
+			AddRentalDesigner.tableModel.setValueAt(pickupLoc.getLocId(),row,1);
+			AddRentalDesigner.tableModel.setValueAt(pickupLoc.getLocStatus(),row,2);
+			AddRentalDesigner.tableModel.setValueAt(pickupLoc.getLocPrice(),row,3);
 			row++;
 		}
 

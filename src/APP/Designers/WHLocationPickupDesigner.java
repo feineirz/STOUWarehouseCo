@@ -253,7 +253,7 @@ public class WHLocationPickupDesigner extends JDialog implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource()==btnSelect) {
-			new AddRental().clickWH();
+			AddRental.clickWH();
 			this.setVisible(false);
 			//new AddRental().clickWH(selected);
 
