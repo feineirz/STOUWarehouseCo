@@ -14,7 +14,7 @@ public class CustomerMgrDesigner extends DefaultDesigner implements ActionListen
 	public static JTextField txtSearchCust,txtCustId,txtCustName,txtCustPhone,txtCustFax,txtCustEmail;
 	public static JTextArea txtCustAddr;
 	public static DefaultTableModel tableModel;
-	public static JLabel lbl_CustName;
+	public static JLabel lbl_CustName,lblTotalsum;
 	public static JTable tableCust;
 	//static Customers c=new Customers();
 	protected Font fontHead = new Font("Tahoma", Font.BOLD, 15);
@@ -64,6 +64,7 @@ public class CustomerMgrDesigner extends DefaultDesigner implements ActionListen
 		
 		btnSearchCust=new JButton("ค้นหา");
 		btnSearchCust.setBounds(910, 2, 90, 25);
+		btnSearchCust.addActionListener(this);
 		pnlbar.add(btnSearchCust);
 		
 		//table
@@ -80,16 +81,39 @@ public class CustomerMgrDesigner extends DefaultDesigner implements ActionListen
 		};
 		String columns[]= {"เลขที่ลูกค้า","ชื่อ-นามสกุล","ที่อยู่ลูกค้า","หมายเลขโทรศัพท์","โทรสาร","อีเมล"};
 		tableModel=new DefaultTableModel(data, columns) {
-			public boolean isCellEditable(int row, int column) {
-				return false;
+			public Class<?> getColumnClass(int column) {
+				switch (column) {
+				case 0: 
+					//return ImageIcon.class;
+					return Integer.class;
+				case 1:
+					return String.class;
+				case 2:
+					return String.class;
+				case 3:
+					return String.class;
+				case 4:
+					return String.class;
+
+					
+				default:
+					return String.class;
+				}
 			}
 		};
 		tableCust.setModel(tableModel);
 		tableCust.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent me) {
-				new CustomerMgr().mouseclick();
+				CustomerMgr.mouseclick();
 			}
 		});
+		tableCust.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		tableCust.getColumnModel().getColumn(0).setPreferredWidth(50);
+		tableCust.getColumnModel().getColumn(1).setPreferredWidth(200);
+		tableCust.getColumnModel().getColumn(2).setPreferredWidth(300);
+		tableCust.getColumnModel().getColumn(3).setPreferredWidth(150);
+		tableCust.getColumnModel().getColumn(4).setPreferredWidth(150);
+		tableCust.getColumnModel().getColumn(5).setPreferredWidth(150);
 		scrollTable.setViewportView(tableCust);
 		pnlContent.add(scrollTable);
 		
@@ -108,7 +132,7 @@ public class CustomerMgrDesigner extends DefaultDesigner implements ActionListen
 		txtCustId.setBounds(110, 20, 210, 25);
 		pnlDetail.add(txtCustId);
 		
-		lbl_CustName=new JLabel("ชื่อลูกก้า:");
+		lbl_CustName=new JLabel("ชื่อลูกค้า:");
 		lbl_CustName.setBounds(10, 50, 100, 25);
 		pnlDetail.add(lbl_CustName);
 		
@@ -117,7 +141,7 @@ public class CustomerMgrDesigner extends DefaultDesigner implements ActionListen
 		pnlDetail.add(txtCustName);
 		
 		
-		JLabel lbl_CustAddr=new JLabel("ที่อยู่ลูกก้า:");
+		JLabel lbl_CustAddr=new JLabel("ที่อยู่ลูกค้า:");
 		lbl_CustAddr.setBounds(10, 80, 100, 25);
 		pnlDetail.add(lbl_CustAddr);
 		
@@ -150,17 +174,17 @@ public class CustomerMgrDesigner extends DefaultDesigner implements ActionListen
 		pnlDetail.add(txtCustEmail);	
 		
 		btnAdd=new JButton("เพิ่ม");
-		btnAdd.setBounds(110, 290, 70, 25);
+		btnAdd.setBounds(10, 290, 100, 25);
 		btnAdd.addActionListener(this);
-		pnlDetail.add(btnAdd);			
-		
+		pnlDetail.add(btnAdd);		
+				
 		btnEdit=new JButton("แก้ไข");
-		btnEdit.setBounds(180, 290, 70, 25);
+		btnEdit.setBounds(115, 290, 100, 25);
 		btnEdit.addActionListener(this);
 		pnlDetail.add(btnEdit);				
 		
 		btnSave=new JButton("บันทึก");
-		btnSave.setBounds(250, 290, 70, 25);
+		btnSave.setBounds(220, 290, 100, 25);
 		btnSave.addActionListener(this);
 		pnlDetail.add(btnSave);	
 		
@@ -175,6 +199,9 @@ public class CustomerMgrDesigner extends DefaultDesigner implements ActionListen
 		
 		pnlContent.add(pnlBottom1);
 		
+		lblTotalsum=new JLabel("จำนวนทั้งหมด: ");
+		lblTotalsum.setBounds(10, 20, 200, 25);
+		pnlFooter.add(lblTotalsum);
 
 	}
 	
@@ -186,13 +213,15 @@ public class CustomerMgrDesigner extends DefaultDesigner implements ActionListen
 			new CustomerMgr().addcust();
 			new CustomerMgr().showdata();
 			*/
-			new CustomerMgr().clickbtnadd();
+			CustomerMgr.clickbtnadd();
 		}else if(e.getSource()==btnEdit) {
-			new CustomerMgr().clickbtnedit();
+			CustomerMgr.clickbtnedit();
 			
 		}else if(e.getSource()==btnSave) {
-			new CustomerMgr().clickbtnsave();
+			CustomerMgr.clickbtnsave();
 			
+		}else if(e.getSource()==btnSearchCust) {
+			CustomerMgr.showdata();
 		}
 
 	}

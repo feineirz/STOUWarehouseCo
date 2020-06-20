@@ -48,18 +48,18 @@ public class AboutDesigner extends DefaultDesigner implements ActionListener {
 		});
 		//ค้นหา
 		JPanel pnlcolor=new JPanel();
-		pnlcolor.setBounds(10,10,10,30);
+		pnlcolor.setBounds(20,10,10,30);
 		pnlcolor.setBackground(Color.ORANGE);
 		pnlContent.add(pnlcolor);
 		
 		JPanel pnlbar=new JPanel();
 		pnlbar.setLayout(null);
-		pnlbar.setBounds(10,10,1360,30);
+		pnlbar.setBounds(20,10,1350,30);
 		pnlbar.setBackground(Color.GRAY);
 		pnlContent.add(pnlbar);
 		
-		JLabel lblHead=new JLabel("รายชื่อนักศึกษากลุ่มที่ 2");
-		lblHead.setBounds(20, 0, 300, 25);
+		JLabel lblHead=new JLabel("รายชื่อนักศึกษากลุ่มที่ 2  วิชา 99421 การโปรแกรมเชิงวัตถุ ประจำปีการศึกษา 2562 มหาวิทยาลัยสุโขทัยธรรมาธิราช");
+		lblHead.setBounds(30, 0, 1000, 25);
 		lblHead.setForeground(Color.ORANGE);
 		lblHead.setFont(fontHead);
 		pnlbar.add(lblHead);
@@ -131,11 +131,11 @@ public class AboutDesigner extends DefaultDesigner implements ActionListener {
 			*/
 			public Class<?> getColumnClass(int column) {
 				switch (column) {
-				case 0:
+				case 0: 
 					//return ImageIcon.class;
-					return String.class;
+					return Integer.class;
 				case 1:
-					return String.class;
+					return Integer.class;
 				case 2:
 					return String.class;
 				case 3:
@@ -147,6 +147,8 @@ public class AboutDesigner extends DefaultDesigner implements ActionListener {
 			}
 		};
 		tableReport.setModel(tableModelReport);
+
+		
 		/*
 		tableReport.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent me) {

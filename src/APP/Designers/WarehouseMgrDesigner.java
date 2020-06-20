@@ -21,7 +21,7 @@ public class WarehouseMgrDesigner extends DefaultDesigner implements ActionListe
 	public static JTextField txtSearchLoc,txtLocId,txtLocPrice,txtLocStatus,txtLocRemark,txtRentId,txtCustName,txtRentTotal,txtStartDate,txtEndDate,txtDadeLine;
 	//public static DefaultTableModel tableModel;
 	//public static JTable tableWh;
-	
+	public static JLabel lbl_sFree,lbl_sNotFree,lbl_sBroken;
 	static String btnA[];
 	static String btnB[];
 	public static String selectedLoc;
@@ -210,6 +210,10 @@ public class WarehouseMgrDesigner extends DefaultDesigner implements ActionListe
 		lbl_Free.setBounds(860, 150, 100, 20);
 		pnlLeft.add(lbl_Free);
 		
+		lbl_sFree = new JLabel("",SwingConstants.RIGHT);
+		lbl_sFree.setBounds(910, 150, 50, 20);
+		pnlLeft.add(lbl_sFree);
+		
 		JLabel lblNotFree = new JLabel();
 		lblNotFree.setBounds(830, 190, 20, 20);
 		lblNotFree.setBorder(bdr);
@@ -221,6 +225,10 @@ public class WarehouseMgrDesigner extends DefaultDesigner implements ActionListe
 		lbl_NotFree.setBounds(860, 190, 100, 20);
 		pnlLeft.add(lbl_NotFree);
 		
+		lbl_sNotFree = new JLabel("",SwingConstants.RIGHT);
+		lbl_sNotFree.setBounds(910, 190, 50, 20);
+		pnlLeft.add(lbl_sNotFree);
+		
 		JLabel lbl_Broken = new JLabel();
 		lbl_Broken.setBounds(830, 230, 20, 20);
 		lbl_Broken.setBorder(bdr);
@@ -231,6 +239,10 @@ public class WarehouseMgrDesigner extends DefaultDesigner implements ActionListe
 		JLabel lblBroken = new JLabel("´ËÕ¡∫”√ÿß");
 		lblBroken.setBounds(860, 230, 100, 20);
 		pnlLeft.add(lblBroken);
+		
+		lbl_sBroken = new JLabel("",SwingConstants.RIGHT);
+		lbl_sBroken.setBounds(910, 230, 50, 20);
+		pnlLeft.add(lbl_sBroken);
 		
 		JLabel lbl_Rented = new JLabel();
 		lbl_Rented.setBounds(830, 270, 20, 20);
@@ -395,12 +407,12 @@ public class WarehouseMgrDesigner extends DefaultDesigner implements ActionListe
 			}
 			
 
-			new WarehouseMgr().btnRemake();
+			WarehouseMgr.btnRemake();
 			
 			
 
 		}else if(e.getSource()==btnEdit) {
-			new WarehouseMgr().clickbtnedit();
+			WarehouseMgr.clickbtnedit();
 			
 		}else if(e.getSource()==btnSave) {
 			if(currentBgColor==Color.YELLOW) {
@@ -408,7 +420,7 @@ public class WarehouseMgrDesigner extends DefaultDesigner implements ActionListe
 			}else if(currentBgColor==Color.WHITE) {
 				lastBgColor=Color.YELLOW;
 			}
-			new WarehouseMgr().clickbtnsave();
+			WarehouseMgr.clickbtnsave();
 			
 		}
 		

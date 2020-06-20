@@ -16,6 +16,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -33,12 +34,13 @@ import APP.Controllers.CustomerMgr;
 import APP.Controllers.MainMenu;
 import APP.Controllers.UserMgr;
 import APP.Controllers.WHLocationPickup;
+import APP.Controllers.WarehouseMgr;
 
 
 public class AddRentalDesigner extends DefaultDesigner implements ActionListener{
 	public static JButton btnCustAdd,btnSelect,btnEdit,btnDelete,btnReset,btnPrint,btnRentSave;
 	public static JTextField txtRentId,txtLocId,txtRentStart,txtRentEnd,txtDiscount2;
-	public static JComboBox cbCustName;
+	public static JComboBox<String> cbCustName;
 	public static DefaultTableModel tableModel;
 	public static JTable tableCust;
 	public static UtilDateModel model, model2;
@@ -111,19 +113,44 @@ public class AddRentalDesigner extends DefaultDesigner implements ActionListener
 
 				
 		};
-		String columns[]= {"ที่","รหัสตำแหน่ง","จำนวน","ราคา"};
+		String columns[]= {"ที่","รหัสตำแหน่ง","จำนวน/วัน","ราคา/หน่วย","รวมราคา"};
 		tableModel=new DefaultTableModel(data, columns) {
-			public boolean isCellEditable(int row, int column) {
-				return false;
+			public Class<?> getColumnClass(int column) {
+				switch (column) {
+				case 0: 
+					//return ImageIcon.class;
+					return Integer.class;
+				case 1:
+					return String.class;
+				case 2:
+					return Integer.class;
+				case 3:
+					return Integer.class;
+				case 4:
+					return Integer.class;
+
+					
+				default:
+					return String.class;
+				}
 			}
 		};
 		tableCust.setModel(tableModel);
+		
 		tableCust.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent me) {
 				new AddRental().mouseclick();
 			}
 		});
+		
+		tableCust.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		tableCust.getColumnModel().getColumn(0).setPreferredWidth(100);
+		tableCust.getColumnModel().getColumn(1).setPreferredWidth(350);
+		tableCust.getColumnModel().getColumn(2).setPreferredWidth(150);
+		tableCust.getColumnModel().getColumn(3).setPreferredWidth(150);
+		tableCust.getColumnModel().getColumn(4).setPreferredWidth(250);
 
+		
 		scrollTable.setViewportView(tableCust);
 		pnlContent.add(scrollTable);
 		
@@ -206,7 +233,7 @@ public class AddRentalDesigner extends DefaultDesigner implements ActionListener
 		
 		cbCustName = new JComboBox<String>();
 		cbCustName.setBounds(10, 20, 230, 23);
-		cbCustName.addItem("กรุษาเลือกชื่อลูกค้า");
+		cbCustName.addItem("กรุณาเลือกชื่อลูกค้า");
 
 		pnlDetail.add(cbCustName);
 		
@@ -249,6 +276,12 @@ public class AddRentalDesigner extends DefaultDesigner implements ActionListener
 		
 		startDatePicker = new JDatePickerImpl(startDatePanel, new startDateLabelFormatter1());
 		startDatePicker.setBounds(90, 90, 230, 25);
+		startDatePicker.addActionListener(new ActionListener() {
+		    @Override
+		    public void actionPerformed(ActionEvent e) {
+		    	AddRental.totalDate();
+		    }
+		});
 		pnlBottom1.add(startDatePicker);	
 		
 		JLabel lblRentEnd = new JLabel("วันสิ้นสุด:");
@@ -257,6 +290,12 @@ public class AddRentalDesigner extends DefaultDesigner implements ActionListener
 		
 		endDatePicker = new JDatePickerImpl(endDatePanel, new endDateLabelFormatter2());
 		endDatePicker.setBounds(90, 120, 230, 25);
+		endDatePicker.addActionListener(new ActionListener() {
+		    @Override
+		    public void actionPerformed(ActionEvent e) {
+		    	AddRental.totalDate();
+		    }
+		});
 		pnlBottom1.add(endDatePicker);			
 		
 		//button
@@ -284,7 +323,7 @@ public class AddRentalDesigner extends DefaultDesigner implements ActionListener
 		btnPrint.addActionListener(this);
 		pnlContent.add(btnPrint);			
 		
-		btnRentSave=new JButton("บันทึกข้อมูลการเช่า");
+		btnRentSave=new JButton("บันทึกข้อมูล");
 		btnRentSave.setBounds(1205, 470, 150, 25);
 		btnRentSave.addActionListener(this);
 		pnlContent.add(btnRentSave);
@@ -303,7 +342,7 @@ public class AddRentalDesigner extends DefaultDesigner implements ActionListener
 			WHLocationPickup.getWHLocationPickup();
 			
 		}else if(e.getSource()==btnEdit) {
-			//new UserMgr().clickbtnedit();
+			WHLocationPickup.getWHLocationPickup();
 			
 		}else if(e.getSource()==btnDelete) {
 			//new UserMgr().clickbtnsave();
@@ -318,9 +357,7 @@ public class AddRentalDesigner extends DefaultDesigner implements ActionListener
 			
 		}else if(e.getSource()==btnRentSave) {
 			AddRental.clickbtnsave();
-			
 
-			
 		}
 		
 	}
@@ -329,7 +366,7 @@ public class AddRentalDesigner extends DefaultDesigner implements ActionListener
 class startDateLabelFormatter1 extends AbstractFormatter {
 
     private String datePattern = "yyyy-MM-dd";
-    private SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern);
+    private SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern, new Locale("en", "EN"));
 
     @Override
     public Object stringToValue(String text) throws ParseException {
@@ -340,6 +377,7 @@ class startDateLabelFormatter1 extends AbstractFormatter {
     public String valueToString(Object value) throws ParseException {
         if (value != null) {
             Calendar cal = (Calendar) value;
+            
             return dateFormatter.format(cal.getTime());
         }
 
@@ -349,9 +387,10 @@ class startDateLabelFormatter1 extends AbstractFormatter {
 }
 
 class endDateLabelFormatter2 extends AbstractFormatter {
-
+	
+	
     private String datePattern = "yyyy-MM-dd";
-    private SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern);
+    private SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern, new Locale("en", "EN"));
 
     @Override
     public Object stringToValue(String text) throws ParseException {

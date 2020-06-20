@@ -9,18 +9,19 @@ import java.util.Date;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 
 import APP.Controllers.*;
 import DBCLS.*;
 
 public class UserMgrDesigner extends DefaultDesigner implements ActionListener{
-	public static JButton btnSearchCust,btnAdd,btnDelete,btnEdit,btnSave;
+	public static JButton btnSearchCust,btnAdd,btnDelete,btnEdit,btnSave,btnSearchUser;
 	public static JTextField txtSearchUser,txtPass,txtUserId,txtUserName,txtUserPhone,txtUserEmail;
 	public static DefaultTableModel tableModel;
 	public static JTable tableUser;
 	public static JLabel lblTotalsum,lblTime;
 	public static JPasswordField txtPassword;
-	protected Font fontHead = new Font("Tahoma", Font.BOLD, 15);
+	
 	public UserMgrDesigner() {
 		this.setSize(1400,700);
 		reAdjustPanel();
@@ -59,13 +60,14 @@ public class UserMgrDesigner extends DefaultDesigner implements ActionListener{
 		txtSearchUser.setBounds(700, 2, 200, 25);
 		txtSearchUser.addKeyListener(new KeyAdapter() {
 			public void keyReleased(KeyEvent keyevent) {
-				new UserMgr().showdata();
+				UserMgr.showdata();
 			}
 		});
 		pnlbar.add(txtSearchUser);
 		
-		JButton btnSearchUser=new JButton("§ÈπÀ“");
+		btnSearchUser=new JButton("§ÈπÀ“");
 		btnSearchUser.setBounds(910, 2, 90, 25);
+		btnSearchUser.addActionListener(this);
 		pnlbar.add(btnSearchUser);
 
 		
@@ -74,6 +76,13 @@ public class UserMgrDesigner extends DefaultDesigner implements ActionListener{
 		scrollTable.setBounds(10, 50, 1000, 450);
 		scrollTable.setPreferredSize(new Dimension(750,300));
 		tableUser=new JTable();
+		/*
+		JTableHeader tableHeader = tableUser.getTableHeader();
+		tableHeader.setBackground(Color.black);
+		
+
+		tableUser.setOpaque(true);
+		*/
 		tableUser.setRowHeight(30);
 		Object data[][]= {
 				{null,null,null,null,null,null},
@@ -82,8 +91,24 @@ public class UserMgrDesigner extends DefaultDesigner implements ActionListener{
 		};
 		String columns[]= {"≈”¥—∫","UserID","Username","À¡“¬‡≈¢‚∑√»—æ∑Ï","Õ’‡¡≈"};
 		tableModel=new DefaultTableModel(data, columns) {
-			public boolean isCellEditable(int row, int column) {
-				return false;
+			public Class<?> getColumnClass(int column) {
+				switch (column) {
+				case 0: 
+					//return ImageIcon.class;
+					return Integer.class;
+				case 1:
+					return Integer.class;
+				case 2:
+					return String.class;
+				case 3:
+					return String.class;
+				case 4:
+					return String.class;
+
+					
+				default:
+					return String.class;
+				}
 			}
 		};
 		tableUser.setModel(tableModel);
@@ -92,6 +117,13 @@ public class UserMgrDesigner extends DefaultDesigner implements ActionListener{
 				new UserMgr().mouseclick();
 			}
 		});
+		tableUser.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		tableUser.getColumnModel().getColumn(0).setPreferredWidth(50);
+		tableUser.getColumnModel().getColumn(1).setPreferredWidth(350);
+		tableUser.getColumnModel().getColumn(2).setPreferredWidth(200);
+		tableUser.getColumnModel().getColumn(3).setPreferredWidth(150);
+		tableUser.getColumnModel().getColumn(4).setPreferredWidth(250);
+
 		scrollTable.setViewportView(tableUser);
 		pnlContent.add(scrollTable);
 		
@@ -116,6 +148,7 @@ public class UserMgrDesigner extends DefaultDesigner implements ActionListener{
 		
 		txtUserName=new JTextField();
 		txtUserName.setBounds(110, 50, 210, 25);
+		txtUserName.setEnabled(false);
 		pnlDetail.add(txtUserName);
 		
 		JLabel lbl_Password=new JLabel("Password:");
@@ -193,16 +226,18 @@ public class UserMgrDesigner extends DefaultDesigner implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource()==btnAdd) {
 
-			new UserMgr().clickbtnadd();
+			UserMgr.clickbtnadd();
 		}else if(e.getSource()==btnDelete) {
-			new UserMgr().clickbtndelete();
+			UserMgr.clickbtndelete();
 			
 		}else if(e.getSource()==btnEdit) {
-			new UserMgr().clickbtnedit();
+			UserMgr.clickbtnedit();
 			
 		}else if(e.getSource()==btnSave) {
-			new UserMgr().clickbtnsave();
+			UserMgr.clickbtnsave();
 			
+		}else if(e.getSource()==btnSearchUser) {
+			UserMgr.showdata();
 		}
 
 	}

@@ -10,6 +10,7 @@ import java.awt.event.WindowEvent;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.Properties;
 
 import javax.swing.*;
@@ -33,7 +34,7 @@ public class ReportGenDesigner extends DefaultDesigner implements ActionListener
 	public static JTextField txtSearchCust,txtCustId,txtCustName,txtCustPhone,txtCustFax,txtCustEmail;
 	public static JTextArea txtCustAddr;
 	public static DefaultTableModel tableModelReport;
-	public static JLabel lbl_CustName;
+	public static JLabel lbl_CustName,lblTotalsum,lblTotalsum2,lblTotalsum3,lblCancelRent;
 	public static JTable tableReport;
 	
 	public static UtilDateModel beginModel, toModel;
@@ -83,20 +84,50 @@ public class ReportGenDesigner extends DefaultDesigner implements ActionListener
 		
 		//table
 		JScrollPane scrollTable=new JScrollPane();
-		scrollTable.setBounds(10, 50, 1000, 350);
+		scrollTable.setBounds(10, 50, 1000, 380);
 		scrollTable.setPreferredSize(new Dimension(750,300));
 		tableReport=new JTable();
 		tableReport.setRowHeight(30);
 		Object data[][]= {
 				
 		};
-		String columns[]= {"เลขที่สัญญา","ลูกค้า","เริ่มวันที่","สินสุดวันที่","เจ้าหน้าที่","ราคา"};
+		String columns[]= {"เลขที่สัญญา","ลูกค้า","เริ่มวันที่","สินสุดวันที่","เวลา","เจ้าหน้าที่","วันคงเหลือ","จำนวนเงิน"};
 		tableModelReport=new DefaultTableModel(data, columns) {
-			public boolean isCellEditable(int row, int column) {
-				return false;
+			public Class<?> getColumnClass(int column) {
+				switch (column) {
+				case 0: 
+					//return ImageIcon.class;
+					return Integer.class;
+				case 1:
+					return String.class;
+				case 2:
+					return String.class;
+				case 3:
+					return String.class;
+				case 4:
+					return String.class;
+				case 5:
+					return String.class;
+				case 6:
+					return String.class;	
+				case 7:
+					return Integer.class;	
+				default:
+					return String.class;
+				}
 			}
 		};
 		tableReport.setModel(tableModelReport);
+		tableReport.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		tableReport.getColumnModel().getColumn(0).setPreferredWidth(100);
+		tableReport.getColumnModel().getColumn(1).setPreferredWidth(250);
+		tableReport.getColumnModel().getColumn(2).setPreferredWidth(100);
+		tableReport.getColumnModel().getColumn(3).setPreferredWidth(100);
+		tableReport.getColumnModel().getColumn(4).setPreferredWidth(100);
+		tableReport.getColumnModel().getColumn(5).setPreferredWidth(100);
+		tableReport.getColumnModel().getColumn(6).setPreferredWidth(100);
+		tableReport.getColumnModel().getColumn(7).setPreferredWidth(150);
+		
 		/*
 		tableReport.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent me) {
@@ -108,11 +139,11 @@ public class ReportGenDesigner extends DefaultDesigner implements ActionListener
 		pnlContent.add(scrollTable);
 		
 		JLabel lblSum=new JLabel("รายรับทั้งหมด:");
-		lblSum.setBounds(700,420,120,25);
+		lblSum.setBounds(700,470,120,25);
 		pnlContent.add(lblSum);
 		
 		lblSumTotal=new JLabel("",SwingConstants.RIGHT);
-		lblSumTotal.setBounds(800,420,140,25);
+		lblSumTotal.setBounds(800,470,140,25);
 		lblSumTotal.setBackground(Color.GRAY);
 		lblSumTotal.setOpaque(true);
 		lblSumTotal.setForeground(Color.ORANGE);
@@ -120,7 +151,7 @@ public class ReportGenDesigner extends DefaultDesigner implements ActionListener
 		pnlContent.add(lblSumTotal);
 		
 		JLabel lblBath=new JLabel("บาท");
-		lblBath.setBounds(950,420,120,25);
+		lblBath.setBounds(950,470,120,25);
 		pnlContent.add(lblBath);
 		
 		//รายละเอียด
@@ -170,6 +201,22 @@ public class ReportGenDesigner extends DefaultDesigner implements ActionListener
 		
 		
 		pnlContent.add(pnlBottom1);
+		
+		lblTotalsum=new JLabel("จำนวนทั้งหมด: ");
+		lblTotalsum.setBounds(10, 20, 200, 25);
+		pnlFooter.add(lblTotalsum);
+		
+		lblTotalsum2=new JLabel("จำนวนทั้งหมด: ");
+		lblTotalsum2.setBounds(220, 20, 200, 25);
+		pnlFooter.add(lblTotalsum2);
+		
+		lblTotalsum3=new JLabel("จำนวนทั้งหมด: ");
+		lblTotalsum3.setBounds(440, 20, 200, 25);
+		pnlFooter.add(lblTotalsum3);
+		
+		lblCancelRent=new JLabel("จำนวนทั้งหมด: ");
+		lblCancelRent.setBounds(680, 20, 200, 25);
+		pnlFooter.add(lblCancelRent);
 	}
 
 	@Override
@@ -192,7 +239,8 @@ public class ReportGenDesigner extends DefaultDesigner implements ActionListener
 class beginDateLabelFormatter extends AbstractFormatter {
 
     private String datePattern = "yyyy-MM-dd";
-    private SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern);
+    private SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern, new Locale("en", "EN"));
+    //private SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd", new Locale("en", "EN"));
 
     @Override
     public Object stringToValue(String text) throws ParseException {
@@ -214,7 +262,7 @@ class beginDateLabelFormatter extends AbstractFormatter {
 class toDateLabelFormatter extends AbstractFormatter {
 
     private String datePattern = "yyyy-MM-dd";
-    private SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern);
+    private SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern, new Locale("en", "EN"));
 
     @Override
     public Object stringToValue(String text) throws ParseException {

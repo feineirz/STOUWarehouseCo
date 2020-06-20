@@ -20,10 +20,17 @@ public class Customers {
 	/************************** Constructor ***************************/
 	public Customers() {}
 	
-	// Create a Customers object from the given cust_id.
 	public Customers(int cust_id) {
-		
-		Connection conn = new DBConnector().getDBConnection();
+		this(cust_id, new DBConnector().getDBConnection(), true);
+	}
+	
+	public Customers(int cust_id, Connection conn) {
+		this(cust_id, conn, false);
+	}
+	
+	// Create a Customers object from the given cust_id.
+	public Customers(int cust_id, Connection conn, boolean autoCloseConnection) {
+
 		try {
 			String qry = "SELECT *"
 					+ " FROM " + relName
@@ -41,15 +48,16 @@ public class Customers {
 				this.email = rs.getString("email");
 			}
 			
-			conn.close();
-			
 		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		if(autoCloseConnection) {
 			try {
 				conn.close();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
-			e.printStackTrace();
+			} catch (SQLException ex) {
+				ex.printStackTrace();
+			}			
 		}
 		
 	}
@@ -127,7 +135,7 @@ public class Customers {
 			Statement stmt = conn.createStatement();			
 			ResultSet rs = stmt.executeQuery(qry);
 			while(rs.next()) {
-				buff.add(new Customers(rs.getInt("cust_id")));
+				buff.add(new Customers(rs.getInt("cust_id"), conn));
 			}
 			
 			conn.close();

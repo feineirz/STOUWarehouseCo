@@ -74,13 +74,15 @@ public class WHLocationPickup {
 					String locRemark=loc.getRemark().toString();
 
 					if(WHLocationPickupDesigner.pickupAdd) {
-						list.add(new pickupLoc(locId,locStatus,locPrice,locRemark,WHLocationPickupDesigner.locSelected));
+						list.add(new pickupLoc(locId,locPrice,WHLocationPickupDesigner.locSelected));
+						AddRental.clickWH();
 					}
 					if(WHLocationPickupDesigner.pickupDel) {
 						//list.remove(locId,locStatus,locPrice,locRemark,WHLocationPickupDesigner.locSelected);
 						//pickupLoc m =new pickupLoc("A01","EMPTY",1100.0,"t",0);
-						pickupLoc m =new pickupLoc(locId,locStatus,locPrice,locRemark,WHLocationPickupDesigner.locSelected);
+						pickupLoc m =new pickupLoc(locId,locPrice,WHLocationPickupDesigner.locSelected);
 						list.remove(m);
+						AddRental.clickWH();
 						//System.out.println(list.contains(m));
 						//list.clear();
 					}

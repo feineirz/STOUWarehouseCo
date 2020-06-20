@@ -26,9 +26,17 @@ public class Users {
 	
 	/************************** Constructor ***************************/
 	public Users() {}
+	
 	public Users(int user_id) {
-		
-		Connection conn = new DBConnector().getDBConnection();
+		this(user_id, new DBConnector().getDBConnection(), true);
+	}
+	
+	public Users(int user_id, Connection conn) {
+		this(user_id, conn, false);
+	}
+	
+	public Users(int user_id, Connection conn, boolean autoCloseConnection) {
+
 		try {
 			String qry = "SELECT *"
 					+ " FROM " + relName
@@ -43,23 +51,32 @@ public class Users {
 				this.password = rs.getString("password");
 				this.phone = rs.getString("phone");
 				this.email = rs.getString("email");
-			}
-			
-			conn.close();
+			}			
 			
 		} catch (SQLException e) {
-			try {
-				conn.close();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
 			e.printStackTrace();
 		}
 		
-	}
-	public Users(String username) {
+		if(autoCloseConnection) {
+			try {
+				conn.close();
+			} catch (SQLException ex) {
+				ex.printStackTrace();
+			}			
+		}
 		
-		Connection conn = new DBConnector().getDBConnection();
+	}
+	
+	public Users(String username) {
+		this(username, new DBConnector().getDBConnection(), true);
+	}
+	
+	public Users(String username, Connection conn) {
+		this(username, conn, false);
+	}
+	
+	public Users(String username, Connection conn, boolean autoCloseConnection) {
+
 		try {
 			String qry = "SELECT *"
 					+ " FROM " + relName
@@ -76,15 +93,16 @@ public class Users {
 				this.email = rs.getString("email");
 			}
 			
-			conn.close();
-			
 		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		if(autoCloseConnection) {
 			try {
 				conn.close();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
-			e.printStackTrace();
+			} catch (SQLException ex) {
+				ex.printStackTrace();
+			}			
 		}
 		
 	}
@@ -140,7 +158,7 @@ public class Users {
 			Statement stmt = conn.createStatement();			
 			ResultSet rs = stmt.executeQuery(qry);
 			while(rs.next()) {
-				buff.add(new Users(rs.getString("username")));
+				buff.add(new Users(rs.getString("username"), conn));
 			}
 			
 			conn.close();

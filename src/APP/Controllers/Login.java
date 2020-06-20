@@ -23,6 +23,10 @@ public class Login{
 		
 	}
 	
+	public static void getSetting() {
+		Setting.getmain();
+	}
+	
 	public static void clickbtnlogin() {
 		
 		try {
@@ -30,8 +34,8 @@ public class Login{
 			if(login != null) {
 				Global.currentUser=login;
 				frmLogin.setVisible(false);
-				new MainMenu().getmain();
-
+				//MainMenu.getmain();
+				Logo.getmain();
 			}else{
 
 				JOptionPane.showMessageDialog(null, "Username หรือ Password ไม่ถูกต้อง", "แจ้งเตือน",JOptionPane.ERROR_MESSAGE);
@@ -46,7 +50,7 @@ public class Login{
 
 	
 	public static void clickbtnexit() {
-		frmLogin.dispose();
+		System.exit(0);
 	}
 
 }

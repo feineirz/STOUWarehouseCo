@@ -11,6 +11,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.*;
+import javax.swing.plaf.FontUIResource;
 
 import APP.Controllers.Global;
 import APP.Controllers.View;
@@ -23,6 +24,15 @@ public class DefaultDesigner extends JFrame {
 	protected Font fontBold = new Font("Verdana", Font.BOLD, 12);
 	protected Font fontSubTitle = new Font("Verdana", Font.PLAIN, 15);
 	protected Font fontTitle = new Font("Verdana", Font.BOLD, 18);
+	
+	protected Font fontHead = new Font("Tahoma", Font.BOLD, 15);
+	protected Font fontButton = new Font("Tahoma", Font.BOLD, 15);
+	protected Font fontLabel = new Font("Tahoma", Font.BOLD, 13);
+	protected Font fontTableHead = new Font("Tahoma", Font.BOLD, 13);
+	protected Font fontTable = new Font("Tahoma", Font.BOLD, 13);
+	protected Font fonCombobox = new Font("Tahoma", Font.BOLD, 13);
+	protected Font fontPanelTitle = new Font("Tahoma", Font.BOLD, 13);
+	
 	
 	private Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();	
 	private Dimension frameSize = new Dimension(1000, 600);
@@ -52,9 +62,45 @@ public class DefaultDesigner extends JFrame {
 	protected JPanel pnlFooter;
 	
 	public DefaultDesigner() {
+
 		super("STOU Warehouse Co.");
-		this.setIconImage(new ImageIcon("assets/appicon.png").getImage());
 		
+		try {
+            //System.setProperty("apple.laf.useScreenMenuBar", "true");
+            //System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Test");
+            //UIManager.put("ScrollBarUI", "main.CustomScrollBarUI");
+	        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+	        
+	        UIManager.put("DatePanelImpl.font", new Font ("Tahoma", Font.PLAIN, 14));
+	        UIManager.put("ProgressBar.font", new Font ("Tahoma", Font.PLAIN, 14));
+	        
+	        UIManager.put("ComboBox.font", new Font ("Tahoma", Font.PLAIN, 14));
+	        
+	        UIManager.put("TitledBorder.font", new Font ("Tahoma", Font.BOLD, 15));
+	        
+	        UIManager.put("Button.font", new Font ("Tahoma", Font.BOLD, 15));
+	        
+	        //UIManager.put("TableHeader.background", new Color(200,200,200));
+	        UIManager.put("PasswordField.font", new Font ("Tahoma", Font.PLAIN, 14));
+	        UIManager.put("Label.font", new Font ("Tahoma", Font.PLAIN, 14));
+	        UIManager.put("Table.font", new Font ("Tahoma", Font.PLAIN, 14));
+	        UIManager.put("TableHeader.font", new Font ("Tahoma", Font.BOLD, 15));
+	        UIManager.put("TextField.font",new Font ("Tahoma", Font.PLAIN, 14));
+	        UIManager.put("TextArea.font",new Font ("Tahoma", Font.PLAIN, 14));
+	        
+	        UIManager.put("OptionPane.messageFont", new Font("Tahoma", Font.PLAIN, 14));
+	        UIManager.put("OptionPane.buttonFont", new Font("Tahoma", Font.BOLD, 15));
+	        UIManager.put( "ProgressBar.selectionForeground", Color.black );
+	        UIManager.put( "ProgressBar.selectionBackground", Color.red.darker() );
+
+	    } 
+	    catch (Exception e) {
+	    	
+	    }
+		
+
+		this.setIconImage(new ImageIcon("assets/appicon.png").getImage());
+
 		/********** Main Frame **********/
 		this.setBounds(
 				(screen.width - frameSize.width) / 2,
@@ -253,5 +299,15 @@ public class DefaultDesigner extends JFrame {
 		pnlFooter.setLocation(0, pnlContent.getY() + pnlContent.getHeight());
 		pnlFooter.setSize(this.getWidth(),this.getHeight());
 	}
+	
+	public static void setUIFont (javax.swing.plaf.FontUIResource f){
+		java.util.Enumeration keys = UIManager.getDefaults().keys();
+		while (keys.hasMoreElements()) {
+			Object key = keys.nextElement();
+			Object value = UIManager.get (key);
+			if (value instanceof javax.swing.plaf.FontUIResource)
+				UIManager.put (key, f);
+		}
+	} 
 	
 }

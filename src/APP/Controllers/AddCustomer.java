@@ -64,15 +64,15 @@ public class AddCustomer {
 			check=1;
 		}
 		if(AddCustomerDesigner.txtCustPhone.getText().isEmpty()){
-			txt +="-เชอร์โทรศัพท์ลูกค้า\n";
+			txt +="-เบอร์โทรศัพท์ลูกค้า\n";
 			check=1;
 		}
 		if(AddCustomerDesigner.txtCustFax.getText().isEmpty()){
-			txt +="-เบอร์โทรศารลูกค้า\n";
+			txt +="-เบอร์โทรสารลูกค้า\n";
 			check=1;
 		}
 		if(AddCustomerDesigner.txtCustEmail.getText().isEmpty()){
-			txt +="-ฮีเมลลูกค้า\n";
+			txt +="-อีเมลลูกค้า\n";
 			check=1;
 		}
 

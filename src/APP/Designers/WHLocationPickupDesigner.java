@@ -240,7 +240,7 @@ public class WHLocationPickupDesigner extends JDialog implements ActionListener{
 		pnlContainer.add(lblRented);
 		
 		btnSelect=new JButton("เลือกตำแหน่งที่ระบุ");
-		btnSelect.setBounds(620,440, 150, 25);
+		btnSelect.setBounds(610,440, 160, 25);
 		btnSelect.addActionListener(this);
 		pnlContainer.add(btnSelect);
 

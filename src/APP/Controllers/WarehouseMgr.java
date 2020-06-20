@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
@@ -19,6 +20,7 @@ import DBCLS.Warehouses.WHStatus;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -37,6 +39,7 @@ public class WarehouseMgr {
 	
 	static int maxId=0;
 	static String locStatClick;
+	static Connection conn = DBConnector.getDBConnection();
 	/*
 	public static void main(String[] arg) {
 
@@ -98,6 +101,7 @@ public class WarehouseMgr {
 					
 				}
 			}
+			showstate();
 		
 			
 		
@@ -105,6 +109,35 @@ public class WarehouseMgr {
 			e.printStackTrace();
 		}
 
+	}
+	
+	public static void showstate() {
+		try {
+			String qry1="SELECT COUNT(*) FROM warehouses WHERE status='E'";
+			Statement stmt1 = conn.createStatement();			
+			ResultSet rs1 = stmt1.executeQuery(qry1);
+			rs1.next();
+			int count1 = rs1.getInt(1);
+			WarehouseMgrDesigner.lbl_sFree.setText(String.valueOf(count1));
+			
+			String qry2="SELECT COUNT(*) FROM warehouses WHERE status='F'";
+			Statement stmt2 = conn.createStatement();			
+			ResultSet rs2 = stmt2.executeQuery(qry2);
+			rs2.next();
+			int count2 = rs2.getInt(1);
+			WarehouseMgrDesigner.lbl_sNotFree.setText(String.valueOf(count2));
+			
+			String qry3="SELECT COUNT(*) FROM warehouses WHERE status='M'";
+			Statement stmt3 = conn.createStatement();			
+			ResultSet rs3 = stmt3.executeQuery(qry3);
+			rs3.next();
+			int count3 = rs3.getInt(1);
+			WarehouseMgrDesigner.lbl_sBroken.setText(String.valueOf(count3));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		
 	}
 
 	private static void listData() {
@@ -166,6 +199,7 @@ public class WarehouseMgr {
 							// whatever
 						}
 					}
+					showstate();
 				}
 				
 				return null;
@@ -209,10 +243,13 @@ public class WarehouseMgr {
 			
 			if(!locs.isEmpty()) {
 				for (Warehouses loc : locs) {
+					
 					WarehouseMgrDesigner.txtLocStatus.setText(loc.getStatus().toString());
 					WarehouseMgrDesigner.txtLocPrice.setText(loc.getPrice().toString());
 					WarehouseMgrDesigner.txtLocRemark.setText(loc.getRemark().toString());
 					locStatClick=loc.getStatus().toString();
+					
+					
 					if(loc.getStatus().toString()=="MAINTENANCE") {
 						WarehouseMgrDesigner.btnRemake.setText("ยกเลิกสถานะซ่อมบำรุง");
 						WarehouseMgrDesigner.btnRemake.setEnabled(true);
@@ -237,7 +274,7 @@ public class WarehouseMgr {
 						WarehouseMgrDesigner.btnRemake.setEnabled(false);
 						Connection conn = new DBConnector().getDBConnection();
 						Date d1 = new Date();
-						SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd");
+						SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd", new Locale("en", "EN"));
 						try {
 
 							String qry = "SELECT cus.cust_id, cus.cust_name, rents.inv_no, rents.start_date, rents.expire_date, rentdetail.rentdetail_id, rentdetail.loc_id, warehouses.status, warehouses.price, warehouses.remark FROM customers AS cus INNER JOIN rents ON cus.cust_id = rents.cust_id INNER JOIN rentdetail on rents.inv_no = rentdetail.inv_no INNER JOIN warehouses on rentdetail.loc_id = warehouses.loc_id WHERE rentdetail.loc_id = '"+WarehouseMgrDesigner.selectedLoc+"'";
@@ -263,6 +300,7 @@ public class WarehouseMgr {
 							e.printStackTrace();
 						}
 					}
+					
 				}
 				
 				
@@ -348,7 +386,7 @@ public class WarehouseMgr {
 			WarehouseMgrDesigner.lastBgColor=Color.YELLOW;
 			x=0;
 			showdataClicked();
-			
+			showstate();
 			
 			btnRemakeClicked=true;
 		}else if(WarehouseMgrDesigner.btnRemake.getText()=="ยกเลิกสถานะซ่อมบำรุง") {
@@ -357,6 +395,7 @@ public class WarehouseMgr {
 			WarehouseMgrDesigner.lastBgColor=Color.WHITE;
 			x=0;
 			showdataClicked();
+			showstate();
 		}
 	}
 	
@@ -367,6 +406,9 @@ public class WarehouseMgr {
 			WarehouseMgrDesigner.lbl[i].setBackground(Color.WHITE);
 
 		}
+		WarehouseMgrDesigner.lbl_sFree.setText("");
+		WarehouseMgrDesigner.lbl_sNotFree.setText("");
+		WarehouseMgrDesigner.lbl_sBroken.setText("");
 
 	}
 	

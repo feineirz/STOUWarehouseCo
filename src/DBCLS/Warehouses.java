@@ -142,7 +142,6 @@ public class Warehouses {
 			Statement stmt = conn.createStatement();			
 			ResultSet rs = stmt.executeQuery(qry);
 			while(rs.next()) {
-				//buff.add(new Warehouses(rs.getString("loc_id")));
 				buff.add(new Warehouses(rs.getString("loc_id"), conn));
 			}
 			
@@ -211,6 +210,52 @@ public class Warehouses {
 		
 	}
 	
+	
+	public static boolean updateWarehouseInfo(String loc_id, WHStatus whStatus, double price) {
+		
+		Connection conn = new DBConnector().getDBConnection();
+		try {
+			String qry = "UPDATE warehouses"
+					+ " SET status=?, price=?"
+					+ " WHERE loc_id = ?";
+			PreparedStatement stmt = conn.prepareStatement(qry);
+			
+			String status = "E";
+			switch (whStatus) {
+			case EMPTY:
+				status = "E";
+				break;
+			case FULL:
+				status = "F";
+				break;
+			case MAINTENANCE:
+				status = "M";
+				break;
+
+			default:
+				status = "E";
+				break;
+			}
+			stmt.setString(1, status);
+			stmt.setDouble(2, price);
+			//stmt.setString(3, remark);
+			stmt.setString(3, loc_id);
+			
+			stmt.execute();			
+			conn.close();
+			return true;
+			
+		} catch (SQLException e) {
+			try {
+				conn.close();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			e.printStackTrace();
+			return false;
+		}
+		
+	}
 	// Delete //
 	// NOT USE
 	
